@@ -1,0 +1,21 @@
+rootProject.name = 'DxaReactNativeExample'
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
+
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+
+        ///Medallia DXA sdk nexus (Maven repo)
+        maven {
+            url "https://nexus.decibel.com/repository/android-sdk-snapshot/"
+
+            credentials {
+                username ""
+                password ""
+            }
+        }
+    }
+}
