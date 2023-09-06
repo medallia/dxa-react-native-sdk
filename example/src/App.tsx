@@ -7,7 +7,8 @@ export default function App() {
   const [result, setResult] = React.useState<boolean | undefined>();
 
   React.useEffect(() => {
-    initialize(10010,250441, true, false).then(setResult);
+    // multiply(1,2).then(setResult);
+    initialize(10010,250441).then(setResult);
   }, []);
 
   return (

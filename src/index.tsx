@@ -24,24 +24,20 @@ export function multiply(a: number, b: number): Promise<number> {
 
 export function initialize(
   propertyId: number,
-  accountId: number,
-  mobileDataEnabled: boolean,
-  manualTrackingEnabled: boolean,
+  accountId: number
 ): Promise<boolean> {
   return DxaReactNative.initialize(
     propertyId,
-    accountId,
-    mobileDataEnabled,
-    manualTrackingEnabled
+    accountId
   );
 }
 
-export function startScreen(
-  screenName: string
-): Promise<boolean> {
-  return DxaReactNative.startScreen(screenName);
-}
+// export function startScreen(
+//   screenName: string
+// ): Promise<boolean> {
+//   return DxaReactNative.startScreen(screenName);
+// }
 
-export function stoptScreen(): Promise<boolean> {
-  return DxaReactNative.endScreen();
-}
+// export function stoptScreen(): Promise<boolean> {
+//   return DxaReactNative.endScreen();
+// }
