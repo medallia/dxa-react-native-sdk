@@ -8,16 +8,12 @@ class DxaReactNative: NSObject {
 
   @objc(initialize:withProperty:withResolver:withRejecter:)
   func initialize(account: Float, property: Float, resolve:RCTPromiseResolveBlock,reject:RCTPromiseRejectBlock) -> Void {
-    // let configuration = Configuration(
-    //             account: "10010",
-    //             property: "250441",
-    //             consent: userConsent?.consent ?? .recordingAndTracking
-    //         )
+    let configuration = Configuration(
+                account: "10010",
+                property: "250441"
+            )
             
-    //         configuration.endpoint = .sigma
-    //         configuration.logLevel = .developer
-            
-    //         DXA.initialize(configuration)
+            DXA.initialize(configuration)
     resolve(true)
   }
 }
