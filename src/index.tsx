@@ -32,12 +32,12 @@ export function initialize(
   );
 }
 
-// export function startScreen(
-//   screenName: string
-// ): Promise<boolean> {
-//   return DxaReactNative.startScreen(screenName);
-// }
+export function startScreen(
+  screenName: string
+): Promise<boolean> {
+  return DxaReactNative.startScreen(screenName);
+}
 
-// export function stoptScreen(): Promise<boolean> {
-//   return DxaReactNative.endScreen();
-// }
+export function stoptScreen(): Promise<boolean> {
+  return DxaReactNative.endScreen();
+}

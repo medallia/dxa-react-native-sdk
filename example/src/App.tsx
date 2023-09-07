@@ -1,20 +1,21 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
-import { initialize } from 'dxa-react-native';
+import { initialize, startScreen, stoptScreen } from 'dxa-react-native';
 
 export default function App() {
   const [result, setResult] = React.useState<boolean | undefined>();
 
   React.useEffect(() => {
-    // multiply(1,2).then(setResult);
     initialize(10010,250441).then(setResult);
   }, []);
 
   return (
+    startScreen("Test").then(setResult),
     <View style={styles.container}>
       <Text>DXA SDK React Native PoC {result}</Text>
-    </View>
+    </View>,
+    stoptScreen().then(setResult)
   );
 }
 
