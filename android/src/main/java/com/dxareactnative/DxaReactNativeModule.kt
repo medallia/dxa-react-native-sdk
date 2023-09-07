@@ -1,11 +1,10 @@
 package com.dxareactnative
 
+import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
-//import com.decibel.builder.dev.Decibel
-//import com.decibel.common.internal.models.Customer
 import com.medallia.dxa.builder.prod.DXA
 import com.medallia.dxa.buildercommon.MedalliaDXA
 import com.medallia.dxa.common.enums.CustomerConsentType
@@ -22,29 +21,21 @@ class DxaReactNativeModule(
     return NAME
   }
 
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
-  @ReactMethod
-  fun multiply(a: Double, b: Double, promise: Promise) {
-    promise.resolve(a - b)
-  }
-
   @ReactMethod
   fun initialize(
     accountId: Int,
     propertyId: Int,
-    mobileDataEnabled: Boolean,
-    manualTrackingEnabled: Boolean,
     promise: Promise
   ) {
     DXA.getInstance(reactContext.getApplicationContext()).run {
+      dxa = this
       initialize(
         DXAConfig(
           accountId = accountId.toLong(),
           propertyId = propertyId.toLong(),
           customerConsent = CustomerConsentType.ANALYTICS_AND_RECORDING,
-          mobileDataEnabled = mobileDataEnabled,
-          manualTrackingEnabled = manualTrackingEnabled,
+          mobileDataEnabled = true,
+          manualTrackingEnabled = true,
         )
       )
       setAutoMasking(listOf(DXAConfigurationMask.TEXT_VIEW))
@@ -54,8 +45,10 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun startScreen(name: String, promise: Promise) {
+    Log.i("DXA-REACT-METHOD", "starting screen with name: $name")
     if (!::dxa.isInitialized) {
       promise.resolve(false)
+      Log.e("DXA-REACT-METHOD", "starting screen with name: $name but DXA is not initalized")
       return
     }
     dxa.startNewScreen(name)
@@ -64,8 +57,10 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun endScreen(promise: Promise) {
+    Log.i("DXA-REACT-METHOD", "stopen screen.")
     if (!::dxa.isInitialized) {
       promise.resolve(false)
+      Log.e("DXA-REACT-METHOD", "starting screen but DXA is not initalized")
       return
     }
     dxa.stopScreen()
