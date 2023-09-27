@@ -17,27 +17,32 @@ const DxaReactNative = NativeModules.DxaReactNative
     }
   );
 
-///Example function to remove!!!!!!!!!!
-export function multiply(a: number, b: number): Promise<number> {
-  return DxaReactNative.multiply(a, b);
+class DXA {
+
+  initialize(
+    propertyId: number,
+    accountId: number
+  ): Promise<boolean> {
+    return DxaReactNative.initialize(
+      propertyId,
+      accountId
+    );
+  }
+
+  startScreen(
+    screenName: string
+  ): Promise<boolean> {
+     return DxaReactNative.startScreen(screenName);
+  }
+
+  stopScreen(): Promise<boolean> {
+    return DxaReactNative.endScreen();
+  }
 }
 
-export function initialize(
-  propertyId: number,
-  accountId: number
-): Promise<boolean> {
-  return DxaReactNative.initialize(
-    propertyId,
-    accountId
-  );
-}
+const dxa = new DXA();
 
-export function startScreen(
-  screenName: string
-): Promise<boolean> {
-  return DxaReactNative.startScreen(screenName);
-}
-
-export function stoptScreen(): Promise<boolean> {
-  return DxaReactNative.endScreen();
-}
+/// DXA binder.
+export { dxa };
+export { DxaApp } from './DxaApp';
+export { DxaScreen } from './DxaScreen';

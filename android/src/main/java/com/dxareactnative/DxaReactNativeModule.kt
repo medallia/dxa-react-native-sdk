@@ -27,7 +27,7 @@ class DxaReactNativeModule(
     propertyId: Int,
     promise: Promise
   ) {
-    DXA.getInstance(reactContext.getApplicationContext()).run {
+    DXA.getInstance(reactContext.applicationContext).run {
       dxa = this
       initialize(
         DXAConfig(
@@ -47,8 +47,10 @@ class DxaReactNativeModule(
   fun startScreen(name: String, promise: Promise) {
     Log.i("DXA-REACT-METHOD", "starting screen with name: $name")
     if (!::dxa.isInitialized) {
-      promise.resolve(false)
-      Log.e("DXA-REACT-METHOD", "starting screen with name: $name but DXA is not initalized")
+      promise.reject(
+        DxaReactNativeException("starting screen with name: $name but DXA is not initialized")
+      )
+      Log.e("DXA-REACT-METHOD", "starting screen with name: $name but DXA is not initialized")
       return
     }
     dxa.startNewScreen(name)
@@ -57,10 +59,12 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun endScreen(promise: Promise) {
-    Log.i("DXA-REACT-METHOD", "stopen screen.")
+    Log.i("DXA-REACT-METHOD", "stopping screen.")
     if (!::dxa.isInitialized) {
-      promise.resolve(false)
-      Log.e("DXA-REACT-METHOD", "starting screen but DXA is not initalized")
+      promise.reject(
+        DxaReactNativeException("stopping screen but DXA is not initialized")
+      )
+      Log.e("DXA-REACT-METHOD", "stopping screen but DXA is not initialized")
       return
     }
     dxa.stopScreen()
@@ -71,3 +75,5 @@ class DxaReactNativeModule(
     const val NAME = "DxaReactNative"
   }
 }
+
+private class DxaReactNativeException(msg: String?): Throwable(message = msg)
