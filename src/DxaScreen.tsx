@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { dxa } from './index';
+import { MedalliaDXA } from './index';
 
 type DxaScreenProps = {
   name: string;
@@ -13,11 +13,11 @@ export class DxaScreen extends React.Component<DxaScreenProps, any> {
 
   componentDidMount(): void {
     console.log(`Screen component ${this.props.name} did mount, starting screen.`);
-    dxa.startScreen(this.props.name);
+    MedalliaDXA.startScreen(this.props.name);
   }
 
   componentWillUnmount(): void {
     console.log(`Screen component ${this.props.name} will unmount, stoping screen.`);
-    dxa.stopScreen();
+    MedalliaDXA.stopScreen();
   }
 }

@@ -38,7 +38,7 @@ class DxaReactNativeModule(
           manualTrackingEnabled = true,
         )
       )
-      setAutoMasking(listOf(DXAConfigurationMask.TEXT_VIEW))
+      setAutoMasking(listOf(DXAConfigurationMask.NO_MASK))
       promise.resolve(true)
     }
   }
