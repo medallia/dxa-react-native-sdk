@@ -40,8 +40,8 @@ export class DXA {
     if (navigationRef) {
       const rootState = navigationRef.getRootState()
       navigationRef.addListener('state', (param: any) => {
-        console.log("Called listener for event STATE: param", param, "current route:", rootState);
-        this.startScreen(rootState.routeNames[rootState.index]!)
+        console.log("IN:", param, "| CURRENT:", rootState);
+        this.startScreen(rootState.routeNames[param.data.state.index]!)
       });
     }
   }

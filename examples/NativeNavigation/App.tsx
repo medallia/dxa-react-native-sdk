@@ -26,6 +26,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import { DxaApp } from 'dxa-react-native';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -57,51 +59,73 @@ function Section({ children, title }: SectionProps): JSX.Element {
   );
 }
 
-export function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const Tab = createBottomTabNavigator();
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+
+export function App(): JSX.Element {
+  const navigationRef = useNavigationContainerRef();
 
   return (
     <DxaApp
       accountId={10010}
       propertyId={250441}
       enabled={true}
-      navigationContainerRef={null}
-    >
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={backgroundStyle}>
-          <Header />
-          <View
-            style={{
-              backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            }}>
-            <Section title="Paso 1">
-              Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-              screen and then come back to see your edits.
-            </Section>
-            <Section title="See Your Changes">
-              <ReloadInstructions />
-            </Section>
-            <Section title="Debug">
-              <DebugInstructions />
-            </Section>
-            <Section title="Learn More">
-              Read the docs to discover what to do next:
-            </Section>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+      navigationContainerRef={navigationRef}>
+
+      <NavigationContainer ref={navigationRef}>
+        <Tab.Navigator detachInactiveScreens={true} >
+          <Tab.Screen name="Tab 1" component={Screen1} />
+          <Tab.Screen name="Tab 2" component={Screen2} />
+        </Tab.Navigator>
+      </NavigationContainer>
+
     </DxaApp>
+  );
+}
+
+function Screen1(): JSX.Element {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+  return (<SafeAreaView style={backgroundStyle}>
+    <StatusBar
+      barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+      backgroundColor={backgroundStyle.backgroundColor}
+    />
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      style={backgroundStyle}>
+      <Header />
+      <View
+        style={{
+          backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        }}>
+        <Section title="Paso 1">
+          Edit <Text style={styles.highlight}>App.tsx</Text> to change this
+          screen and then come back to see your edits.
+        </Section>
+        <Section title="See Your Changes">
+          <ReloadInstructions />
+        </Section>
+        <Section title="Debug">
+          <DebugInstructions />
+        </Section>
+        <Section title="Learn More">
+          Read the docs to discover what to do next:
+        </Section>
+        <LearnMoreLinks />
+      </View>
+    </ScrollView>
+  </SafeAreaView>);
+}
+
+function Screen2({ navigation }: { navigation: any }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={styles.textStyle}>Tab 2</Text>
+    </View>
   );
 }
 
@@ -122,6 +146,9 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  textStyle: {
+    color: '#FFFFFF'
+  }
 });
 
 export default App;
