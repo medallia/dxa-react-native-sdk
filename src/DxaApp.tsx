@@ -29,11 +29,12 @@ export class DxaApp extends React.Component<DxaAppProps, DxaAppState> {
           console.log("Medallia DXA is running");
           AppState.addEventListener("change", this.handleAppStateChange);
           const navContainerRef = props.navigationContainerRef;
-
-          ///After init auto-initialize tracking.
-          MedalliaDXA.startScreen(
-            navContainerRef.getRootState().routeNames[navContainerRef.getRootState().index]!
-          )
+          if (navContainerRef) {
+            ///After init auto-initialize tracking.
+            MedalliaDXA.startScreen(
+              navContainerRef.getRootState().routeNames[navContainerRef.getRootState().index]!
+            )
+          }
         }
       });
     } else {

@@ -32,15 +32,18 @@ export class DXA {
     propertyId: number,
     navigationRef: NavigationContainerRefWithCurrent<ReactNavigation.RootParamList>,
   ) {
+    this.accountId = accountId;
+    this.propertyId = propertyId;
     if (!this.initialized) {
-      this.accountId = accountId;
-      this.propertyId = propertyId;
       this.initialized = await DxaReactNative.initialize(accountId, propertyId);
     }
-    navigationRef.addListener('state', (param: any) => {
-      console.log("Called listener for event STATE: param", param, "current route:", navigationRef.getRootState());
-      this.startScreen(navigationRef.getRootState().routeNames[navigationRef.getRootState().index]!)
-    });
+    if (navigationRef) {
+      const rootState = navigationRef.getRootState()
+      navigationRef.addListener('state', (param: any) => {
+        console.log("Called listener for event STATE: param", param, "current route:", rootState);
+        this.startScreen(rootState.routeNames[rootState.index]!)
+      });
+    }
   }
 
   // Starts to track a screen. If some screes is being tracked, that track will be stopped
