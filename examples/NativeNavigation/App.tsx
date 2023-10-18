@@ -29,6 +29,30 @@ import { DxaApp } from 'dxa-react-native';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+const Tab = createBottomTabNavigator();
+
+export function App(): JSX.Element {
+  const navigationRef = useNavigationContainerRef();
+
+  return (
+    <DxaApp
+      accountId={10010}
+      propertyId={250441}
+      enabled={true}
+      manualTracking={false}
+      navigationContainerRef={navigationRef}>
+
+      <NavigationContainer ref={navigationRef}>
+        <Tab.Navigator detachInactiveScreens={true} >
+          <Tab.Screen name="Tab 1" component={Screen1} />
+          <Tab.Screen name="Tab 2" component={Screen2} />
+        </Tab.Navigator>
+      </NavigationContainer>
+
+    </DxaApp>
+  );
+}
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -56,30 +80,6 @@ function Section({ children, title }: SectionProps): JSX.Element {
         {children}
       </Text>
     </View>
-  );
-}
-
-const Tab = createBottomTabNavigator();
-
-
-export function App(): JSX.Element {
-  const navigationRef = useNavigationContainerRef();
-
-  return (
-    <DxaApp
-      accountId={10010}
-      propertyId={250441}
-      enabled={true}
-      navigationContainerRef={navigationRef}>
-
-      <NavigationContainer ref={navigationRef}>
-        <Tab.Navigator detachInactiveScreens={true} >
-          <Tab.Screen name="Tab 1" component={Screen1} />
-          <Tab.Screen name="Tab 2" component={Screen2} />
-        </Tab.Navigator>
-      </NavigationContainer>
-
-    </DxaApp>
   );
 }
 

@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 import { type NavigationContainerRefWithCurrent } from '@react-navigation/native';
+import { DxaLog } from '../src/util/DxaLog';
 
 const LINKING_ERROR =
   `The package 'dxa-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -35,12 +36,13 @@ export class DXA {
     this.accountId = accountId;
     this.propertyId = propertyId;
     if (!this.initialized) {
+      dxaLog.log("MedalliaDXA ->", "initializing SDK propertyId:", propertyId, "accountId:", accountId)
       this.initialized = await DxaReactNative.initialize(accountId, propertyId);
     }
     if (navigationRef) {
       const rootState = navigationRef.getRootState()
       navigationRef.addListener('state', (param: any) => {
-        console.log("IN:", param, "| CURRENT:", rootState);
+        dxaLog.log("MedalliaDXA ->", "IN:", param, "| CURRENT:", rootState);
         this.startScreen(rootState.routeNames[param.data.state.index]!)
       });
     }
@@ -52,19 +54,21 @@ export class DXA {
   startScreen(
     screenName: string
   ): Promise<boolean> {
-    console.log("MedalliaDXA", "starting screen -> ", screenName)
+    dxaLog.log("MedalliaDXA ->", "starting screen -> ", screenName)
     return DxaReactNative.startScreen(screenName);
   }
 
   stopScreen(): Promise<boolean> {
-    console.log("MedalliaDXA", "stopping screen.")
+    dxaLog.log("MedalliaDXA ->", "stopping screen.")
     return DxaReactNative.endScreen();
   }
 }
 
 const MedalliaDXA = new DXA();
+const dxaLog = new DxaLog();
 
 /// DXA binder.
 export { MedalliaDXA };
+export { dxaLog };
 export { DxaScreen } from './DxaScreen';
 export { DxaApp } from './DxaApp';
