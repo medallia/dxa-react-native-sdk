@@ -8,7 +8,7 @@ type DxaAppProps = {
   propertyId: number;
   enabled: boolean | undefined;
   manualTracking: boolean;
-  navigationContainerRef: any;
+  navigationContainerRef: any | undefined;
 };
 
 type DxaAppState = {
@@ -32,9 +32,10 @@ export class DxaApp extends React.Component<DxaAppProps, DxaAppState> {
           dxaLog.log("MedalliaDXA ->", "is running!");
           const navContainerRef = props.navigationContainerRef;
           if (navContainerRef && props.manualTracking != true) {
+            dxaLog.log("MedalliaDXA ->", "navigation on init:", {data: {state: navContainerRef.getRootState() }});
             ///After init auto-initialize tracking.
             MedalliaDXA.startScreen(
-              navContainerRef.getRootState().routeNames[navContainerRef.getRootState().index]!
+              MedalliaDXA.resolveCurrentRouteName({data: {state: navContainerRef.getRootState() }})
             )
           }
         }

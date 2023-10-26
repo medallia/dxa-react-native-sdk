@@ -25,6 +25,8 @@ export class DXA {
   accountId: number | undefined = undefined;
   propertyId: number | undefined = undefined;
 
+  private routeSeparator: String = "."
+
   // Initialize SDK for autotracking.
   // @param - propertyId - associated DXA client property id
   // @param - accountId - associated DXA client account id
@@ -40,10 +42,9 @@ export class DXA {
       this.initialized = await DxaReactNative.initialize(accountId, propertyId);
     }
     if (navigationRef) {
-      const rootState = navigationRef.getRootState()
       navigationRef.addListener('state', (param: any) => {
-        dxaLog.log("MedalliaDXA ->", "IN:", param, "| CURRENT:", rootState);
-        this.startScreen(rootState.routeNames[param.data.state.index]!)
+        const screenName = this.resolveCurrentRouteName(param);
+        this.startScreen(screenName);
       });
     }
   }
@@ -61,6 +62,25 @@ export class DXA {
   stopScreen(): Promise<boolean> {
     dxaLog.log("MedalliaDXA ->", "stopping screen.")
     return DxaReactNative.endScreen();
+  }
+
+  resolveCurrentRouteName(param: any) {
+    try {
+      let currentOnPrint: any = param.data.state;
+      let entireRoute = ""
+      do {
+        dxaLog.log("MedalliaDXA ->", " > detected route level:", currentOnPrint);
+        entireRoute = entireRoute + "." + currentOnPrint.routes[currentOnPrint.index].name;
+        currentOnPrint = currentOnPrint.routes[currentOnPrint.index]?.state
+      } while (currentOnPrint && currentOnPrint.routes);
+      return entireRoute;
+    } catch (ex) {
+      return "unknown";
+    }
+  }
+
+  setRouteSeparator(newSeparator: String) {
+    this.routeSeparator = newSeparator;
   }
 }
 
