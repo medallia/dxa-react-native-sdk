@@ -1,3 +1,3 @@
 import { requireNativeComponent } from 'react-native';
 
-export const DxaMask = requireNativeComponent("DxaMask")
+export const DxaMask = requireNativeComponent('DxaMask');

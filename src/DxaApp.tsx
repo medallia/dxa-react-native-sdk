@@ -1,7 +1,10 @@
 import * as React from 'react';
-import { AppState, type AppStateStatus, type NativeEventSubscription } from 'react-native'
+import {
+  AppState,
+  type AppStateStatus,
+  type NativeEventSubscription,
+} from 'react-native';
 import { MedalliaDXA, DXA, dxaLog } from './index';
-
 
 type DxaAppProps = {
   accountId: number;
@@ -17,7 +20,6 @@ type DxaAppState = {
 };
 
 export class DxaApp extends React.Component<DxaAppProps, DxaAppState> {
-
   private subscription: NativeEventSubscription | undefined;
 
   constructor(props: Readonly<DxaAppProps>) {
@@ -29,19 +31,23 @@ export class DxaApp extends React.Component<DxaAppProps, DxaAppState> {
         props.navigationContainerRef
       ).then(() => {
         if (MedalliaDXA.initialized) {
-          dxaLog.log("MedalliaDXA ->", "is running!");
+          dxaLog.log('MedalliaDXA ->', 'is running!');
           const navContainerRef = props.navigationContainerRef;
           if (navContainerRef && props.manualTracking != true) {
-            dxaLog.log("MedalliaDXA ->", "navigation on init:", {data: {state: navContainerRef.getRootState() }});
+            dxaLog.log('MedalliaDXA ->', 'navigation on init:', {
+              data: { state: navContainerRef.getRootState() },
+            });
             ///After init auto-initialize tracking.
             MedalliaDXA.startScreen(
-              MedalliaDXA.resolveCurrentRouteName({data: {state: navContainerRef.getRootState() }})
-            )
+              MedalliaDXA.resolveCurrentRouteName({
+                data: { state: navContainerRef.getRootState() },
+              })
+            );
           }
         }
       });
     } else {
-      dxaLog.log("MedalliaDXA ->", "is disabled.")
+      dxaLog.log('MedalliaDXA ->', 'is disabled.');
     }
   }
 
@@ -50,24 +56,33 @@ export class DxaApp extends React.Component<DxaAppProps, DxaAppState> {
   }
 
   componentDidMount(): void {
-    dxaLog.log("MedalliaDXA ->", "AppState event listerner(change)", this.handleAppStateChange);
-    this.subscription = AppState.addEventListener("change", this.handleAppStateChange);
+    dxaLog.log(
+      'MedalliaDXA ->',
+      'AppState event listerner(change)',
+      this.handleAppStateChange
+    );
+    this.subscription = AppState.addEventListener(
+      'change',
+      this.handleAppStateChange
+    );
   }
 
   componentWillUnmount(): void {
-    dxaLog.log("MedalliaDXA ->","Unmounting DxaApp node", AppState.currentState);
-      this.subscription?.remove();
+    dxaLog.log(
+      'MedalliaDXA ->',
+      'Unmounting DxaApp node',
+      AppState.currentState
+    );
+    this.subscription?.remove();
   }
 
   private handleAppStateChange = (nextAppState: any) => {
-    if (nextAppState == "active") {
-      dxaLog.log("MedalliaDXA ->",'App becomes to active!')
-    } else if (nextAppState == "background") {
-      dxaLog.log("MedalliaDXA ->","App is going to background!!")
+    if (nextAppState == 'active') {
+      dxaLog.log('MedalliaDXA ->', 'App becomes to active!');
+    } else if (nextAppState == 'background') {
+      dxaLog.log('MedalliaDXA ->', 'App is going to background!!');
       MedalliaDXA.stopScreen();
     }
     this.setState({ appState: nextAppState });
-  }
+  };
 }
-
-

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Text, FlatList, Image, StyleSheet, ScrollView } from 'react-native';
+import { Button, View, Text, FlatList, Image, StyleSheet } from 'react-native';
 import { DxaApp, DxaMask } from 'dxa-react-native';
 import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-
   const navigationRef = useNavigationContainerRef();
 
   return (
@@ -17,20 +19,30 @@ export default function App() {
       propertyId={250441}
       enabled={true}
       manualTracking={false}
-      navigationContainerRef={navigationRef} >
-
+      navigationContainerRef={navigationRef}
+    >
       <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator initialRouteName='Screen1'>
-          <Stack.Screen name="Screen1" component={Screen1} options={{ title: 'Screen 1' }} />
-          <Stack.Screen name="Screen2" component={Screen2} options={{ title: "Screen 2" }} />
-          <Stack.Screen name='ScreenList' component={CharactersList} options={{ title: "Characters" }} />
+        <Stack.Navigator initialRouteName="Screen1">
+          <Stack.Screen
+            name="Screen1"
+            component={Screen1}
+            options={{ title: 'Screen 1' }}
+          />
+          <Stack.Screen
+            name="Screen2"
+            component={Screen2}
+            options={{ title: 'Screen 2' }}
+          />
+          <Stack.Screen
+            name="ScreenList"
+            component={CharactersList}
+            options={{ title: 'Characters' }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
-
     </DxaApp>
   );
 }
-
 
 ////////////////////
 function Screen1({ navigation }: { navigation: any }) {
@@ -50,11 +62,11 @@ function Screen2({ navigation }: { navigation: any }) {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Screen 2</Text>
       <DxaMask>
-          <Text>This text should not be visible</Text>
+        <Text>This text should not be visible</Text>
       </DxaMask>
       <Button
         title="Go to Characters List"
-        onPress={() => navigation.push("ScreenList")}
+        onPress={() => navigation.push('ScreenList')}
       />
     </View>
   );
@@ -65,7 +77,9 @@ function CharactersList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://rickandmortyapi.com/api/character");
+        const response = await axios.get(
+          'https://rickandmortyapi.com/api/character'
+        );
         setCharacters(response.data.results);
       } catch (error) {
         console.error('Error al obtener datos de la API:', error);
@@ -81,14 +95,14 @@ function CharactersList() {
       renderItem={({ item }) => <CharacterItem item={item} />}
     />
   );
-};
+}
 
 interface ListItem {
-  id: string,
-  name: string,
-  status: string,
-  species: string,
-  image: string,
+  id: string;
+  name: string;
+  status: string;
+  species: string;
+  image: string;
 }
 
 const CharacterItem: React.FC<{ item: ListItem }> = ({ item }) => {
@@ -115,13 +129,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    color: "black"
+    color: 'black',
   },
   container: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "white"
+    backgroundColor: 'white',
   },
 });

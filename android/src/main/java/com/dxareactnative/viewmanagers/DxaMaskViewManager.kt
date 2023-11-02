@@ -2,7 +2,6 @@ package com.dxareactnative.viewmanagers
 
 import android.graphics.Color
 import android.widget.FrameLayout
-import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
 
