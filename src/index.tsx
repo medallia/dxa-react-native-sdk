@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules ,Platform } from 'react-native';
 import { type NavigationContainerRefWithCurrent } from '@react-navigation/native';
 import { DxaLog } from '../src/util/DxaLog';
 
@@ -70,7 +70,7 @@ export class DXA {
       let entireRoute = ""
       do {
         dxaLog.log("MedalliaDXA ->", " > detected route level:", currentOnPrint);
-        entireRoute = entireRoute + "." + currentOnPrint.routes[currentOnPrint.index].name;
+        entireRoute = entireRoute + this.routeSeparator + currentOnPrint.routes[currentOnPrint.index].name;
         currentOnPrint = currentOnPrint.routes[currentOnPrint.index]?.state
       } while (currentOnPrint && currentOnPrint.routes);
       return entireRoute;
@@ -92,3 +92,4 @@ export { MedalliaDXA };
 export { dxaLog };
 export { DxaScreen } from './DxaScreen';
 export { DxaApp } from './DxaApp';
+export { DxaMask } from './DxaMask';

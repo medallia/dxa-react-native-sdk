@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Text, FlatList, Image, StyleSheet } from 'react-native';
-import { DxaApp } from 'dxa-react-native';
+import { Button, View, Text, FlatList, Image, StyleSheet, ScrollView } from 'react-native';
+import { DxaApp, DxaMask } from 'dxa-react-native';
 import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
@@ -16,6 +16,7 @@ export default function App() {
       accountId={10010}
       propertyId={250441}
       enabled={true}
+      manualTracking={false}
       navigationContainerRef={navigationRef} >
 
       <NavigationContainer ref={navigationRef}>
@@ -48,8 +49,11 @@ function Screen2({ navigation }: { navigation: any }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Screen 2</Text>
+      <DxaMask>
+          <Text>This text should not be visible</Text>
+      </DxaMask>
       <Button
-        title="Back to screen 1"
+        title="Go to Characters List"
         onPress={() => navigation.push("ScreenList")}
       />
     </View>

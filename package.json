@@ -161,7 +161,5 @@
     ]
   },
   "dependencies": {
-    "@react-navigation/native": "^6.1.8",
-    "axios": "^1.5.1"
   }
 }
