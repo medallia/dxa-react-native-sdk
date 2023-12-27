@@ -62,6 +62,11 @@ export class DXA {
     return DxaReactNative.endScreen();
   }
 
+  sendHttpError(errorCode: number): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'send http error -> ', errorCode);
+    return DxaReactNative.sendHttpError(errorCode);
+  }
+
   resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;

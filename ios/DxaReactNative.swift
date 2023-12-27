@@ -39,4 +39,14 @@ class DxaReactNative: NSObject {
     DXA.stopScreen()
     resolve(true)
   }
+
+  @objc(sendHttpError:withResolver:withRejecter:)
+  func sendHTTPError(
+    errorCode: Float,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
+    DXA.sendHTTPError(statusCode: Int(errorCode))
+    resolve(true)
+  }
 }
