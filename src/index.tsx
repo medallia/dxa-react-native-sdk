@@ -77,6 +77,19 @@ export class DXA {
     return DxaReactNative.sendGoal(goalName);
   }
 
+  setDimensionWithString(dimensionName: string, stringValue: string): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'setDimensionWithString -> ', dimensionName, 'value -> ', stringValue);
+    return DxaReactNative.setDimensionWithString(dimensionName, stringValue);
+  }
+  setDimensionWithNumber(dimensionName: string, numberValue: number): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'setDimensionWithNumber -> ', dimensionName, 'value -> ', numberValue);
+    return DxaReactNative.setDimensionWithNumber(dimensionName, numberValue);
+  }
+  setDimensionWithBool(dimensionName: string, boolValue: boolean): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'setDimensionWithBool -> ', dimensionName, 'value -> ', boolValue);
+    return DxaReactNative.setDimensionWithBool(dimensionName, boolValue);
+  }
+
   resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;

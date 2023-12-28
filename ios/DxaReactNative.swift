@@ -69,4 +69,37 @@ class DxaReactNative: NSObject {
     DXA.send(goal: goalName)
     resolve(true)
   }
+
+  @objc(setDimensionWithString:withStringValue:withResolver:withRejecter:)      
+  func setDimensionWithString(
+    dimensionName: String,
+    stringValue: String,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
+      DXA.send(dimension: dimensionName, value: stringValue)
+      resolve(true)
+  }
+    
+  @objc(setDimensionWithNumber:withNumberValue:withResolver:withRejecter:)      
+  func setDimensionWithNumber(
+    dimensionName: String,
+    numberValue: NSNumber,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
+      DXA.send(dimension: dimensionName, value: numberValue.doubleValue)
+      resolve(true)
+  }
+    
+  @objc(setDimensionWithBool:withBoolValue:withResolver:withRejecter:)      
+  func sendDimensionWithBool(
+    dimensionName: String,
+    boolValue: Bool,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
+      DXA.send(dimension: dimensionName, value: boolValue)
+      resolve(true)
+  }
 }

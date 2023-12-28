@@ -40,6 +40,27 @@ RCT_EXTERN_METHOD(
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
 
+RCT_EXTERN_METHOD(
+  setDimensionWithString:(NSString)dimensionName
+  withStringValue:(NSString)stringValue
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
+RCT_EXTERN_METHOD(
+  setDimensionWithNumber:(NSString)dimensionName
+  withNumberValue:(nonnull NSNumber *)numberValue
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
+RCT_EXTERN_METHOD(
+  setDimensionWithBool:(NSString)dimensionName
+  withBoolValue:(BOOL)boolValue
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
 + (BOOL)requiresMainQueueSetup
 {
   return NO;
