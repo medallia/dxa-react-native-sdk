@@ -67,6 +67,16 @@ export class DXA {
     return DxaReactNative.sendHttpError(errorCode);
   }
 
+  sendGoal(goalName: string, value?: number): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'sendGoal -> ', goalName, 'value -> ', value);
+    //React native doesn't allow nullable parameters or native modules, so 2
+    //methods are needed.
+    if(value){
+      return DxaReactNative.sendGoalWithValue(goalName, value);
+    }
+    return DxaReactNative.sendGoal(goalName);
+  }
+
   resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;

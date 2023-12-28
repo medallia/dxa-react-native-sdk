@@ -49,4 +49,24 @@ class DxaReactNative: NSObject {
     DXA.sendHTTPError(statusCode: Int(errorCode))
     resolve(true)
   }
+
+  @objc(sendGoalWithValue:withValue:withResolver:withRejecter:)
+  func sendGoalWithValue(
+    goalName: String,
+    value: NSNumber,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
+    DXA.send(goal: goalName, with: value.floatValue)
+    resolve(true)
+  }
+  @objc(sendGoal:withResolver:withRejecter:)
+  func sendGoal(
+    goalName: String, 
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
+    DXA.send(goal: goalName)
+    resolve(true)
+  }
 }

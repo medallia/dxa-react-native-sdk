@@ -27,6 +27,19 @@ RCT_EXTERN_METHOD(
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
 
+RCT_EXTERN_METHOD(
+  sendGoalWithValue:(NSString)goalName
+  withValue:(nonnull NSNumber *)value
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
+RCT_EXTERN_METHOD(
+  sendGoal:(NSString)goalName
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
 + (BOOL)requiresMainQueueSetup
 {
   return NO;
