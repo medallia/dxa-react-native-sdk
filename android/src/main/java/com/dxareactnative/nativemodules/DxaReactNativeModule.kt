@@ -74,6 +74,24 @@ class DxaReactNativeModule(
     promise.resolve(true)
   }
 
+  @ReactMethod
+  fun setDimensionWithString(dimensionName: String, stringValue: String, promise: Promise) {
+    dxa.sendCustomDimension(dimensionName, stringValue)
+    promise.resolve(true)
+  }
+
+  @ReactMethod
+  fun setDimensionWithNumber(dimensionName: String, numberValue: Double, promise: Promise) {
+    dxa.sendCustomDimension(dimensionName, numberValue)
+    promise.resolve(true)
+  }
+
+  @ReactMethod
+  fun setDimensionWithBool(dimensionName: String, boolValue: Boolean, promise: Promise) {
+    dxa.sendCustomDimension(dimensionName, boolValue)
+    promise.resolve(true)
+  }
+
   companion object {
     const val NAME = "DxaReactNative"
   }
