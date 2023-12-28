@@ -73,6 +73,23 @@ class DxaReactNativeModule(
     dxa.stopScreen()
     promise.resolve(true)
   }
+  @ReactMethod
+  fun sendHttpError(errorCode: Int, promise: Promise) {
+    dxa.sendHttpError(errorCode)
+    promise.resolve(true)
+  }
+
+  @ReactMethod
+  fun sendGoal(goalName: String, promise: Promise) {
+    dxa.sendGoal(goalName)
+    promise.resolve(true)
+  }
+
+  @ReactMethod
+  fun sendGoalWithValue(goalName: String, value: Double, promise: Promise) {
+    dxa.sendGoal(goalName, value)
+    promise.resolve(true)
+  }
 
   @ReactMethod
   fun setDimensionWithString(dimensionName: String, stringValue: String, promise: Promise) {
@@ -90,6 +107,21 @@ class DxaReactNativeModule(
   fun setDimensionWithBool(dimensionName: String, boolValue: Boolean, promise: Promise) {
     dxa.sendCustomDimension(dimensionName, boolValue)
     promise.resolve(true)
+  }
+
+  @ReactMethod
+  fun getWebViewProperties(promise: Promise) {
+    promise.resolve(dxa.getWebViewParams())
+  }
+
+  @ReactMethod
+  fun getSessionId(promise: Promise) {
+    promise.resolve(dxa.getSessionId())
+  }
+
+  @ReactMethod
+  fun getSessionUrl(promise: Promise) {
+    promise.resolve(dxa.getSessionUrl())
   }
 
   companion object {
