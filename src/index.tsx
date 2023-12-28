@@ -95,6 +95,11 @@ export class DXA {
     return DxaReactNative.getSessionUrl();
   }
 
+  getSessionId(): Promise<string> {
+    dxaLog.log('MedalliaDXA ->', 'getSessionId');
+    return DxaReactNative.getSessionId();
+  }
+
   resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;

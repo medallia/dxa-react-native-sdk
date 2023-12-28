@@ -108,6 +108,18 @@ class DxaReactNative: NSObject {
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) -> Void {
+    let sessionURL = DXA.sessionURL
+    if sessionURL != nil {
+        resolve(sessionURL);
+        return
+    }
+  }
+
+  @objc(getSessionId:withRejecter:)
+  func getSessionId(
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
     let sessionId = DXA.sessionId
     if sessionId != nil {
         resolve(sessionId);
