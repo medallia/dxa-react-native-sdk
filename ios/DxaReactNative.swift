@@ -102,4 +102,16 @@ class DxaReactNative: NSObject {
       DXA.send(dimension: dimensionName, value: boolValue)
       resolve(true)
   }
+
+  @objc(getSessionUrl:withRejecter:)
+  func getSessionUrl(
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
+    let sessionId = DXA.sessionId
+    if sessionId != nil {
+        resolve(sessionId);
+        return
+    }
+  }
 }

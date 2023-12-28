@@ -90,6 +90,11 @@ export class DXA {
     return DxaReactNative.setDimensionWithBool(dimensionName, boolValue);
   }
 
+  getSessionUrl(): Promise<string> {
+    dxaLog.log('MedalliaDXA ->', 'getSessionUrl');
+    return DxaReactNative.getSessionUrl();
+  }
+
   resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;
