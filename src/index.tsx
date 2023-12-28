@@ -100,6 +100,11 @@ export class DXA {
     return DxaReactNative.getSessionId();
   }
 
+  getWebViewProperties(): Promise<string> {
+    dxaLog.log('MedalliaDXA ->', 'getWebViewProperties');
+    return DxaReactNative.getWebViewProperties();
+  }
+
   resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;

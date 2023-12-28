@@ -126,4 +126,16 @@ class DxaReactNative: NSObject {
         return
     }
   }
+  
+  @objc(getWebViewProperties:withRejecter:)
+  func getWebViewProperties(
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) -> Void {
+    let webViewProperties = DXA.webViewProperties
+    if webViewProperties != nil {
+        resolve(webViewProperties);
+        return
+    }
+  }
 }
