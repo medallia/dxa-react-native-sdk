@@ -16,8 +16,7 @@ RCT_EXTERN_METHOD(
 ) 
 
 RCT_EXTERN_METHOD(
-  stopScreen:
-  withResolver:(RCTPromiseResolveBlock)resolve
+  endScreen:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
 
