@@ -41,7 +41,7 @@ class DxaReactNative: NSObject {
     }
 }
 
-class MyCustomView: UIView {
+class DxaMaskView: UIView {
  
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -66,7 +66,7 @@ class DxaMaskManager: RCTViewManager {
   }
  
   override func view() -> UIView! {
-    let myCustomView = MyCustomView()
+    let myCustomView = DxaMaskView()
     myCustomView.dxaMasking = .mask
     return myCustomView
   }
