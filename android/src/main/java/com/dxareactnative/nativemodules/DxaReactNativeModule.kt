@@ -25,6 +25,7 @@ class DxaReactNativeModule(
   fun initialize(
     accountId: Int,
     propertyId: Int,
+    consents: Int,
     promise: Promise
   ) {
     DXA.getInstance(reactContext.applicationContext).run {
@@ -33,7 +34,7 @@ class DxaReactNativeModule(
         DXAConfig(
           accountId = accountId.toLong(),
           propertyId = propertyId.toLong(),
-          customerConsent = CustomerConsentType.ANALYTICS_AND_RECORDING,
+          customerConsent = translateConsentsFlutterToAndroid(consents),
           mobileDataEnabled = true,
           manualTrackingEnabled = true,
         )
@@ -123,6 +124,21 @@ class DxaReactNativeModule(
   fun getSessionUrl(promise: Promise) {
     promise.resolve(dxa.getSessionUrl())
   }
+
+  @ReactMethod
+  fun setConsents(consentLevel: Int) {
+    dxa.setConsent(
+        translateConsentsFlutterToAndroid(consentLevel)
+    )
+}
+
+  private fun translateConsentsFlutterToAndroid(consents: Int): CustomerConsentType {
+    return when (consents) {
+        1 -> CustomerConsentType.ANALYTICS
+        2 -> CustomerConsentType.ANALYTICS_AND_RECORDING
+        else -> CustomerConsentType.NONE
+    }
+}
 
   companion object {
     const val NAME = "DxaReactNative"
