@@ -103,7 +103,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   ///Medallia DXA dependency
-  implementation "com.medallia.dxa:dxa-android-builder-prod:2.1.1"
+  implementation "com.medallia.dxa:dxa-android-builder-prod:2.2.0"
 }
 
 if (isNewArchitectureEnabled()) {

@@ -109,7 +109,9 @@ const CharacterItem: React.FC<{ item: ListItem }> = ({ item }) => {
   return (
     <View style={styles.item}>
       <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.text}>{item.name}</Text>
+      <DxaMask>
+        <Text style={styles.text}>{item.name}</Text>
+      </DxaMask>
     </View>
   );
 };
