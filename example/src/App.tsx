@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, View, Text, FlatList, Image, StyleSheet } from 'react-native';
-import { DxaApp, DxaMask } from 'dxa-react-native';
+import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType } from 'dxa-react-native';
 import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
@@ -17,6 +17,7 @@ export default function App() {
     <DxaApp
       accountId={10010}
       propertyId={250441}
+      consents={MedalliaDxaCustomerConsentType.recordingAndTracking}
       enabled={true}
       manualTracking={false}
       navigationContainerRef={navigationRef}
@@ -53,6 +54,7 @@ function Screen1({ navigation }: { navigation: any }) {
         title="Go to Screen 2"
         onPress={() => navigation.push('Screen2')}
       />
+      <ConsentsButtons />
     </View>
   );
 }
@@ -68,6 +70,8 @@ function Screen2({ navigation }: { navigation: any }) {
         title="Go to Characters List"
         onPress={() => navigation.push('ScreenList')}
       />
+      <ConsentsButtons />
+
     </View>
   );
 }
@@ -94,6 +98,25 @@ function CharactersList() {
       keyExtractor={(item: ListItem) => item.id}
       renderItem={({ item }) => <CharacterItem item={item} />}
     />
+  );
+}
+
+const ConsentsButtons = () => {
+  return (
+    <View>
+      <Button
+        title="Set consents none"
+        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.none)}
+      />
+      <Button
+        title="Set consents to only tracking"
+        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.tracking)}
+      />
+      <Button
+        title="Set consents to recording and tracking"
+        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.recordingAndTracking)}
+      />
+    </View>
   );
 }
 

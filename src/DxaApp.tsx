@@ -4,11 +4,12 @@ import {
   type AppStateStatus,
   type NativeEventSubscription,
 } from 'react-native';
-import { MedalliaDXA, DXA, dxaLog } from './index';
+import { MedalliaDXA, DXA, dxaLog, DxaConfig, MedalliaDxaCustomerConsentType } from './index';
 
 type DxaAppProps = {
   accountId: number;
   propertyId: number;
+  consents: MedalliaDxaCustomerConsentType | undefined;
   enabled: boolean | undefined;
   manualTracking: boolean;
   navigationContainerRef: any | undefined;
@@ -26,8 +27,7 @@ export class DxaApp extends React.Component<DxaAppProps, DxaAppState> {
     super(props);
     if (props.enabled) {
       MedalliaDXA.initialize(
-        props.accountId,
-        props.propertyId,
+        new DxaConfig(props.accountId, props.propertyId, props.consents),
         props.navigationContainerRef
       ).then(() => {
         if (MedalliaDXA.initialized) {

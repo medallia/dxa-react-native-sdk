@@ -10,36 +10,55 @@ const LINKING_ERROR =
 const DxaReactNative = NativeModules.DxaReactNative
   ? NativeModules.DxaReactNative
   : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+    {},
+    {
+      get() {
+        throw new Error(LINKING_ERROR);
+      },
+    }
+  );
+
+export enum MedalliaDxaCustomerConsentType {
+  recordingAndTracking = 2,
+  tracking = 1,
+  none = 0,
+}
+export class DxaConfig {
+  accountId!: number;
+  propertyId!: number;
+  consents: MedalliaDxaCustomerConsentType | undefined = MedalliaDxaCustomerConsentType.recordingAndTracking;
+
+  constructor(accountId: number, propertyId: number, consents: MedalliaDxaCustomerConsentType | undefined) {
+    this.accountId = accountId;
+    this.propertyId = propertyId;
+    this.consents = consents;
+  }
+}
 
 export class DXA {
   initialized: boolean = false;
   accountId: number | undefined = undefined;
   propertyId: number | undefined = undefined;
+  consents: MedalliaDxaCustomerConsentType | undefined = undefined;
 
   private routeSeparator: String = '.';
 
   // Initialize SDK for autotracking.
   // @param - propertyId - associated DXA client property id
   // @param - accountId - associated DXA client account id
-  async initialize(accountId: number, propertyId: number, navigationRef: any) {
-    this.accountId = accountId;
-    this.propertyId = propertyId;
+  async initialize(dxaConfig: DxaConfig, navigationRef: any) {
+    this.accountId = dxaConfig.accountId;
+    this.propertyId = dxaConfig.propertyId;
+    this.consents = dxaConfig.consents;
     if (!this.initialized) {
       dxaLog.log(
         'MedalliaDXA ->',
         'initializing SDK propertyId:',
-        propertyId,
+        this.accountId,
         'accountId:',
-        accountId
+        this.propertyId
       );
-      this.initialized = await DxaReactNative.initialize(accountId, propertyId);
+      this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
     }
     if (navigationRef) {
       navigationRef.addListener('state', (param: any) => {
@@ -71,7 +90,7 @@ export class DXA {
     dxaLog.log('MedalliaDXA ->', 'sendGoal -> ', goalName, 'value -> ', value);
     //React native doesn't allow nullable parameters or native modules, so 2
     //methods are needed.
-    if(value){
+    if (value) {
       return DxaReactNative.sendGoalWithValue(goalName, value);
     }
     return DxaReactNative.sendGoal(goalName);
@@ -103,6 +122,11 @@ export class DXA {
   getWebViewProperties(): Promise<string> {
     dxaLog.log('MedalliaDXA ->', 'getWebViewProperties');
     return DxaReactNative.getWebViewProperties();
+  }
+
+  setConsents(consents: MedalliaDxaCustomerConsentType): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'setConsents', consents);
+    return DxaReactNative.setConsents(consents);
   }
 
   resolveCurrentRouteName(param: any) {

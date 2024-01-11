@@ -1,16 +1,19 @@
 @objc(DxaReactNative)
 class DxaReactNative: NSObject {
 
-  @objc(initialize:withProperty:withResolver:withRejecter:)
+  @objc(initialize:withProperty:withConsents:withResolver:withRejecter:)
   func initialize(
     account: Float, 
     property: Float, 
+    consents: Float, 
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) -> Void {
+    let nativeConsents: Consent = translateConsentsFlutterToIos(flutterConsents: consents)
     let configuration = Configuration(
       account: String(account),
       property: String(property),
+      consent: nativeConsents,
       manualScreenTracking: true
     )
     // TODO: Delete in release
@@ -139,4 +142,32 @@ class DxaReactNative: NSObject {
         return
     }
   }
+  @objc(setConsents:withResolver:withRejecter:)
+  func setConsents(
+    consents: Float,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) {
+    var nativeConsents: Consent
+    if let consent = consents as? Float {
+      nativeConsents = translateConsentsFlutterToIos(flutterConsents: consent)
+      DXA.setConsent(nativeConsents)
+    }
+  }
+
+  private func translateConsentsFlutterToIos(flutterConsents value: Float) -> Consent{
+    var nativeConsent: Consent
+        
+    switch value {
+      case 0:
+        nativeConsent = .noConsent
+      case 1:
+        nativeConsent = .tracking
+      case 2:
+        nativeConsent = .recordingAndTracking
+      default:
+        nativeConsent = .noConsent
+      }
+      return nativeConsent    
+    }
 }

@@ -5,6 +5,7 @@
 RCT_EXTERN_METHOD(
   initialize:(float)account 
   withProperty:(float)property
+  withConsents:(float)consents
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
@@ -27,14 +28,15 @@ RCT_EXTERN_METHOD(
 ) 
 
 RCT_EXTERN_METHOD(
-  sendGoalWithValue:(NSString)goalName
-  withValue:(nonnull NSNumber *)value
+  sendGoal:(NSString)goalName
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
 
 RCT_EXTERN_METHOD(
-  sendGoal:(NSString)goalName
+  sendGoalWithValue:(NSString)goalName
+  withValue:(nonnull NSNumber *)value
+  setConsents:(float)consents
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
@@ -72,6 +74,12 @@ RCT_EXTERN_METHOD(
 
 RCT_EXTERN_METHOD(
   getWebViewProperties:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
+RCT_EXTERN_METHOD(
+  setConsents:(float)consents
+  withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
 
