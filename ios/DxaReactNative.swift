@@ -31,8 +31,8 @@ class DxaReactNative: NSObject {
     resolve(true)
   }
 
-  @objc(stopScreen:withRejecter:)
-  func stopScreen(
+  @objc(endScreen:withRejecter:)
+  func endScreen(
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) -> Void {
