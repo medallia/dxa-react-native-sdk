@@ -62,6 +62,49 @@ export class DXA {
     return DxaReactNative.endScreen();
   }
 
+  sendHttpError(errorCode: number): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'send http error -> ', errorCode);
+    return DxaReactNative.sendHttpError(errorCode);
+  }
+
+  sendGoal(goalName: string, value?: number): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'sendGoal -> ', goalName, 'value -> ', value);
+    //React native doesn't allow nullable parameters or native modules, so 2
+    //methods are needed.
+    if(value){
+      return DxaReactNative.sendGoalWithValue(goalName, value);
+    }
+    return DxaReactNative.sendGoal(goalName);
+  }
+
+  setDimensionWithString(dimensionName: string, stringValue: string): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'setDimensionWithString -> ', dimensionName, 'value -> ', stringValue);
+    return DxaReactNative.setDimensionWithString(dimensionName, stringValue);
+  }
+  setDimensionWithNumber(dimensionName: string, numberValue: number): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'setDimensionWithNumber -> ', dimensionName, 'value -> ', numberValue);
+    return DxaReactNative.setDimensionWithNumber(dimensionName, numberValue);
+  }
+  setDimensionWithBool(dimensionName: string, boolValue: boolean): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'setDimensionWithBool -> ', dimensionName, 'value -> ', boolValue);
+    return DxaReactNative.setDimensionWithBool(dimensionName, boolValue);
+  }
+
+  getSessionUrl(): Promise<string> {
+    dxaLog.log('MedalliaDXA ->', 'getSessionUrl');
+    return DxaReactNative.getSessionUrl();
+  }
+
+  getSessionId(): Promise<string> {
+    dxaLog.log('MedalliaDXA ->', 'getSessionId');
+    return DxaReactNative.getSessionId();
+  }
+
+  getWebViewProperties(): Promise<string> {
+    dxaLog.log('MedalliaDXA ->', 'getWebViewProperties');
+    return DxaReactNative.getWebViewProperties();
+  }
+
   resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;
