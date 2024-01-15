@@ -23,15 +23,23 @@ export enum MedalliaDxaCustomerConsentType {
   tracking = 1,
   none = 0,
 }
+
 export class DxaConfig {
   accountId!: number;
   propertyId!: number;
   consents: MedalliaDxaCustomerConsentType | undefined = MedalliaDxaCustomerConsentType.recordingAndTracking;
+  manualTracking: boolean | undefined
 
-  constructor(accountId: number, propertyId: number, consents: MedalliaDxaCustomerConsentType | undefined) {
+  constructor(
+    accountId: number,
+    propertyId: number,
+    consents: MedalliaDxaCustomerConsentType | undefined,
+    manualTracking: boolean | undefined
+  ) {
     this.accountId = accountId;
     this.propertyId = propertyId;
     this.consents = consents;
+    this.manualTracking = manualTracking;
   }
 }
 

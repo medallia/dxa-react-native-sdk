@@ -12,16 +12,17 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const navigationRef = useNavigationContainerRef();
-
+  DxaApp.initialize(
+    {
+      accountId: 10010,
+      propertyId: 250441,
+      consents: MedalliaDxaCustomerConsentType.recordingAndTracking,
+      manualTracking: false,
+    },
+    navigationRef
+  );
   return (
-    <DxaApp
-      accountId={10010}
-      propertyId={250441}
-      consents={MedalliaDxaCustomerConsentType.recordingAndTracking}
-      enabled={true}
-      manualTracking={false}
-      navigationContainerRef={navigationRef}
-    >
+    <DxaApp>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator initialRouteName="Screen1">
           <Stack.Screen
