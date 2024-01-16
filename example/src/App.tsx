@@ -4,8 +4,8 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Text, FlatList, Image, StyleSheet } from 'react-native';
-import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType } from 'dxa-react-native';
+import { Button, View, Text, FlatList, Image, StyleSheet, TextInput } from 'react-native';
+import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask } from 'dxa-react-native';
 import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
@@ -55,6 +55,17 @@ function Screen1({ navigation }: { navigation: any }) {
         onPress={() => navigation.push('Screen2')}
       />
       <ConsentsButtons />
+      <TextInput
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+      ></TextInput>
+        <Image
+        style={{ height: 50, width: 50 }}
+        source={{
+          uri: 'https://reactnative.dev/img/tiny_logo.png',
+        }}
+      />
+      <Text numberOfLines={5}>This text is visible</Text>
+
     </View>
   );
 }
@@ -66,6 +77,7 @@ function Screen2({ navigation }: { navigation: any }) {
       <DxaMask>
         <Text>This text should not be visible</Text>
       </DxaMask>
+      <AutoMaskingButtons />
       <Button
         title="Go to Characters List"
         onPress={() => navigation.push('ScreenList')}
@@ -120,6 +132,31 @@ const ConsentsButtons = () => {
   );
 }
 
+const AutoMaskingButtons = () => {
+  return (
+    <View>
+      <Button
+        title="MedalliaDxaAutomaticMask.text"
+        onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.text)}
+      />
+      <Button
+        title="MedalliaDxaAutomaticMask.images"
+        onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.images)}
+      />
+      <Button title="MedalliaDxaAutomaticMask.inputs" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.inputs)}
+      />
+      <Button title="MedalliaDxaAutomaticMask.webViews" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.webViews)}
+      />
+      <Button title="MedalliaDxaAutomaticMask.all" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.all)}
+      />
+      <Button
+        title="disableAllAutoMasking"
+        onPress={() => MedalliaDXA.disableAllAutoMasking()}
+      />
+    </View>
+  );
+}
+
 interface ListItem {
   id: string;
   name: string;
@@ -162,3 +199,4 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
+
