@@ -83,6 +83,17 @@ RCT_EXTERN_METHOD(
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
 
+RCT_EXTERN_METHOD(
+  setAutoMasking:(float)elementsToMask
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  disableAllAutoMasking:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+)
+
 + (BOOL)requiresMainQueueSetup
 {
   return NO;

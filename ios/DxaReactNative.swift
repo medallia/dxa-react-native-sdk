@@ -1,3 +1,5 @@
+import MedalliaDXA
+
 @objc(DxaReactNative)
 class DxaReactNative: NSObject {
 
@@ -9,7 +11,7 @@ class DxaReactNative: NSObject {
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) -> Void {
-    let nativeConsents: Consent = translateConsentsFlutterToIos(flutterConsents: consents)
+    let nativeConsents: Consent = translateConsentsToIos(flutterConsents: consents)
     let configuration = Configuration(
       account: String(account),
       property: String(property),
@@ -108,7 +110,7 @@ class DxaReactNative: NSObject {
 
   @objc(getSessionUrl:withRejecter:)
   func getSessionUrl(
-    resolve:RCTPromiseResolveBlock,
+    resolve:@escaping RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) -> Void {
       DXA.sessionURL = {sessionUrl in
@@ -149,13 +151,31 @@ class DxaReactNative: NSObject {
     reject:RCTPromiseRejectBlock
   ) {
     var nativeConsents: Consent
-    if let consent = consents as? Float {
-      nativeConsents = translateConsentsFlutterToIos(flutterConsents: consent)
-      DXA.setConsent(nativeConsents)
-    }
+   
+    nativeConsents = translateConsentsToIos(flutterConsents: consents)
+    DXA.setConsent(nativeConsents)
+    
   }
 
-  private func translateConsentsFlutterToIos(flutterConsents value: Float) -> Consent{
+  @objc(setAutoMasking:withResolver:withRejecter:)
+  func setAutoMasking(
+    elementsToMask: Float,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) {
+    guard let nativeElementsToMask = translateAutomaskingToIos(elementsToMask: elementsToMask) else { return }
+    DXA.setAutomaticMask(nativeElementsToMask)
+  }
+
+  @objc(disableAllAutoMasking:withRejecter:)
+  func disableAllAutoMasking(
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) {
+    DXA.setAutomaticMask(.noMask)
+  }
+
+  private func translateConsentsToIos(flutterConsents value: Float) -> Consent{
     var nativeConsent: Consent
         
     switch value {
@@ -169,5 +189,25 @@ class DxaReactNative: NSObject {
         nativeConsent = .noConsent
       }
       return nativeConsent    
+    }
+
+  private func translateAutomaskingToIos(elementsToMask value: Float) -> MaskAutomatic?{
+
+      switch value {
+      case 0:
+        return .all
+      case 1:
+        return .inputs
+      case 2:
+        return .labels
+      case 3:
+        return .images
+      case 4:
+        return .webViews
+      default:
+        return nil      
+      }
+
+
     }
 }
