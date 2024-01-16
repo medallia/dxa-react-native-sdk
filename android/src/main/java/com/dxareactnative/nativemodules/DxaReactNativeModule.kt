@@ -17,6 +17,8 @@ class DxaReactNativeModule(
 
   private lateinit var dxa: MedalliaDXA
 
+  private var setOfElementsToMask: MutableSet<DXAConfigurationMask> = mutableSetOf()
+
   override fun getName(): String {
     return NAME
   }
@@ -135,14 +137,15 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun setAutoMasking(elementsToMask: Int) {
+    this.setOfElementsToMask.addAll(translateAutomaskingToAndroid(elementsToMask))
     dxa.setAutoMasking(
-      translateAutomaskingToAndroid(elementsToMask)
+      this.setOfElementsToMask.toList()
     )
-
   }
 
   @ReactMethod
   fun disableAllAutoMasking() {
+    setOfElementsToMask.clear()
     dxa.setAutoMasking(listOf(DXAConfigurationMask.NO_MASK))
   }
 
@@ -155,7 +158,6 @@ class DxaReactNativeModule(
   }
 
   private fun translateAutomaskingToAndroid(elementsToMask: Int): List<DXAConfigurationMask> {
-
 
     return when (elementsToMask) {
       0 -> listOf(DXAConfigurationMask.EDIT_TEXT, DXAConfigurationMask.TEXT_VIEW, DXAConfigurationMask.IMAGE_VIEW, DXAConfigurationMask.WEB_VIEW)
