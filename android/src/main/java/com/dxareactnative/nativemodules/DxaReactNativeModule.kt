@@ -34,7 +34,7 @@ class DxaReactNativeModule(
         DXAConfig(
           accountId = accountId.toLong(),
           propertyId = propertyId.toLong(),
-          customerConsent = translateConsentsFlutterToAndroid(consents),
+          customerConsent = translateConsentsToAndroid(consents),
           mobileDataEnabled = true,
           manualTrackingEnabled = true,
         )
@@ -74,6 +74,7 @@ class DxaReactNativeModule(
     dxa.stopScreen()
     promise.resolve(true)
   }
+
   @ReactMethod
   fun sendHttpError(errorCode: Int, promise: Promise) {
     dxa.sendHttpError(errorCode)
@@ -128,17 +129,45 @@ class DxaReactNativeModule(
   @ReactMethod
   fun setConsents(consentLevel: Int) {
     dxa.setConsent(
-        translateConsentsFlutterToAndroid(consentLevel)
+      translateConsentsToAndroid(consentLevel)
     )
-}
+  }
 
-  private fun translateConsentsFlutterToAndroid(consents: Int): CustomerConsentType {
+  @ReactMethod
+  fun setAutoMasking(elementsToMask: Int) {
+    dxa.setAutoMasking(
+      translateAutomaskingToAndroid(elementsToMask)
+    )
+
+  }
+
+  @ReactMethod
+  fun disableAllAutoMasking() {
+    dxa.setAutoMasking(listOf(DXAConfigurationMask.NO_MASK))
+  }
+
+  private fun translateConsentsToAndroid(consents: Int): CustomerConsentType {
     return when (consents) {
-        1 -> CustomerConsentType.ANALYTICS
-        2 -> CustomerConsentType.ANALYTICS_AND_RECORDING
-        else -> CustomerConsentType.NONE
+      1 -> CustomerConsentType.ANALYTICS
+      2 -> CustomerConsentType.ANALYTICS_AND_RECORDING
+      else -> CustomerConsentType.NONE
     }
-}
+  }
+
+  private fun translateAutomaskingToAndroid(elementsToMask: Int): List<DXAConfigurationMask> {
+
+
+    return when (elementsToMask) {
+      0 -> listOf(DXAConfigurationMask.EDIT_TEXT, DXAConfigurationMask.TEXT_VIEW, DXAConfigurationMask.IMAGE_VIEW, DXAConfigurationMask.WEB_VIEW)
+      1 -> listOf(DXAConfigurationMask.EDIT_TEXT)
+      2 -> listOf(DXAConfigurationMask.TEXT_VIEW)
+      3 -> listOf(DXAConfigurationMask.IMAGE_VIEW)
+      4 -> listOf(DXAConfigurationMask.WEB_VIEW)
+      else ->
+        listOf()
+    }
+
+  }
 
   companion object {
     const val NAME = "DxaReactNative"
