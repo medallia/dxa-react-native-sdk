@@ -108,7 +108,7 @@ class DxaReactNative: NSObject {
 
   @objc(getSessionUrl:withRejecter:)
   func getSessionUrl(
-    resolve:RCTPromiseResolveBlock,
+    resolve:@escaping RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) -> Void {
       DXA.sessionURL = {sessionUrl in
