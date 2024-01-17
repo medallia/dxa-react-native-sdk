@@ -40,13 +40,16 @@ export default function App() {
             component={CharactersList}
             options={{ title: 'Characters' }}
           />
+          <Stack.Screen
+            name="SessionUrlScreen"
+            component={SessionUrlScreen}
+            options={{ title: 'Session Url Screen' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </DxaApp>
   );
 }
 
-////////////////////
 function Screen1({ navigation }: { navigation: any }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -55,11 +58,16 @@ function Screen1({ navigation }: { navigation: any }) {
         title="Go to Screen 2"
         onPress={() => navigation.push('Screen2')}
       />
+      <Button
+        title='Go to Sampling Screen'
+        onPress={() => navigation.push('SamplingScreen')} />
+      <Button
+        title='Go to Session Url Screen'
+        onPress={() => navigation.push('SessionUrlScreen')} />
       <ConsentsButtons />
       <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-      ></TextInput>
-        <Image
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} />
+      <Image
         style={{ height: 50, width: 50 }}
         source={{
           uri: 'https://reactnative.dev/img/tiny_logo.png',
@@ -85,6 +93,27 @@ function Screen2({ navigation }: { navigation: any }) {
       />
       <ConsentsButtons />
 
+    </View>
+  );
+}
+
+/**
+ * example screen to show how to get the session url from native sdks
+ * @param navigation 
+ */
+function SessionUrlScreen({ navigation }: { navigation: any }) {
+  const [sessionUrl, setSessionUrl] = useState<string>("requesting...");
+  MedalliaDXA.getSessionUrl().then((url) => setSessionUrl(url));
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={styles.text}>Session url from native is:</Text>
+      <View style={{ height: 20 }}></View>
+      <Text style={styles.text}>{sessionUrl}</Text>
+      <View style={{ height: 20 }}></View>
+      <Button
+        title="Go back"
+        onPress={() => navigation.pop()}
+      />
     </View>
   );
 }
