@@ -1,3 +1,11 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+  }
+}
+
 rootProject.name = 'DxaReactNativeExample'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
@@ -19,3 +27,20 @@ dependencyResolutionManagement {
         }
     }
 }
+
+///Medallia DXA local modules
+include ':dxa-android-common'
+include ':dxa-android-builder-common'
+include ':dxa-android-builder-dev'
+include ':dxa-android-builder-prod'
+include ':dxa-android-core'
+include ':dxa-android-test'
+
+def username = System.properties['user.name']
+def basePath = "/Users/$username/develop/android/decibel-android-sdk"
+project(':dxa-android-common').projectDir = new File("$basePath/dxa-android-common")
+project(':dxa-android-builder-common').projectDir = new File("$basePath/dxa-android-builder-common")
+project(':dxa-android-builder-dev').projectDir = new File("$basePath/dxa-android-builder-dev")
+project(':dxa-android-builder-prod').projectDir = new File("$basePath/dxa-android-builder-prod")
+project(':dxa-android-core').projectDir = new File("$basePath/dxa-android-core")
+project(':dxa-android-test').projectDir = new File("$basePath/dxa-android-test")
