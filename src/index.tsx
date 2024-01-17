@@ -1,5 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 import { DxaLog } from '../src/util/DxaLog';
+import { MedalliaDxaAutomaticMask } from './DxaMask';
 
 const LINKING_ERROR =
   `The package 'dxa-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -71,6 +72,7 @@ export class DXA {
     if (navigationRef) {
       navigationRef.addListener('state', (param: any) => {
         const screenName = this.resolveCurrentRouteName(param);
+        this.stopScreen();
         this.startScreen(screenName);
       });
     }
@@ -137,6 +139,16 @@ export class DXA {
     return DxaReactNative.setConsents(consents);
   }
 
+  setAutoMasking(elementsToMask: MedalliaDxaAutomaticMask): Promise<boolean> {    
+    dxaLog.log('MedalliaDXA ->', 'setAutomasking', elementsToMask);
+    return DxaReactNative.setAutoMasking(elementsToMask);
+  }
+
+  disableAllAutoMasking(): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'disableAllAutoMasking');
+    return DxaReactNative.disableAllAutoMasking();
+  }
+
   resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;
@@ -172,4 +184,4 @@ export { MedalliaDXA };
 export { dxaLog };
 export { DxaScreen } from './DxaScreen';
 export { DxaApp } from './DxaApp';
-export { DxaMask } from './DxaMask';
+export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
