@@ -8,11 +8,13 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 import {
+  Button,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   useColorScheme,
   View,
 } from 'react-native';
@@ -25,7 +27,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { DxaApp } from 'dxa-react-native';
+import { DxaApp, MedalliaDxaCustomerConsentType } from 'dxa-react-native';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -38,10 +40,11 @@ export function App(): JSX.Element {
     <DxaApp
       accountId={10010}
       propertyId={250441}
+      consents={MedalliaDxaCustomerConsentType.recordingAndTracking}
       enabled={true}
       manualTracking={false}
       navigationContainerRef={navigationRef}>
-
+      
       <NavigationContainer ref={navigationRef}>
         <Tab.Navigator detachInactiveScreens={true} >
           <Tab.Screen name="Tab 1" component={Screen1} />
@@ -125,9 +128,21 @@ function Screen2({ navigation }: { navigation: any }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={styles.textStyle}>Tab 2</Text>
+      /* Write an input text */
+      <TextInput
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+        defaultValue="Type here"
+      />
+      <Button
+        title="Go to Tab 1"
+        onPress={() => navigation.navigate('Tab 1')}
+      />
+
+      
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   sectionContainer: {

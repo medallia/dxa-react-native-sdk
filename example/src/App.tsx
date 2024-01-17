@@ -6,9 +6,17 @@ import {
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, View, Text, FlatList, Image, StyleSheet, TextInput } from 'react-native';
 import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask } from 'dxa-react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
+
 import axios from 'axios';
 
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
 export default function App() {
   const navigationRef = useNavigationContainerRef();
@@ -24,7 +32,12 @@ export default function App() {
   return (
     <DxaApp>
       <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator initialRouteName="Screen1">
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{ title: 'Home' }}
+          />
           <Stack.Screen
             name="Screen1"
             component={Screen1}
@@ -46,6 +59,15 @@ export default function App() {
   );
 }
 
+function Home() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Feed" component={Feed} />
+      <Tab.Screen name="Messages" component={Messages} />
+    </Tab.Navigator>
+  );
+}
+
 ////////////////////
 function Screen1({ navigation }: { navigation: any }) {
   return (
@@ -59,7 +81,7 @@ function Screen1({ navigation }: { navigation: any }) {
       <TextInput
         style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
       ></TextInput>
-        <Image
+      <Image
         style={{ height: 50, width: 50 }}
         source={{
           uri: 'https://reactnative.dev/img/tiny_logo.png',
@@ -153,6 +175,30 @@ const AutoMaskingButtons = () => {
       <Button
         title="disableAllAutoMasking"
         onPress={() => MedalliaDXA.disableAllAutoMasking()}
+      />
+    </View>
+  );
+}
+
+function Feed({ navigation }: { navigation: any }) {
+  return (
+    <View style={styles.container}>
+      <Text>Feed Screen</Text>
+      <Button
+        title="Go to Screen 2"
+        onPress={() => navigation.push('Screen2')}
+      />
+    </View>
+  );
+}
+
+function Messages({ navigation }: { navigation: any }) {
+  return (
+    <View style={styles.container}>
+      <Text>Messages Screen</Text>
+      <Button
+        title="Go to Screen 1"
+        onPress={() => navigation.push('Screen1')}
       />
     </View>
   );
