@@ -12,20 +12,20 @@ include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
 
 dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
+  repositories {
+    google()
+    mavenCentral()
 
-        ///Medallia DXA sdk nexus (Maven repo)
-        maven {
-            url "https://nexus.decibel.com/repository/android-sdk-snapshot/"
+    ///Medallia DXA sdk nexus (Maven repo)
+    maven {
+      url "https://nexus.decibel.com/repository/android-sdk-snapshot/"
 
-            credentials {
-                username ""
-                password ""
-            }
-        }
+      credentials {
+        username ""
+        password ""
+      }
     }
+  }
 }
 
 ///Medallia DXA local modules
@@ -36,8 +36,12 @@ include ':dxa-android-builder-prod'
 include ':dxa-android-core'
 include ':dxa-android-test'
 
-def username = System.properties['user.name']
-def basePath = "/Users/$username/develop/android/decibel-android-sdk"
+def localPropertiesFile = new File('local.properties')
+def basePath = localPropertiesFile.exists() ? new Properties().with {
+  load(localPropertiesFile.newDataInputStream())
+  getProperty('dxa.sdk.dir')
+} : "SETUP_DIR_TO_ANDROID_SDK"
+
 project(':dxa-android-common').projectDir = new File("$basePath/dxa-android-common")
 project(':dxa-android-builder-common').projectDir = new File("$basePath/dxa-android-builder-common")
 project(':dxa-android-builder-dev').projectDir = new File("$basePath/dxa-android-builder-dev")
