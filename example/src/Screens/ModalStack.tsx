@@ -1,23 +1,18 @@
-import type { ParamListBase, PathConfigMap } from '@react-navigation/native';
+import type { ParamListBase } from '@react-navigation/native';
 import {
   createStackNavigator,
   type StackScreenProps,
 } from '@react-navigation/stack';
 import * as React from 'react';
-import { Button, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Button } from 'react-native-paper';
 
-import { COMMON_LINKING_CONFIG } from '../constants';
-import { Albums } from '../Shared/Albums';
-import { Article } from '../Shared/Article';
+import {Albums} from '../Shared/Albums';
+import {Article} from '../Shared/Article';
 
-export type ModalStackParams = {
+type ModalStackParams = {
   Article: { author: string };
   Albums: undefined;
-};
-
-export const modalStackLinking: PathConfigMap<ModalStackParams> = {
-  Article: COMMON_LINKING_CONFIG.Article,
-  Albums: 'albums',
 };
 
 const scrollEnabled = Platform.select({ web: true, default: false });
@@ -29,10 +24,18 @@ const ArticleScreen = ({
   return (
     <ScrollView>
       <View style={styles.buttons}>
-        <Button title="Albums" onPress={() => navigation.push('Albums')}>
+        <Button
+          mode="contained"
+          onPress={() => navigation.push('Albums')}
+          style={styles.button}
+        >
           Push album
         </Button>
-        <Button title="goBack" onPress={() => navigation.goBack()}>
+        <Button
+          mode="outlined"
+          onPress={() => navigation.goBack()}
+          style={styles.button}
+        >
           Go back
         </Button>
       </View>
@@ -49,12 +52,17 @@ const AlbumsScreen = ({ navigation }: StackScreenProps<ModalStackParams>) => {
     <ScrollView>
       <View style={styles.buttons}>
         <Button
-          title="Article"
+          mode="contained"
           onPress={() => navigation.push('Article', { author: 'Babel fish' })}
+          style={styles.button}
         >
           Push article
         </Button>
-        <Button title="goBack" onPress={() => navigation.goBack()}>
+        <Button
+          mode="outlined"
+          onPress={() => navigation.goBack()}
+          style={styles.button}
+        >
           Go back
         </Button>
       </View>
@@ -63,11 +71,11 @@ const AlbumsScreen = ({ navigation }: StackScreenProps<ModalStackParams>) => {
   );
 };
 
-const Stack = createStackNavigator<ModalStackParams>();
+const ModalStack = createStackNavigator<ModalStackParams>();
 
 type Props = StackScreenProps<ParamListBase>;
 
-export function ModalStack({ navigation }: Props) {
+export default function ModalStackScreen({ navigation }: Props) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -75,8 +83,8 @@ export function ModalStack({ navigation }: Props) {
   }, [navigation]);
 
   return (
-    <Stack.Navigator screenOptions={{ presentation: 'modal' }}>
-      <Stack.Screen
+    <ModalStack.Navigator screenOptions={{ presentation: 'modal' }}>
+      <ModalStack.Screen
         name="Article"
         component={ArticleScreen}
         options={({ route }) => ({
@@ -84,12 +92,12 @@ export function ModalStack({ navigation }: Props) {
         })}
         initialParams={{ author: 'Gandalf' }}
       />
-      <Stack.Screen
+      <ModalStack.Screen
         name="Albums"
         component={AlbumsScreen}
         options={{ title: 'Albums' }}
       />
-    </Stack.Navigator>
+    </ModalStack.Navigator>
   );
 }
 
@@ -97,7 +105,9 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    padding: 12,
+    padding: 8,
+  },
+  button: {
+    margin: 8,
   },
 });

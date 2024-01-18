@@ -1,9 +1,10 @@
-import { useHeaderHeight } from '@react-navigation/elements';
 import type { ParamListBase } from '@react-navigation/native';
 import {
-  createNativeStackNavigator,
-  type NativeStackScreenProps,
-} from '@react-navigation/native-stack';
+  createStackNavigator,
+  HeaderStyleInterpolators,
+  type StackScreenProps,
+  TransitionPresets,
+} from '@react-navigation/stack';
 import * as React from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
@@ -12,7 +13,7 @@ import {Albums} from '../Shared/Albums';
 import {Article} from '../Shared/Article';
 import {NewsFeed} from '../Shared/NewsFeed';
 
-export type NativeStackParams = {
+export type SimpleStackParams = {
   Article: { author: string } | undefined;
   NewsFeed: { date: number };
   Albums: undefined;
@@ -23,9 +24,9 @@ const scrollEnabled = Platform.select({ web: true, default: false });
 const ArticleScreen = ({
   navigation,
   route,
-}: NativeStackScreenProps<NativeStackParams, 'Article'>) => {
+}: StackScreenProps<SimpleStackParams, 'Article'>) => {
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView>
       <View style={styles.buttons}>
         <Button
           mode="contained"
@@ -33,13 +34,6 @@ const ArticleScreen = ({
           style={styles.button}
         >
           Push feed
-        </Button>
-        <Button
-          mode="contained"
-          onPress={() => navigation.replace('NewsFeed', { date: Date.now() })}
-          style={styles.button}
-        >
-          Replace with feed
         </Button>
         <Button
           mode="outlined"
@@ -60,31 +54,23 @@ const ArticleScreen = ({
 const NewsFeedScreen = ({
   route,
   navigation,
-}: NativeStackScreenProps<NativeStackParams, 'NewsFeed'>) => {
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerSearchBarOptions: {
-        placeholder: 'Search',
-      },
-    });
-  }, [navigation]);
-
+}: StackScreenProps<SimpleStackParams, 'NewsFeed'>) => {
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView>
       <View style={styles.buttons}>
         <Button
           mode="contained"
           onPress={() => navigation.push('Albums')}
           style={styles.button}
         >
-          Push Albums
+          Navigate to album
         </Button>
         <Button
           mode="outlined"
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.pop()}
           style={styles.button}
         >
-          Go back
+          Pop screen
         </Button>
       </View>
       <NewsFeed scrollEnabled={scrollEnabled} date={route.params.date} />
@@ -94,27 +80,23 @@ const NewsFeedScreen = ({
 
 const AlbumsScreen = ({
   navigation,
-}: NativeStackScreenProps<NativeStackParams, 'Albums'>) => {
-  const headerHeight = useHeaderHeight();
-
+}: StackScreenProps<SimpleStackParams, 'Albums'>) => {
   return (
-    <ScrollView contentContainerStyle={{ paddingTop: headerHeight }}>
+    <ScrollView>
       <View style={styles.buttons}>
         <Button
           mode="contained"
-          onPress={() =>
-            navigation.navigate('Article', { author: 'Babel fish' })
-          }
+          onPress={() => navigation.push('Article', { author: 'Babel fish' })}
           style={styles.button}
         >
-          Navigate to article
+          Push article
         </Button>
         <Button
           mode="outlined"
-          onPress={() => navigation.pop(2)}
+          onPress={() => navigation.pop()}
           style={styles.button}
         >
-          Pop by 2
+          Pop screen
         </Button>
       </View>
       <Albums scrollEnabled={scrollEnabled} />
@@ -122,49 +104,53 @@ const AlbumsScreen = ({
   );
 };
 
-const NativeStack = createNativeStackNavigator<NativeStackParams>();
+const SimpleStack = createStackNavigator<SimpleStackParams>();
 
-export default function NativeStackScreen({
+export default function SimpleStackScreen({
   navigation,
-}: NativeStackScreenProps<ParamListBase>) {
+}: StackScreenProps<ParamListBase>) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
-      gestureEnabled: false,
     });
   }, [navigation]);
 
   return (
-    <NativeStack.Navigator>
-      <NativeStack.Screen
-        name="Article"
-        component={ArticleScreen}
-        options={({ route }) => ({
-          title: `Article by ${route.params?.author ?? 'Unknown'}`,
-          headerLargeTitle: true,
-          headerLargeTitleShadowVisible: false,
-        })}
-        initialParams={{ author: 'Gandalf' }}
-      />
-      <NativeStack.Screen
-        name="NewsFeed"
-        component={NewsFeedScreen}
-        options={{
-          title: 'Feed',
-          fullScreenGestureEnabled: true,
+    <SimpleStack.Navigator
+      screenOptions={{
+        headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
+      }}
+    >
+      <SimpleStack.Group
+        screenOptions={{
+          ...TransitionPresets.SlideFromRightIOS,
+          headerMode: 'float',
         }}
-      />
-      <NativeStack.Screen
+      >
+        <SimpleStack.Screen
+          name="Article"
+          component={ArticleScreen}
+          options={({ route }) => ({
+            title: `Article by ${route.params?.author ?? 'Unknown'}`,
+          })}
+          initialParams={{ author: 'Gandalf' }}
+        />
+        <SimpleStack.Screen
+          name="NewsFeed"
+          component={NewsFeedScreen}
+          options={{ title: 'Feed' }}
+        />
+      </SimpleStack.Group>
+      <SimpleStack.Screen
         name="Albums"
         component={AlbumsScreen}
         options={{
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+          headerMode: 'screen',
           title: 'Albums',
-          presentation: 'modal',
-          headerTransparent: true,
-          headerBlurEffect: 'light',
         }}
       />
-    </NativeStack.Navigator>
+    </SimpleStack.Navigator>
   );
 }
 

@@ -4,21 +4,18 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Text, FlatList, Image, StyleSheet, TextInput } from 'react-native';
+import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask } from 'dxa-react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 
 import axios from 'axios';
 import { SCREENS } from './screens';
 import { List } from 'react-native-paper';
 
-// const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-const Drawer = createDrawerNavigator();
-const Stack = createStackNavigator();
+const SCREEN_NAMES = Object.keys(SCREENS) as (keyof typeof SCREENS)[];
 
 export default function App() {
   const navigationRef = useNavigationContainerRef();
@@ -35,7 +32,10 @@ export default function App() {
     <DxaApp>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator initialRouteName="Screens">
-        <Stack.Screen
+
+
+
+          <Stack.Screen
             name="Screens"
             component={Screens}
             options={{ title: 'Screens' }}
@@ -60,7 +60,7 @@ export default function App() {
             component={CharactersList}
             options={{ title: 'Characters' }}
           />
-         {SCREEN_NAMES.map((name) => (
+          {SCREEN_NAMES.map((name) => (
             <Stack.Screen
               key={name}
               name={name}
@@ -82,21 +82,23 @@ function Home() {
     </Tab.Navigator>
   );
 }
-const SCREEN_NAMES = Object.keys(SCREENS) as (keyof typeof SCREENS)[];
 
-function Screens({ navigation }: { navigation: any}) {
+function Screens({ navigation }: { navigation: any }) {
   return (
     <View>
-<AutoMaskingButtons />
-    {SCREEN_NAMES.map((name) => (
-      <List.Item
-        key={name}
-        title={SCREENS[name].title}
-        onPress={() => {
-          navigation.navigate(name);
-        }}
-      />
-    ))}
+      <ScrollView>
+
+        <AutoMaskingButtons />
+        {SCREEN_NAMES.map((name) => (
+          <List.Item
+            key={name}
+            title={SCREENS[name].title}
+            onPress={() => {
+              navigation.navigate(name);
+            }}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 }

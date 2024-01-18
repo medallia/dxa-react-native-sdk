@@ -1,23 +1,18 @@
-import type { ParamListBase, PathConfigMap } from '@react-navigation/native';
+import type { ParamListBase } from '@react-navigation/native';
 import {
   createStackNavigator,
   type StackScreenProps,
 } from '@react-navigation/stack';
 import * as React from 'react';
-import { Button, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Button } from 'react-native-paper';
 
-import { COMMON_LINKING_CONFIG } from '../constants';
-import { Albums } from '../Shared/Albums';
-import { Article } from '../Shared/Article';
+import {Albums} from '../Shared/Albums';
+import {Article} from '../Shared/Article';
 
-export type MixedStackParams = {
+type MixedStackParams = {
   Article: { author: string };
   Albums: undefined;
-};
-
-export const mixedStackLinking: PathConfigMap<MixedStackParams> = {
-  Article: COMMON_LINKING_CONFIG.Article,
-  Albums: 'albums',
 };
 
 const scrollEnabled = Platform.select({ web: true, default: false });
@@ -29,18 +24,31 @@ const ArticleScreen = ({
   return (
     <ScrollView>
       <View style={styles.buttons}>
-        <Button
-          title="Article"
-          onPress={() => navigation.push('Article', { author: 'Dalek' })}
-        >
-          Push article
-        </Button>
-        <Button title="goBack" onPress={() => navigation.goBack()}>
-          Go back
-        </Button>
-        <Button title="Albums" onPress={() => navigation.push('Albums')}>
-          Push album
-        </Button>
+        <View>
+          <Button
+            mode="contained"
+            onPress={() => navigation.push('Article', { author: 'Dalek' })}
+            style={styles.button}
+          >
+            Push article
+          </Button>
+          <Button
+            mode="outlined"
+            onPress={() => navigation.goBack()}
+            style={styles.button}
+          >
+            Go back
+          </Button>
+        </View>
+        <View>
+          <Button
+            mode="contained"
+            onPress={() => navigation.push('Albums')}
+            style={styles.button}
+          >
+            Push album
+          </Button>
+        </View>
       </View>
       <Article
         author={{ name: route.params.author }}
@@ -54,29 +62,42 @@ const AlbumsScreen = ({ navigation }: StackScreenProps<MixedStackParams>) => {
   return (
     <ScrollView>
       <View style={styles.buttons}>
-        <Button title="Albums" onPress={() => navigation.push('Albums')}>
-          Push album
-        </Button>
-        <Button title="goBack" onPress={() => navigation.goBack()}>
-          Go back
-        </Button>
-        <Button
-          title="Article"
-          onPress={() => navigation.push('Article', { author: 'The Doctor' })}
-        >
-          Push article
-        </Button>
+        <View>
+          <Button
+            mode="contained"
+            onPress={() => navigation.push('Albums')}
+            style={styles.button}
+          >
+            Push album
+          </Button>
+          <Button
+            mode="outlined"
+            onPress={() => navigation.goBack()}
+            style={styles.button}
+          >
+            Go back
+          </Button>
+        </View>
+        <View>
+          <Button
+            mode="contained"
+            onPress={() => navigation.push('Article', { author: 'The Doctor' })}
+            style={styles.button}
+          >
+            Push article
+          </Button>
+        </View>
       </View>
       <Albums scrollEnabled={scrollEnabled} />
     </ScrollView>
   );
 };
 
-const Stack = createStackNavigator<MixedStackParams>();
+const MixedStack = createStackNavigator<MixedStackParams>();
 
 type Props = StackScreenProps<ParamListBase>;
 
-export function MixedStack({ navigation }: Props) {
+export default function MixedStackScreen({ navigation }: Props) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -84,8 +105,8 @@ export function MixedStack({ navigation }: Props) {
   }, [navigation]);
 
   return (
-    <Stack.Navigator>
-      <Stack.Screen
+    <MixedStack.Navigator>
+      <MixedStack.Screen
         name="Article"
         component={ArticleScreen}
         options={({ route }) => ({
@@ -93,7 +114,7 @@ export function MixedStack({ navigation }: Props) {
         })}
         initialParams={{ author: 'Gandalf' }}
       />
-      <Stack.Screen
+      <MixedStack.Screen
         name="Albums"
         component={AlbumsScreen}
         options={{
@@ -101,7 +122,7 @@ export function MixedStack({ navigation }: Props) {
           presentation: 'modal',
         }}
       />
-    </Stack.Navigator>
+    </MixedStack.Navigator>
   );
 }
 
@@ -109,7 +130,9 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    padding: 12,
+    padding: 8,
+  },
+  button: {
+    margin: 8,
   },
 });
