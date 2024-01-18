@@ -12,6 +12,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 
 import axios from 'axios';
+import { SCREENS } from './screens';
+import { List } from 'react-native-paper';
 
 // const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -32,7 +34,12 @@ export default function App() {
   return (
     <DxaApp>
       <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName="Screens">
+        <Stack.Screen
+            name="Screens"
+            component={Screens}
+            options={{ title: 'Screens' }}
+          />
           <Stack.Screen
             name="Home"
             component={Home}
@@ -53,6 +60,14 @@ export default function App() {
             component={CharactersList}
             options={{ title: 'Characters' }}
           />
+         {SCREEN_NAMES.map((name) => (
+            <Stack.Screen
+              key={name}
+              name={name}
+              getComponent={() => SCREENS[name].component}
+              options={{ title: SCREENS[name].title }}
+            />
+          ))}
         </Stack.Navigator>
       </NavigationContainer>
     </DxaApp>
@@ -65,6 +80,24 @@ function Home() {
       <Tab.Screen name="Feed" component={Feed} />
       <Tab.Screen name="Messages" component={Messages} />
     </Tab.Navigator>
+  );
+}
+const SCREEN_NAMES = Object.keys(SCREENS) as (keyof typeof SCREENS)[];
+
+function Screens({ navigation }: { navigation: any}) {
+  return (
+    <View>
+<AutoMaskingButtons />
+    {SCREEN_NAMES.map((name) => (
+      <List.Item
+        key={name}
+        title={SCREENS[name].title}
+        onPress={() => {
+          navigation.navigate(name);
+        }}
+      />
+    ))}
+    </View>
   );
 }
 
