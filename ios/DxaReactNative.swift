@@ -181,7 +181,7 @@ class DxaReactNative: NSObject {
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) {
-    DXA.enableSessionForAnalysis(enabled)
+    DXA.enableSessionForAnalytics(enabled)
   }
 
   @objc(enableSessionForRecording:withResolver:withRejecter:)
@@ -190,7 +190,7 @@ class DxaReactNative: NSObject {
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) {
-      DXA.enableSessionForReplay(enabled)
+      DXA.enableSessionForRecording(enabled)
   }
 
   @objc(setRetention:withResolver:withRejecter:)
