@@ -175,6 +175,33 @@ class DxaReactNative: NSObject {
     DXA.setAutomaticMask(.noMask)
   }
 
+  @objc(enableSessionForAnalytics:withResolver:withRejecter:)
+  func enableSessionForAnalytics(
+    enabled: Bool,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) {
+    DXA.enableSessionForAnalytics(enabled)
+  }
+
+  @objc(enableSessionForRecording:withResolver:withRejecter:)
+  func enableSessionForRecording(
+    enabled: Bool,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) {
+      DXA.enableSessionForRecording(enabled)
+  }
+
+  @objc(setRetention:withResolver:withRejecter:)
+  func setRetention(
+    enabled: Bool,
+    resolve:RCTPromiseResolveBlock,
+    reject:RCTPromiseRejectBlock
+  ) {
+      ///Nothing to do on iOS.
+  }
+
   private func translateConsentsToIos(flutterConsents value: Float) -> Consent{
     var nativeConsent: Consent
         

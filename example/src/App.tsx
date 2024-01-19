@@ -60,6 +60,15 @@ export default function App() {
             component={CharactersList}
             options={{ title: 'Characters' }}
           />
+          <Stack.Screen
+            name="SamplingScreen"
+            component={SamplingScreen}
+            options={{ title: 'Sampling Screen' }}
+          />
+          <Stack.Screen
+            name="SessionUrlScreen"
+            component={SessionUrlScreen}
+            options={{ title: 'Session Url Screen' }} />
           {SCREEN_NAMES.map((name) => (
             <Stack.Screen
               key={name}
@@ -68,6 +77,7 @@ export default function App() {
               options={{ title: SCREENS[name].title }}
             />
           ))}
+          
         </Stack.Navigator>
       </NavigationContainer>
     </DxaApp>
@@ -89,6 +99,9 @@ function Screens({ navigation }: { navigation: any }) {
       <ScrollView>
 
         <AutoMaskingButtons />
+        <Button
+        title='Go to Sampling Screen 1'
+        onPress={() => navigation.push('Screen 1')} />
         {SCREEN_NAMES.map((name) => (
           <List.Item
             key={name}
@@ -112,10 +125,19 @@ function Screen1({ navigation }: { navigation: any }) {
         title="Go to Screen 2"
         onPress={() => navigation.push('Screen2')}
       />
+      <Button
+        title='Go to Sampling Screen'
+        onPress={() => navigation.push('SamplingScreen')} />
       <ConsentsButtons />
       <TextInput
         style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
       ></TextInput>
+      <Button
+        title='Go to Session Url Screen'
+        onPress={() => navigation.push('SessionUrlScreen')} />
+      
+      <TextInput
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} />
       <Image
         style={{ height: 50, width: 50 }}
         source={{
@@ -142,6 +164,50 @@ function Screen2({ navigation }: { navigation: any }) {
       />
       <ConsentsButtons />
 
+    </View>
+  );
+}
+
+function SamplingScreen({ navigation }: { navigation: any }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Sampling Screen</Text>
+      <Text>Remember! theese methos can be called once.</Text>
+      <View style={{ height: 70 }}></View>
+      <Text>Enable</Text>
+      <Button title="SetRetention: true" onPress={() => MedalliaDXA.setRetention(true)} />
+      <Button title="enableSessionForAnalytics: true" onPress={() => MedalliaDXA.setRetention(true)} />
+      <Button title="enableSessionForRecording: true" onPress={() => MedalliaDXA.setRetention(true)} />
+      <View style={{ height: 20 }}></View>
+      <Text>Disable</Text>
+      <Button title="SetRetention: false" onPress={() => MedalliaDXA.setRetention(false)} />
+      <Button title="enableSessionForAnalytics: false" onPress={() => MedalliaDXA.setRetention(false)} />
+      <Button title="enableSessionForRecording: false" onPress={() => MedalliaDXA.setRetention(false)} />
+      <View style={{ height: 50 }}></View>
+      <Button
+        title="Go back"
+        onPress={() => navigation.pop()}
+      />
+    </View>
+  );
+}
+/**
+ * example screen to show how to get the session url from native sdks
+ * @param navigation 
+ */
+function SessionUrlScreen({ navigation }: { navigation: any }) {
+  const [sessionUrl, setSessionUrl] = useState<string>("requesting...");
+  MedalliaDXA.getSessionUrl().then((url) => setSessionUrl(url));
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={styles.text}>Session url from native is:</Text>
+      <View style={{ height: 20 }}></View>
+      <Text style={styles.text}>{sessionUrl}</Text>
+      <View style={{ height: 20 }}></View>
+      <Button
+        title="Go back"
+        onPress={() => navigation.pop()}
+      />
     </View>
   );
 }

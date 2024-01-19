@@ -101,6 +101,25 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+  flavorDimensions = ["platform", "environment"]
+  productFlavors {
+    android {
+      dimension "platform"
+    }
+    flutter {
+      dimension "platform"
+      versionNameSuffix "-flutter"
+    }
+    dev {
+      dimension "environment"
+    }
+    staging {
+      dimension "environment"
+    }
+    prod {
+      dimension "environment"
+    }
+  }
 }
 
 dependencies {
