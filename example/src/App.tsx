@@ -4,11 +4,18 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Text, FlatList, Image, StyleSheet, TextInput } from 'react-native';
-import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask, DXA } from 'dxa-react-native';
+import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask } from 'dxa-react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import 'react-native-gesture-handler';
+
 import axios from 'axios';
+import { SCREENS } from './screens';
+import { List } from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+const SCREEN_NAMES = Object.keys(SCREENS) as (keyof typeof SCREENS)[];
 
 export default function App() {
   const navigationRef = useNavigationContainerRef();
@@ -24,7 +31,20 @@ export default function App() {
   return (
     <DxaApp>
       <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator initialRouteName="Screen1">
+        <Stack.Navigator initialRouteName="Screens">
+
+
+
+          <Stack.Screen
+            name="Screens"
+            component={Screens}
+            options={{ title: 'Screens' }}
+          />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{ title: 'Home' }}
+          />
           <Stack.Screen
             name="Screen1"
             component={Screen1}
@@ -49,12 +69,54 @@ export default function App() {
             name="SessionUrlScreen"
             component={SessionUrlScreen}
             options={{ title: 'Session Url Screen' }} />
+          {SCREEN_NAMES.map((name) => (
+            <Stack.Screen
+              key={name}
+              name={name}
+              getComponent={() => SCREENS[name].component}
+              options={{ title: SCREENS[name].title }}
+            />
+          ))}
+          
         </Stack.Navigator>
       </NavigationContainer>
     </DxaApp>
   );
 }
 
+function Home() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Feed" component={Feed} />
+      <Tab.Screen name="Messages" component={Messages} />
+    </Tab.Navigator>
+  );
+}
+
+function Screens({ navigation }: { navigation: any }) {
+  return (
+    <View>
+      <ScrollView>
+
+        <AutoMaskingButtons />
+        <Button
+        title='Go to Sampling Screen 1'
+        onPress={() => navigation.push('Screen 1')} />
+        {SCREEN_NAMES.map((name) => (
+          <List.Item
+            key={name}
+            title={SCREENS[name].title}
+            onPress={() => {
+              navigation.navigate(name);
+            }}
+          />
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
+////////////////////
 function Screen1({ navigation }: { navigation: any }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -214,6 +276,30 @@ const AutoMaskingButtons = () => {
       <Button
         title="disableAllAutoMasking"
         onPress={() => MedalliaDXA.disableAllAutoMasking()}
+      />
+    </View>
+  );
+}
+
+function Feed({ navigation }: { navigation: any }) {
+  return (
+    <View style={styles.container}>
+      <Text>Feed Screen</Text>
+      <Button
+        title="Go to Screen 2"
+        onPress={() => navigation.push('Screen2')}
+      />
+    </View>
+  );
+}
+
+function Messages({ navigation }: { navigation: any }) {
+  return (
+    <View style={styles.container}>
+      <Text>Messages Screen</Text>
+      <Button
+        title="Go to Screen 1"
+        onPress={() => navigation.push('Screen1')}
       />
     </View>
   );
