@@ -95,19 +95,19 @@ RCT_EXTERN_METHOD(
 )
 
 RCT_EXTERN_METHOD(
-  enableSessionForAnalytics:(BOOL)elementsToMask
+  enableSessionForAnalytics:(BOOL)enabled
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
 
 RCT_EXTERN_METHOD(
-  enableSessionForRecording:(BOOL)elementsToMask
+  enableSessionForRecording:(BOOL)enabled
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
 
 RCT_EXTERN_METHOD(
-  setRetention:(BOOL)elementsToMask
+  setRetention:(BOOL)enabled
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )

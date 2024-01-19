@@ -101,7 +101,7 @@ function Screens({ navigation }: { navigation: any }) {
         <AutoMaskingButtons />
         <Button
         title='Go to Sampling Screen 1'
-        onPress={() => navigation.push('Screen 1')} />
+        onPress={() => navigation.push('Screen1')} />
         {SCREEN_NAMES.map((name) => (
           <List.Item
             key={name}
