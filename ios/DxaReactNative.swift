@@ -199,7 +199,7 @@ class DxaReactNative: NSObject {
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
   ) {
-      ///Nothing to do on iOS.
+      DXA.setRetention(enabled)
   }
 
   private func translateConsentsToIos(flutterConsents value: Float) -> Consent{
