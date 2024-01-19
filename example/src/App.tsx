@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, View, Text, FlatList, Image, StyleSheet, TextInput } from 'react-native';
-import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask } from 'dxa-react-native';
+import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask, DXA } from 'dxa-react-native';
 import axios from 'axios';
 
 const Stack = createNativeStackNavigator();
@@ -41,6 +41,11 @@ export default function App() {
             options={{ title: 'Characters' }}
           />
           <Stack.Screen
+            name="SamplingScreen"
+            component={SamplingScreen}
+            options={{ title: 'Sampling Screen' }}
+          />
+          <Stack.Screen
             name="SessionUrlScreen"
             component={SessionUrlScreen}
             options={{ title: 'Session Url Screen' }} />
@@ -61,10 +66,14 @@ function Screen1({ navigation }: { navigation: any }) {
       <Button
         title='Go to Sampling Screen'
         onPress={() => navigation.push('SamplingScreen')} />
+      <ConsentsButtons />
+      <TextInput
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+      ></TextInput>
       <Button
         title='Go to Session Url Screen'
         onPress={() => navigation.push('SessionUrlScreen')} />
-      <ConsentsButtons />
+      
       <TextInput
         style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} />
       <Image
@@ -97,6 +106,29 @@ function Screen2({ navigation }: { navigation: any }) {
   );
 }
 
+function SamplingScreen({ navigation }: { navigation: any }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Sampling Screen</Text>
+      <Text>Remember! theese methos can be called once.</Text>
+      <View style={{ height: 70 }}></View>
+      <Text>Enable</Text>
+      <Button title="SetRetention: true" onPress={() => MedalliaDXA.setRetention(true)} />
+      <Button title="enableSessionForAnalytics: true" onPress={() => MedalliaDXA.setRetention(true)} />
+      <Button title="enableSessionForRecording: true" onPress={() => MedalliaDXA.setRetention(true)} />
+      <View style={{ height: 20 }}></View>
+      <Text>Disable</Text>
+      <Button title="SetRetention: false" onPress={() => MedalliaDXA.setRetention(false)} />
+      <Button title="enableSessionForAnalytics: false" onPress={() => MedalliaDXA.setRetention(false)} />
+      <Button title="enableSessionForRecording: false" onPress={() => MedalliaDXA.setRetention(false)} />
+      <View style={{ height: 50 }}></View>
+      <Button
+        title="Go back"
+        onPress={() => navigation.pop()}
+      />
+    </View>
+  );
+}
 /**
  * example screen to show how to get the session url from native sdks
  * @param navigation 
