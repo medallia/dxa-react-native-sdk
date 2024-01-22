@@ -29,12 +29,8 @@ export default function App() {
     navigationRef
   );
   return (
-    <DxaApp>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator initialRouteName="Screens">
-
-
-
           <Stack.Screen
             name="Screens"
             component={Screens}
@@ -80,7 +76,7 @@ export default function App() {
           
         </Stack.Navigator>
       </NavigationContainer>
-    </DxaApp>
+    
   );
 }
 
