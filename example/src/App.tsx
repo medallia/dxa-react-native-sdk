@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
-import { MedalliaDXA, DxaApp, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask } from 'dxa-react-native';
+import { MedalliaDXA, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask } from 'dxa-react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
 
@@ -19,7 +19,7 @@ const SCREEN_NAMES = Object.keys(SCREENS) as (keyof typeof SCREENS)[];
 
 export default function App() {
   const navigationRef = useNavigationContainerRef();
-  DxaApp.initialize(
+  MedalliaDXA.initialize(
     {
       accountId: 10010,
       propertyId: 250441,

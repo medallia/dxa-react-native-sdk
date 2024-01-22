@@ -69,11 +69,23 @@ export class DXA {
         'accountId:',
         this.propertyId
       );
-      this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
+      try {
+        this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
+      } catch (error) {
+        dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
+        return;
+      }
     }
     this.startAppStateListener();
-    if (navigationRef) {
+    if (navigationRef && dxaConfig.manualTracking != true) {
+
       this.navigationContainerRef = navigationRef;
+      MedalliaDXA.startScreen(
+        MedalliaDXA.resolveCurrentRouteName({
+          data: { state: this.navigationContainerRef.getRootState() },
+        })
+      );
+
       this.navigationContainerRef.addListener('state', (param: any) => {
         const screenName = this.resolveCurrentRouteName(param);
         this.stopScreen();
@@ -170,7 +182,7 @@ export class DXA {
     return DxaReactNative.setRetention(enabled);
   }
 
-  resolveCurrentRouteName(param: any) {
+  private resolveCurrentRouteName(param: any) {
     try {
       let currentOnPrint: any = param.data.state;
       let entireRoute = '';
@@ -196,22 +208,22 @@ export class DXA {
     this.routeSeparator = newSeparator;
   }
 
-  startAppStateListener(): void {
-    if(typeof this.subscription !== 'undefined') {
+  private startAppStateListener(): void {
+    if (typeof this.subscription !== 'undefined') {
       return;
     }
     dxaLog.log(
       'MedalliaDXA ->',
       'AppState event listerner(change)',
       this.handleAppStateChange
-    );    
+    );
     this.subscription = AppState.addEventListener(
       'change',
       this.handleAppStateChange
     );
   }
 
-  removeAppStateListener(): void {
+  private removeAppStateListener(): void {
     dxaLog.log(
       'MedalliaDXA ->',
       'Unmounting DxaApp node',
@@ -224,7 +236,7 @@ export class DXA {
   private handleAppStateChange = (nextAppState: any) => {
     if (nextAppState == 'active') {
       dxaLog.log('MedalliaDXA ->', 'App becomes to active!');
-      if(this.currentlyTrackingAScreen) {
+      if (this.currentlyTrackingAScreen) {
         return;
       }
       MedalliaDXA.startScreen(
@@ -245,6 +257,4 @@ const dxaLog = new DxaLog();
 /// DXA binder.
 export { MedalliaDXA };
 export { dxaLog };
-export { DxaScreen } from './DxaScreen';
-export { DxaApp } from './DxaApp';
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
