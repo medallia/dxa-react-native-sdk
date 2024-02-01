@@ -22,7 +22,7 @@ class DxaMaskManager: RCTViewManager {
     return true
   }
  
-  override func view() -> UIView! {
+  override func view() -> UIView {
     let myCustomView = DxaMaskView()
     myCustomView.dxaMasking = .mask
     return myCustomView

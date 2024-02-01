@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
-import { MedalliaDXA, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask } from 'dxa-react-native';
+import { MedalliaDXA, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask, DxaUnmask } from 'dxa-react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
 
@@ -29,54 +29,54 @@ export default function App() {
     navigationRef
   );
   return (
-      <NavigationContainer ref={navigationRef}>
-        <Stack.Navigator initialRouteName="Screens">
+    <NavigationContainer ref={navigationRef}>
+      <Stack.Navigator initialRouteName="Screens">
+        <Stack.Screen
+          name="Screens"
+          component={Screens}
+          options={{ title: 'Screens' }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ title: 'Home' }}
+        />
+        <Stack.Screen
+          name="Screen1"
+          component={Screen1}
+          options={{ title: 'Screen 1' }}
+        />
+        <Stack.Screen
+          name="Screen2"
+          component={Screen2}
+          options={{ title: 'Screen 2' }}
+        />
+        <Stack.Screen
+          name="ScreenList"
+          component={CharactersList}
+          options={{ title: 'Characters' }}
+        />
+        <Stack.Screen
+          name="SamplingScreen"
+          component={SamplingScreen}
+          options={{ title: 'Sampling Screen' }}
+        />
+        <Stack.Screen
+          name="SessionUrlScreen"
+          component={SessionUrlScreen}
+          options={{ title: 'Session Url Screen' }} />
+        {SCREEN_NAMES.map((name) => (
           <Stack.Screen
-            name="Screens"
-            component={Screens}
-            options={{ title: 'Screens' }}
+            key={name}
+            name={name}
+            getComponent={() => SCREENS[name].component}
+            options={{ title: SCREENS[name].title }}
           />
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{ title: 'Home' }}
-          />
-          <Stack.Screen
-            name="Screen1"
-            component={Screen1}
-            options={{ title: 'Screen 1' }}
-          />
-          <Stack.Screen
-            name="Screen2"
-            component={Screen2}
-            options={{ title: 'Screen 2' }}
-          />
-          <Stack.Screen
-            name="ScreenList"
-            component={CharactersList}
-            options={{ title: 'Characters' }}
-          />
-          <Stack.Screen
-            name="SamplingScreen"
-            component={SamplingScreen}
-            options={{ title: 'Sampling Screen' }}
-          />
-          <Stack.Screen
-            name="SessionUrlScreen"
-            component={SessionUrlScreen}
-            options={{ title: 'Session Url Screen' }} />
-          {SCREEN_NAMES.map((name) => (
-            <Stack.Screen
-              key={name}
-              name={name}
-              getComponent={() => SCREENS[name].component}
-              options={{ title: SCREENS[name].title }}
-            />
-          ))}
-          
-        </Stack.Navigator>
-      </NavigationContainer>
-    
+        ))}
+
+      </Stack.Navigator>
+    </NavigationContainer>
+
   );
 }
 
@@ -96,8 +96,8 @@ function Screens({ navigation }: { navigation: any }) {
 
         <AutoMaskingButtons />
         <Button
-        title='Go to Sampling Screen 1'
-        onPress={() => navigation.push('Screen1')} />
+          title='Go to Sampling Screen 1'
+          onPress={() => navigation.push('Screen1')} />
         {SCREEN_NAMES.map((name) => (
           <List.Item
             key={name}
@@ -115,8 +115,8 @@ function Screens({ navigation }: { navigation: any }) {
 ////////////////////
 function Screen1({ navigation }: { navigation: any }) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Screen 1</Text>
+    <View nativeID="nativeID" style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text nativeID="nativeID">Screen 1</Text>
       <Button
         title="Go to Screen 2"
         onPress={() => navigation.push('Screen2')}
@@ -125,14 +125,16 @@ function Screen1({ navigation }: { navigation: any }) {
         title='Go to Sampling Screen'
         onPress={() => navigation.push('SamplingScreen')} />
       <ConsentsButtons />
-      <TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-      ></TextInput>
+      <DxaUnmask>
+        <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+        ></TextInput>
+      </DxaUnmask>
       <Button
         title='Go to Session Url Screen'
         onPress={() => navigation.push('SessionUrlScreen')} />
-      
-      <TextInput
+
+      <TextInput nativeID="nativeID"
         style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} />
       <Image
         style={{ height: 50, width: 50 }}

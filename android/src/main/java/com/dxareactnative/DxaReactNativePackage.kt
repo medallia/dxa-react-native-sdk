@@ -2,6 +2,7 @@ package com.dxareactnative
 
 import com.dxareactnative.nativemodules.DxaReactNativeModule
 import com.dxareactnative.viewmanagers.DxaMaskViewManager
+import com.dxareactnative.viewmanagers.DxaUnmaskViewManager
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
@@ -17,7 +18,8 @@ class DxaReactNativePackage : ReactPackage {
 
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
     return listOf(
-      DxaMaskViewManager()
+      DxaMaskViewManager(),
+      DxaUnmaskViewManager()
     )
   }
 }

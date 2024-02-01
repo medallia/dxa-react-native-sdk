@@ -258,3 +258,4 @@ const dxaLog = new DxaLog();
 export { MedalliaDXA };
 export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
+export { DxaUnmask } from './DxaUnmask';
