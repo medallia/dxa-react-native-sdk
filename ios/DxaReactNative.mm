@@ -36,7 +36,6 @@ RCT_EXTERN_METHOD(
 RCT_EXTERN_METHOD(
   sendGoalWithValue:(NSString)goalName
   withValue:(nonnull NSNumber *)value
-  setConsents:(float)consents
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
