@@ -62,6 +62,11 @@ export default function App() {
           options={{ title: 'Sampling Screen' }}
         />
         <Stack.Screen
+          name="ManualAnalyticsScreen"
+          component={ManualAnalyticsScreen}
+          options={{ title: 'Manual Analytics Screen' }}
+        />
+        <Stack.Screen
           name="SessionUrlScreen"
           component={SessionUrlScreen}
           options={{ title: 'Session Url Screen' }} />
@@ -96,7 +101,7 @@ function Screens({ navigation }: { navigation: any }) {
 
         <AutoMaskingButtons />
         <Button
-          title='Go to Sampling Screen 1'
+          title='Go to Screen 1'
           onPress={() => navigation.push('Screen1')} />
         {SCREEN_NAMES.map((name) => (
           <List.Item
@@ -124,16 +129,21 @@ function Screen1({ navigation }: { navigation: any }) {
       <Button
         title='Go to Sampling Screen'
         onPress={() => navigation.push('SamplingScreen')} />
+      <Button
+        title='Go to Manual Analytics Screen'
+        onPress={() => navigation.push('ManualAnalyticsScreen')} />
+      <Button
+        title='Go to Session Url Screen'
+        onPress={() => navigation.push('SessionUrlScreen')} />
       <ConsentsButtons />
+      <View style={{ height: 70 }}></View>
+      <Text>*****</Text>
+      <Text>Text inputs for maasking test</Text>
       <DxaUnmask>
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
         ></TextInput>
       </DxaUnmask>
-      <Button
-        title='Go to Session Url Screen'
-        onPress={() => navigation.push('SessionUrlScreen')} />
-
       <TextInput nativeID="nativeID"
         style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} />
       <Image
@@ -170,18 +180,41 @@ function SamplingScreen({ navigation }: { navigation: any }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Sampling Screen</Text>
-      <Text>Remember! theese methos can be called once.</Text>
+      <Text>Remember! these methods can be called once.</Text>
       <View style={{ height: 70 }}></View>
       <Text>Enable</Text>
       <Button title="SetRetention: true" onPress={() => MedalliaDXA.setRetention(true)} />
-      <Button title="enableSessionForAnalytics: true" onPress={() => MedalliaDXA.setRetention(true)} />
-      <Button title="enableSessionForRecording: true" onPress={() => MedalliaDXA.setRetention(true)} />
+      <Button title="enableSessionForAnalytics: true" onPress={() => MedalliaDXA.enableSessionForAnalytics(true)} />
+      <Button title="enableSessionForRecording: true" onPress={() => MedalliaDXA.enableSessionForRecording(true)} />
       <View style={{ height: 20 }}></View>
       <Text>Disable</Text>
       <Button title="SetRetention: false" onPress={() => MedalliaDXA.setRetention(false)} />
-      <Button title="enableSessionForAnalytics: false" onPress={() => MedalliaDXA.setRetention(false)} />
-      <Button title="enableSessionForRecording: false" onPress={() => MedalliaDXA.setRetention(false)} />
+      <Button title="enableSessionForAnalytics: false" onPress={() => MedalliaDXA.enableSessionForAnalytics(false)} />
+      <Button title="enableSessionForRecording: false" onPress={() => MedalliaDXA.enableSessionForRecording(false)} />
       <View style={{ height: 50 }}></View>
+      <Button
+        title="Go back"
+        onPress={() => navigation.pop()}
+      />
+    </View>
+  );
+}
+function ManualAnalyticsScreen({ navigation }: { navigation: any }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Manual Analytics Screen</Text>
+      <View style={{ height: 70 }}></View>
+      <Text>Goal</Text>
+      <Button title="Send Goal 'Clicked Login'" onPress={() => MedalliaDXA.sendGoal('Clicked Login')} />
+      <Button title="Send Goal 'Clicked Login' with Value '5'" onPress={() => MedalliaDXA.sendGoal('Clicked Login', 5)} />
+      <View style={{ height: 20 }}></View>
+      <Text>Dimensions</Text>
+      <Button title="set dimension 'RN_string' to string 'ReactNative' " onPress={() => MedalliaDXA.setDimensionWithString('RN_string', 'ReactNative')} />
+      <Button title="set dimension 'RN_bool' to bool 'true'" onPress={() => MedalliaDXA.setDimensionWithBool('RN_bool', true)} />
+      <Button title="set dimension 'RN_number' to number '3'" onPress={() => MedalliaDXA.setDimensionWithNumber('RN_number', 3)} />
+      <View style={{ height: 50 }}></View>
+      <Text>Http Error</Text>
+      <Button title="send http error '500' " onPress={() => MedalliaDXA.sendHttpError(500)} />
       <Button
         title="Go back"
         onPress={() => navigation.pop()}
