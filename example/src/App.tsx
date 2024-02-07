@@ -12,6 +12,7 @@ import 'react-native-gesture-handler';
 import axios from 'axios';
 import { SCREENS } from './screens';
 import { List } from 'react-native-paper';
+import { DxaReactNativeExample } from './native';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -219,6 +220,10 @@ function ManualAnalyticsScreen({ navigation }: { navigation: any }) {
         title="Go back"
         onPress={() => navigation.pop()}
       />
+      <Button
+        title='Crash'
+        onPress={() => DxaReactNativeExample.crashApp()}
+      ></Button>
     </View>
   );
 }
