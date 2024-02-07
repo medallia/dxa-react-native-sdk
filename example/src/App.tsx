@@ -4,7 +4,7 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView, NativeModules } from 'react-native';
 import { MedalliaDXA, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask, DxaUnmask } from 'dxa-react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
@@ -12,12 +12,11 @@ import 'react-native-gesture-handler';
 import axios from 'axios';
 import { SCREENS } from './screens';
 import { List } from 'react-native-paper';
-import { DxaReactNativeExample } from './native';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const SCREEN_NAMES = Object.keys(SCREENS) as (keyof typeof SCREENS)[];
-
+const {NetworkStatus} = NativeModules;
 export default function App() {
   const navigationRef = useNavigationContainerRef();
   MedalliaDXA.initialize(
@@ -222,7 +221,7 @@ function ManualAnalyticsScreen({ navigation }: { navigation: any }) {
       />
       <Button
         title='Crash'
-        onPress={() => DxaReactNativeExample.crashApp()}
+        onPress={() => NetworkStatus.startMonitoring()}
       ></Button>
     </View>
   );
