@@ -16,7 +16,7 @@ import { List } from 'react-native-paper';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const SCREEN_NAMES = Object.keys(SCREENS) as (keyof typeof SCREENS)[];
-const {NetworkStatus} = NativeModules;
+const {NativeBridge} = NativeModules;
 export default function App() {
   const navigationRef = useNavigationContainerRef();
   MedalliaDXA.initialize(
@@ -221,7 +221,7 @@ function ManualAnalyticsScreen({ navigation }: { navigation: any }) {
       />
       <Button
         title='Crash'
-        onPress={() => NetworkStatus.startMonitoring()}
+        onPress={() => NativeBridge.startMonitoring()}
       ></Button>
     </View>
   );

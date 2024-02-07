@@ -1,8 +1,8 @@
-// NetworkStatus.m
+// NativeBridge.m
 
 #import <React/RCTBridgeModule.h>
 
-@interface RCT_EXTERN_MODULE(NetworkStatus, NSObject)
+@interface RCT_EXTERN_MODULE(NativeBridge, NSObject)
 
 RCT_EXTERN_METHOD(startMonitoring)
 + (BOOL)requiresMainQueueSetup

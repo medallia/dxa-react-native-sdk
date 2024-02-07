@@ -1,8 +1,8 @@
 import Foundation
 import React
 
-@objc(NetworkStatus)
-class NetworkStatus: NSObject {
+@objc(NativeBridge)
+class NativeBridge: NSObject {
 
   @objc
   func startMonitoring() {
