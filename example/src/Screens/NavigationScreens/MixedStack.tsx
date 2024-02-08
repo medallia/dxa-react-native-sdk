@@ -7,8 +7,8 @@ import * as React from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import {Albums} from '../Shared/Albums';
-import {Article} from '../Shared/Article';
+import {Albums} from '../../Shared/Albums';
+import {Article} from '../../Shared/Article';
 
 type MixedStackParams = {
   Article: { author: string };

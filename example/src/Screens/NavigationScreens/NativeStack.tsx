@@ -1,22 +1,16 @@
+import { useHeaderHeight } from '@react-navigation/elements';
 import type { ParamListBase } from '@react-navigation/native';
 import {
   createNativeStackNavigator,
   type NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import * as React from 'react';
-import {
-  Alert,
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
-import { Appbar, Button } from 'react-native-paper';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Button } from 'react-native-paper';
 
-import {Albums} from '../Shared/Albums';
-import {Article} from '../Shared/Article';
-import {NewsFeed} from '../Shared/NewsFeed';
+import {Albums} from '../../Shared/Albums';
+import {Article} from '../../Shared/Article';
+import {NewsFeed} from '../../Shared/NewsFeed';
 
 export type NativeStackParams = {
   Article: { author: string } | undefined;
@@ -31,7 +25,7 @@ const ArticleScreen = ({
   route,
 }: NativeStackScreenProps<NativeStackParams, 'Article'>) => {
   return (
-    <ScrollView>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.buttons}>
         <Button
           mode="contained"
@@ -39,6 +33,13 @@ const ArticleScreen = ({
           style={styles.button}
         >
           Push feed
+        </Button>
+        <Button
+          mode="contained"
+          onPress={() => navigation.replace('NewsFeed', { date: Date.now() })}
+          style={styles.button}
+        >
+          Replace with feed
         </Button>
         <Button
           mode="outlined"
@@ -60,8 +61,16 @@ const NewsFeedScreen = ({
   route,
   navigation,
 }: NativeStackScreenProps<NativeStackParams, 'NewsFeed'>) => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerSearchBarOptions: {
+        placeholder: 'Search',
+      },
+    });
+  }, [navigation]);
+
   return (
-    <ScrollView>
+    <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View style={styles.buttons}>
         <Button
           mode="contained"
@@ -86,8 +95,10 @@ const NewsFeedScreen = ({
 const AlbumsScreen = ({
   navigation,
 }: NativeStackScreenProps<NativeStackParams, 'Albums'>) => {
+  const headerHeight = useHeaderHeight();
+
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ paddingTop: headerHeight }}>
       <View style={styles.buttons}>
         <Button
           mode="contained"
@@ -123,45 +134,15 @@ export default function NativeStackScreen({
     });
   }, [navigation]);
 
-  const onPress = () => {
-    Alert.alert(
-      'Never gonna give you up!',
-      'Never gonna let you down! Never gonna run around and desert you!'
-    );
-  };
-
   return (
     <NativeStack.Navigator>
       <NativeStack.Screen
         name="Article"
         component={ArticleScreen}
-        options={({ route, navigation }) => ({
+        options={({ route }) => ({
           title: `Article by ${route.params?.author ?? 'Unknown'}`,
-          headerTintColor: 'white',
-          headerTitle: ({ tintColor }) => (
-            <Appbar.Action
-              color={tintColor}
-              icon="signal-5g"
-              onPress={onPress}
-            />
-          ),
-          headerLeft: ({ tintColor, canGoBack }) =>
-            canGoBack ? (
-              <Appbar.Action
-                color={tintColor}
-                icon="arrow-left-thick"
-                onPress={navigation.goBack}
-              />
-            ) : null,
-          headerRight: ({ tintColor }) => (
-            <Appbar.Action color={tintColor} icon="music" onPress={onPress} />
-          ),
-          headerBackground: () => (
-            <Image
-              source={require('../../assets/cpu.jpg')}
-              style={styles.headerBackground}
-            />
-          ),
+          headerLargeTitle: true,
+          headerLargeTitleShadowVisible: false,
         })}
         initialParams={{ author: 'Gandalf' }}
       />
@@ -170,9 +151,7 @@ export default function NativeStackScreen({
         component={NewsFeedScreen}
         options={{
           title: 'Feed',
-          headerLeft: ({ tintColor }) => (
-            <Appbar.Action color={tintColor} icon="spa" onPress={onPress} />
-          ),
+          fullScreenGestureEnabled: true,
         }}
       />
       <NativeStack.Screen
@@ -180,12 +159,9 @@ export default function NativeStackScreen({
         component={AlbumsScreen}
         options={{
           title: 'Albums',
-          headerTintColor: 'tomato',
-          headerStyle: { backgroundColor: 'papayawhip' },
-          headerBackVisible: true,
-          headerLeft: ({ tintColor }) => (
-            <Appbar.Action color={tintColor} icon="music" onPress={onPress} />
-          ),
+          presentation: 'modal',
+          headerTransparent: true,
+          headerBlurEffect: 'light',
         }}
       />
     </NativeStack.Navigator>
@@ -200,11 +176,5 @@ const styles = StyleSheet.create({
   },
   button: {
     margin: 8,
-  },
-  headerBackground: {
-    height: undefined,
-    width: undefined,
-    flex: 1,
-    resizeMode: 'cover',
   },
 });

@@ -4,7 +4,7 @@ import {
   useNavigationContainerRef,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView, NativeModules } from 'react-native';
+import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { MedalliaDXA, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask, DxaUnmask } from 'dxa-react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
@@ -12,11 +12,15 @@ import 'react-native-gesture-handler';
 import axios from 'axios';
 import { SCREENS } from './screens';
 import { List } from 'react-native-paper';
+import { WebviewScreen } from './Screens/Webview';
+import { SamplingScreen } from './Screens/Sampling';
+import { ManualAnalyticsScreen } from './Screens/ManualAnalytics';
+import { SessionDataScreen } from './Screens/SessionData';
+import { AutoMaskingScreen } from './Screens/Automasking';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const SCREEN_NAMES = Object.keys(SCREENS) as (keyof typeof SCREENS)[];
-const {NativeBridge} = NativeModules;
 export default function App() {
   const navigationRef = useNavigationContainerRef();
   MedalliaDXA.initialize(
@@ -67,9 +71,18 @@ export default function App() {
           options={{ title: 'Manual Analytics Screen' }}
         />
         <Stack.Screen
-          name="SessionUrlScreen"
-          component={SessionUrlScreen}
-          options={{ title: 'Session Url Screen' }} />
+          name="SessionDataScreen"
+          component={SessionDataScreen}
+          options={{ title: 'Session Data Screen' }} />
+
+        <Stack.Screen
+          name="WebviewScreen"
+          component={WebviewScreen}
+          options={{ title: 'Webview Screen' }}/>
+        <Stack.Screen
+          name="AutoMaskingScreen"
+          component={AutoMaskingScreen}
+          options={{ title: 'AutoMasking Screen' }}/>
         {SCREEN_NAMES.map((name) => (
           <Stack.Screen
             key={name}
@@ -99,7 +112,7 @@ function Screens({ navigation }: { navigation: any }) {
     <View>
       <ScrollView>
 
-        <AutoMaskingButtons />
+        
         <Button
           title='Go to Screen 1'
           onPress={() => navigation.push('Screen1')} />
@@ -133,17 +146,26 @@ function Screen1({ navigation }: { navigation: any }) {
         title='Go to Manual Analytics Screen'
         onPress={() => navigation.push('ManualAnalyticsScreen')} />
       <Button
-        title='Go to Session Url Screen'
-        onPress={() => navigation.push('SessionUrlScreen')} />
+        title='Go to Session Data Screen'
+        onPress={() => navigation.push('SessionDataScreen')} />
+      <Button
+        title='Go to Webview Screen'
+        onPress={() => navigation.push('WebviewScreen')} />
+
+      <Button
+      title='Go to Automasking Screen'
+      onPress={() => navigation.push('AutoMaskingScreen')} />
       <ConsentsButtons />
       <View style={{ height: 70 }}></View>
       <Text>*****</Text>
       <Text>Text inputs for maasking test</Text>
+      <Text>This input is Unmasked...</Text>
       <DxaUnmask>
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
         ></TextInput>
       </DxaUnmask>
+      <Text>... but this input is not</Text>
       <TextInput nativeID="nativeID"
         style={{ height: 40, borderColor: 'gray', borderWidth: 1 }} />
       <Image
@@ -165,7 +187,7 @@ function Screen2({ navigation }: { navigation: any }) {
       <DxaMask>
         <Text>This text should not be visible</Text>
       </DxaMask>
-      <AutoMaskingButtons />
+      
       <Button
         title="Go to Characters List"
         onPress={() => navigation.push('ScreenList')}
@@ -176,76 +198,8 @@ function Screen2({ navigation }: { navigation: any }) {
   );
 }
 
-function SamplingScreen({ navigation }: { navigation: any }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Sampling Screen</Text>
-      <Text>Remember! these methods can be called once.</Text>
-      <View style={{ height: 70 }}></View>
-      <Text>Enable</Text>
-      <Button title="SetRetention: true" onPress={() => MedalliaDXA.setRetention(true)} />
-      <Button title="enableSessionForAnalytics: true" onPress={() => MedalliaDXA.enableSessionForAnalytics(true)} />
-      <Button title="enableSessionForRecording: true" onPress={() => MedalliaDXA.enableSessionForRecording(true)} />
-      <View style={{ height: 20 }}></View>
-      <Text>Disable</Text>
-      <Button title="SetRetention: false" onPress={() => MedalliaDXA.setRetention(false)} />
-      <Button title="enableSessionForAnalytics: false" onPress={() => MedalliaDXA.enableSessionForAnalytics(false)} />
-      <Button title="enableSessionForRecording: false" onPress={() => MedalliaDXA.enableSessionForRecording(false)} />
-      <View style={{ height: 50 }}></View>
-      <Button
-        title="Go back"
-        onPress={() => navigation.pop()}
-      />
-    </View>
-  );
-}
-function ManualAnalyticsScreen({ navigation }: { navigation: any }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Manual Analytics Screen</Text>
-      <View style={{ height: 70 }}></View>
-      <Text>Goal</Text>
-      <Button title="Send Goal 'Clicked Login'" onPress={() => MedalliaDXA.sendGoal('Clicked Login')} />
-      <Button title="Send Goal 'Clicked Login' with Value '5'" onPress={() => MedalliaDXA.sendGoal('Clicked Login', 5)} />
-      <View style={{ height: 20 }}></View>
-      <Text>Dimensions</Text>
-      <Button title="set dimension 'RN_string' to string 'ReactNative' " onPress={() => MedalliaDXA.setDimensionWithString('RN_string', 'ReactNative')} />
-      <Button title="set dimension 'RN_bool' to bool 'true'" onPress={() => MedalliaDXA.setDimensionWithBool('RN_bool', true)} />
-      <Button title="set dimension 'RN_number' to number '3'" onPress={() => MedalliaDXA.setDimensionWithNumber('RN_number', 3)} />
-      <View style={{ height: 50 }}></View>
-      <Text>Http Error</Text>
-      <Button title="send http error '500' " onPress={() => MedalliaDXA.sendHttpError(500)} />
-      <Button
-        title="Go back"
-        onPress={() => navigation.pop()}
-      />
-      <Button
-        title='Crash'
-        onPress={() => NativeBridge.crashApp()}
-      ></Button>
-    </View>
-  );
-}
-/**
- * example screen to show how to get the session url from native sdks
- * @param navigation 
- */
-function SessionUrlScreen({ navigation }: { navigation: any }) {
-  const [sessionUrl, setSessionUrl] = useState<string>("requesting...");
-  MedalliaDXA.getSessionUrl().then((url) => setSessionUrl(url));
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={styles.text}>Session url from native is:</Text>
-      <View style={{ height: 20 }}></View>
-      <Text style={styles.text}>{sessionUrl}</Text>
-      <View style={{ height: 20 }}></View>
-      <Button
-        title="Go back"
-        onPress={() => navigation.pop()}
-      />
-    </View>
-  );
-}
+
+
 
 function CharactersList() {
   const [characters, setCharacters] = useState([]);
@@ -291,30 +245,6 @@ const ConsentsButtons = () => {
   );
 }
 
-const AutoMaskingButtons = () => {
-  return (
-    <View>
-      <Button
-        title="MedalliaDxaAutomaticMask.text"
-        onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.text)}
-      />
-      <Button
-        title="MedalliaDxaAutomaticMask.images"
-        onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.images)}
-      />
-      <Button title="MedalliaDxaAutomaticMask.inputs" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.inputs)}
-      />
-      <Button title="MedalliaDxaAutomaticMask.webViews" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.webViews)}
-      />
-      <Button title="MedalliaDxaAutomaticMask.all" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.all)}
-      />
-      <Button
-        title="disableAllAutoMasking"
-        onPress={() => MedalliaDXA.disableAllAutoMasking()}
-      />
-    </View>
-  );
-}
 
 function Feed({ navigation }: { navigation: any }) {
   return (
@@ -359,7 +289,7 @@ const CharacterItem: React.FC<{ item: ListItem }> = ({ item }) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',

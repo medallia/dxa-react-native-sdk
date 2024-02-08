@@ -12,9 +12,9 @@ import * as React from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import type { LinkComponentDemoParamList } from '../screens';
-import {Albums} from '../Shared/Albums';
-import {Article} from '../Shared/Article';
+import type { LinkComponentDemoParamList } from '../../screens';
+import {Albums} from '../../Shared/Albums';
+import {Article} from '../../Shared/Article';
 
 const scrollEnabled = Platform.select({ web: true, default: false });
 

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import type { RootStackParamList } from '../screens';
+import type { RootStackParamList } from '../../screens';
 
 const NotFoundScreen = ({
   route,
