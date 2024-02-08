@@ -221,7 +221,7 @@ function ManualAnalyticsScreen({ navigation }: { navigation: any }) {
       />
       <Button
         title='Crash'
-        onPress={() => NativeBridge.startMonitoring()}
+        onPress={() => NativeBridge.crashApp()}
       ></Button>
     </View>
   );

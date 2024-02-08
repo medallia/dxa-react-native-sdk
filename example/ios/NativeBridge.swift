@@ -5,7 +5,7 @@ import React
 class NativeBridge: NSObject {
 
   @objc
-  func startMonitoring() {
+  func crashApp() {
     [][1]
   }
 }
