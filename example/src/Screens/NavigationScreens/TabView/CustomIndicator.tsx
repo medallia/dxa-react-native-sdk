@@ -9,9 +9,9 @@ import {
   TabView,
 } from 'react-native-tab-view';
 
-import {Albums} from '../../Shared/Albums';
-import {Article} from '../../Shared/Article';
-import {Contacts} from '../../Shared/Contacts';
+import {Albums} from '../../../Shared/Albums';
+import {Article} from '../../../Shared/Article';
+import {Contacts} from '../../../Shared/Contacts';
 import Icon from 'react-native-ionicons';
 
 type Route = {

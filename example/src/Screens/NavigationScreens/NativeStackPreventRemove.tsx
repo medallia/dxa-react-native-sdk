@@ -1,12 +1,13 @@
+import { UNSTABLE_usePreventRemove } from '@react-navigation/core';
 import {
   CommonActions,
   type ParamListBase,
   useTheme,
 } from '@react-navigation/native';
 import {
-  createStackNavigator,
-  type StackScreenProps,
-} from '@react-navigation/stack';
+  createNativeStackNavigator,
+  type NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import * as React from 'react';
 import {
   Alert,
@@ -18,7 +19,7 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import {Article} from '../Shared/Article';
+import {Article} from '../../Shared/Article';
 
 type PreventRemoveParams = {
   Article: { author: string };
@@ -30,7 +31,7 @@ const scrollEnabled = Platform.select({ web: true, default: false });
 const ArticleScreen = ({
   navigation,
   route,
-}: StackScreenProps<PreventRemoveParams, 'Article'>) => {
+}: NativeStackScreenProps<PreventRemoveParams, 'Article'>) => {
   return (
     <ScrollView>
       <View style={styles.buttons}>
@@ -59,37 +60,28 @@ const ArticleScreen = ({
 
 const InputScreen = ({
   navigation,
-}: StackScreenProps<PreventRemoveParams, 'Input'>) => {
+}: NativeStackScreenProps<PreventRemoveParams, 'Input'>) => {
   const [text, setText] = React.useState('');
   const { colors } = useTheme();
 
   const hasUnsavedChanges = Boolean(text);
 
-  React.useEffect(
-    () =>
-      navigation.addListener('beforeRemove', (e) => {
-        if (!hasUnsavedChanges) {
-          return;
-        }
-
-        e.preventDefault();
-
-          Alert.alert(
-            'Discard changes?',
-            'You have unsaved changes. Discard them and leave the screen?',
-            [
-              { text: "Don't leave", style: 'cancel', onPress: () => {} },
-              {
-                text: 'Discard',
-                style: 'destructive',
-                onPress: () => navigation.dispatch(e.data.action),
-              },
-            ]
-          );
-        
-      }),
-    [hasUnsavedChanges, navigation]
-  );
+  UNSTABLE_usePreventRemove(hasUnsavedChanges, ({ data }) => {
+    
+      Alert.alert(
+        'Discard changes?',
+        'You have unsaved changes. Discard them and leave the screen?',
+        [
+          { text: "Don't leave", style: 'cancel', onPress: () => {} },
+          {
+            text: 'Discard',
+            style: 'destructive',
+            onPress: () => navigation.dispatch(data.action),
+          },
+        ]
+      );
+    
+  });
 
   return (
     <View style={styles.content}>
@@ -127,11 +119,11 @@ const InputScreen = ({
   );
 };
 
-const SimpleStack = createStackNavigator<PreventRemoveParams>();
+const Stack = createNativeStackNavigator<PreventRemoveParams>();
 
-type Props = StackScreenProps<ParamListBase>;
+type Props = NativeStackScreenProps<ParamListBase>;
 
-export default function SimpleStackScreen({ navigation }: Props) {
+export default function StackScreen({ navigation }: Props) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -139,10 +131,16 @@ export default function SimpleStackScreen({ navigation }: Props) {
   }, [navigation]);
 
   return (
-    <SimpleStack.Navigator>
-      <SimpleStack.Screen name="Input" component={InputScreen} />
-      <SimpleStack.Screen name="Article" component={ArticleScreen} />
-    </SimpleStack.Navigator>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Input"
+        component={InputScreen}
+        options={{
+          presentation: 'modal',
+        }}
+      />
+      <Stack.Screen name="Article" component={ArticleScreen} />
+    </Stack.Navigator>
   );
 }
 

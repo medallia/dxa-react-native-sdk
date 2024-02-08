@@ -1,21 +1,21 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
 
-import AuthFlow from './Screens/AuthFlow';
-import BottomTabs from './Screens/BottomTabs';
-import DynamicTabs from './Screens/DynamicTabs';
-import LinkComponent from './Screens/LinkComponent';
-import MasterDetail from './Screens/MasterDetail';
-import MixedHeaderMode from './Screens/MixedHeaderMode';
-import MixedStack from './Screens/MixedStack';
-import ModalStack from './Screens/ModalStack';
-import NativeStack from './Screens/NativeStack';
-import NativeStackHeaderCustomization from './Screens/NativeStackHeaderCustomization';
-import NativeStackPreventRemove from './Screens/NativeStackPreventRemove';
-import SimpleStack from './Screens/SimpleStack';
-import StackHeaderCustomization from './Screens/StackHeaderCustomization';
-import StackPreventRemove from './Screens/StackPreventRemove';
-import StackTransparent from './Screens/StackTransparent';
-import TabView from './Screens/TabView';
+import AuthFlow from './Screens/NavigationScreens/AuthFlow';
+import BottomTabs from './Screens/NavigationScreens/BottomTabs';
+import DynamicTabs from './Screens/NavigationScreens/DynamicTabs';
+import LinkComponent from './Screens/NavigationScreens/LinkComponent';
+import MasterDetail from './Screens/NavigationScreens/MasterDetail';
+import MixedHeaderMode from './Screens/NavigationScreens/MixedHeaderMode';
+import MixedStack from './Screens/NavigationScreens/MixedStack';
+import ModalStack from './Screens/NavigationScreens/ModalStack';
+import NativeStack from './Screens/NavigationScreens/NativeStack';
+import NativeStackHeaderCustomization from './Screens/NavigationScreens/NativeStackHeaderCustomization';
+import NativeStackPreventRemove from './Screens/NavigationScreens/NativeStackPreventRemove';
+import SimpleStack from './Screens/NavigationScreens/SimpleStack';
+import StackHeaderCustomization from './Screens/NavigationScreens/StackHeaderCustomization';
+import StackPreventRemove from './Screens/NavigationScreens/StackPreventRemove';
+import StackTransparent from './Screens/NavigationScreens/StackTransparent';
+import TabView from './Screens/NavigationScreens/TabView';
 
 export type RootDrawerParamList = {
   Examples: undefined;

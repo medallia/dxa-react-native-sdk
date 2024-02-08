@@ -1,18 +1,18 @@
-import { useHeaderHeight } from '@react-navigation/elements';
 import type { ParamListBase } from '@react-navigation/native';
 import {
-  createNativeStackNavigator,
-  type NativeStackScreenProps,
-} from '@react-navigation/native-stack';
+  createStackNavigator,
+  type StackNavigationOptions,
+  type StackScreenProps,
+} from '@react-navigation/stack';
 import * as React from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
-import {Albums} from '../Shared/Albums';
-import {Article} from '../Shared/Article';
-import {NewsFeed} from '../Shared/NewsFeed';
+import {Albums} from '../../Shared/Albums';
+import {Article} from '../../Shared/Article';
+import {NewsFeed} from '../../Shared/NewsFeed';
 
-export type NativeStackParams = {
+export type SimpleStackParams = {
   Article: { author: string } | undefined;
   NewsFeed: { date: number };
   Albums: undefined;
@@ -23,23 +23,28 @@ const scrollEnabled = Platform.select({ web: true, default: false });
 const ArticleScreen = ({
   navigation,
   route,
-}: NativeStackScreenProps<NativeStackParams, 'Article'>) => {
+}: StackScreenProps<SimpleStackParams, 'Article'>) => {
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView>
       <View style={styles.buttons}>
-        <Button
-          mode="contained"
-          onPress={() => navigation.push('NewsFeed', { date: Date.now() })}
-          style={styles.button}
-        >
-          Push feed
-        </Button>
         <Button
           mode="contained"
           onPress={() => navigation.replace('NewsFeed', { date: Date.now() })}
           style={styles.button}
         >
           Replace with feed
+        </Button>
+        <Button
+          mode="outlined"
+          onPress={() =>
+            navigation.setParams({
+              author:
+                route.params?.author === 'Gandalf' ? 'Babel fish' : 'Gandalf',
+            })
+          }
+          style={styles.button}
+        >
+          Update params
         </Button>
         <Button
           mode="outlined"
@@ -60,24 +65,16 @@ const ArticleScreen = ({
 const NewsFeedScreen = ({
   route,
   navigation,
-}: NativeStackScreenProps<NativeStackParams, 'NewsFeed'>) => {
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerSearchBarOptions: {
-        placeholder: 'Search',
-      },
-    });
-  }, [navigation]);
-
+}: StackScreenProps<SimpleStackParams, 'NewsFeed'>) => {
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView>
       <View style={styles.buttons}>
         <Button
           mode="contained"
-          onPress={() => navigation.push('Albums')}
+          onPress={() => navigation.navigate('Albums')}
           style={styles.button}
         >
-          Push Albums
+          Navigate to album
         </Button>
         <Button
           mode="outlined"
@@ -94,20 +91,16 @@ const NewsFeedScreen = ({
 
 const AlbumsScreen = ({
   navigation,
-}: NativeStackScreenProps<NativeStackParams, 'Albums'>) => {
-  const headerHeight = useHeaderHeight();
-
+}: StackScreenProps<SimpleStackParams, 'Albums'>) => {
   return (
-    <ScrollView contentContainerStyle={{ paddingTop: headerHeight }}>
+    <ScrollView>
       <View style={styles.buttons}>
         <Button
           mode="contained"
-          onPress={() =>
-            navigation.navigate('Article', { author: 'Babel fish' })
-          }
+          onPress={() => navigation.push('Article', { author: 'Babel fish' })}
           style={styles.button}
         >
-          Navigate to article
+          Push article
         </Button>
         <Button
           mode="outlined"
@@ -122,49 +115,41 @@ const AlbumsScreen = ({
   );
 };
 
-const NativeStack = createNativeStackNavigator<NativeStackParams>();
+const SimpleStack = createStackNavigator<SimpleStackParams>();
 
-export default function NativeStackScreen({
+export default function SimpleStackScreen({
   navigation,
-}: NativeStackScreenProps<ParamListBase>) {
+  screenOptions,
+}: StackScreenProps<ParamListBase> & {
+  screenOptions?: StackNavigationOptions;
+}) {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
-      gestureEnabled: false,
     });
   }, [navigation]);
 
   return (
-    <NativeStack.Navigator>
-      <NativeStack.Screen
+    <SimpleStack.Navigator screenOptions={screenOptions}>
+      <SimpleStack.Screen
         name="Article"
         component={ArticleScreen}
         options={({ route }) => ({
           title: `Article by ${route.params?.author ?? 'Unknown'}`,
-          headerLargeTitle: true,
-          headerLargeTitleShadowVisible: false,
         })}
         initialParams={{ author: 'Gandalf' }}
       />
-      <NativeStack.Screen
+      <SimpleStack.Screen
         name="NewsFeed"
         component={NewsFeedScreen}
-        options={{
-          title: 'Feed',
-          fullScreenGestureEnabled: true,
-        }}
+        options={{ title: 'Feed' }}
       />
-      <NativeStack.Screen
+      <SimpleStack.Screen
         name="Albums"
         component={AlbumsScreen}
-        options={{
-          title: 'Albums',
-          presentation: 'modal',
-          headerTransparent: true,
-          headerBlurEffect: 'light',
-        }}
+        options={{ title: 'Albums' }}
       />
-    </NativeStack.Navigator>
+    </SimpleStack.Navigator>
   );
 }
 

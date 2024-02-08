@@ -18,9 +18,9 @@ import {
 import { Appbar, Button } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {Albums} from '../Shared/Albums';
-import {Article} from '../Shared/Article';
-import {BlurView} from '../Shared/BlurView';
+import {Albums} from '../../Shared/Albums';
+import {Article} from '../../Shared/Article';
+import {BlurView} from '../../Shared/BlurView';
 
 type SimpleStackParams = {
   Article: { author: string };

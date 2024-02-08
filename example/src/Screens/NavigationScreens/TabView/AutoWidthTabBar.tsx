@@ -8,10 +8,10 @@ import {
   TabView,
 } from 'react-native-tab-view';
 
-import {Albums} from '../../Shared/Albums';
-import {Article} from '../../Shared/Article';
-import {Chat} from '../../Shared/Chat';
-import {Contacts} from '../../Shared/Contacts';
+import {Albums} from '../../../Shared/Albums';
+import {Article} from '../../../Shared/Article';
+import {Chat} from '../../../Shared/Chat';
+import {Contacts} from '../../../Shared/Contacts';
 
 type State = NavigationState<{
   key: string;

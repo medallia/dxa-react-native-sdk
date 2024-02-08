@@ -8,44 +8,42 @@ import {
   TabView,
 } from 'react-native-tab-view';
 
-import { Article } from '../../Shared/Article';
-import { Chat } from '../../Shared/Chat';
-import { Contacts } from '../../Shared/Contacts';
-import Icon from 'react-native-ionicons';
+import {Albums} from '../../../Shared/Albums';
+import {Article} from '../../../Shared/Article';
+import {Chat} from '../../../Shared/Chat';
+import {Contacts} from '../../../Shared/Contacts';
 
-type Route = {
+type State = NavigationState<{
   key: string;
-  icon: React.ComponentProps<typeof Icon>['name'];
-};
-
-type State = NavigationState<Route>;
+  title: string;
+}>;
 
 const renderScene = SceneMap({
-  chat: () => <Chat bottom />,
+  albums: () => <Albums />,
   contacts: () => <Contacts />,
   article: () => <Article />,
+  chat: () => <Chat bottom />,
 });
 
-const TabBarIcon = () => {
-  const [index, onIndexChange] = React.useState(0);
-  const [routes] = React.useState<Route[]>([
-    { key: 'chat', icon: 'md-chatbubbles' },
-    { key: 'contacts', icon: 'md-people' },
-    { key: 'article', icon: 'md-list' },
+const ScrollableTabBar = () => {
+  const [index, onIndexChange] = React.useState(1);
+  const [routes] = React.useState([
+    { key: 'article', title: 'Article' },
+    { key: 'contacts', title: 'Contacts' },
+    { key: 'albums', title: 'Albums' },
+    { key: 'chat', title: 'Chat' },
   ]);
-
-  const renderIcon = ({ route, color }: { route: Route; color: string }) => (
-    <Icon name={route.icon} size={24} color={color} />
-  );
 
   const renderTabBar = (
     props: SceneRendererProps & { navigationState: State }
   ) => (
     <TabBar
       {...props}
+      scrollEnabled
       indicatorStyle={styles.indicator}
-      renderIcon={renderIcon}
       style={styles.tabbar}
+      tabStyle={styles.tab}
+      labelStyle={styles.label}
     />
   );
 
@@ -63,22 +61,28 @@ const TabBarIcon = () => {
   );
 };
 
-TabBarIcon.options = {
-  title: 'Top tab bar with icons',
+ScrollableTabBar.options = {
+  title: 'Scrollable tab bar',
   headerShadowVisible: false,
   headerTintColor: '#fff',
   headerStyle: {
-    backgroundColor: '#e91e63',
+    backgroundColor: '#3f51b5',
   },
 };
 
-export default TabBarIcon;
+export default ScrollableTabBar;
 
 const styles = StyleSheet.create({
   tabbar: {
-    backgroundColor: '#e91e63',
+    backgroundColor: '#3f51b5',
+  },
+  tab: {
+    width: 120,
   },
   indicator: {
     backgroundColor: '#ffeb3b',
+  },
+  label: {
+    fontWeight: '400',
   },
 });
