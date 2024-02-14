@@ -1,6 +1,6 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)
-// swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name MedalliaDXA
+// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
+// swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name MedalliaDXA
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFoundation
 import CommonCrypto
@@ -114,27 +114,6 @@ public enum PlatformType {
     get
   }
 }
-public enum SessionReplayMode {
-  case hiFi
-  case loFi
-  case automatic
-  public static func == (a: MedalliaDXA.SessionReplayMode, b: MedalliaDXA.SessionReplayMode) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
-public enum LogLevel : Swift.Int {
-  case customer
-  case customerDebug
-  case tests
-  case developer
-  public init?(rawValue: Swift.Int)
-  public typealias RawValue = Swift.Int
-  public var rawValue: Swift.Int {
-    get
-  }
-}
 public enum MaskAutomatic {
   case labels
   case inputs
@@ -162,22 +141,8 @@ public enum MaskView {
   }
 }
 public class Configuration {
-  public var sessionReplayMode: MedalliaDXA.SessionReplayMode
-  public var endpoint: MedalliaDXA.Endpoint
-  public var logLevel: MedalliaDXA.LogLevel
   public init(account: Swift.String, property: Swift.String, consent: MedalliaDXA.Consent = .recordingAndTracking, crashReporterEnabled: Swift.Bool = true, mobileDataEnable: Swift.Bool = true, manualScreenTracking: Swift.Bool = false, enhancedLogsEnabled: Swift.Bool = false)
   @objc deinit
-}
-public enum Endpoint {
-  case production
-  case staging
-  case sigma
-  case omega
-  public static func == (a: MedalliaDXA.Endpoint, b: MedalliaDXA.Endpoint) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
 }
 extension UIKit.UIView {
   @_Concurrency.MainActor(unsafe) public var dxaMasking: MedalliaDXA.MaskView {
@@ -195,18 +160,11 @@ extension UIKit.UIView {
 }
 extension MedalliaDXA.Consent : Swift.Equatable {}
 extension MedalliaDXA.Consent : Swift.Hashable {}
-extension MedalliaDXA.Endpoint : Swift.Equatable {}
-extension MedalliaDXA.Endpoint : Swift.Hashable {}
 extension MedalliaDXA.ImageQualityType : Swift.Equatable {}
 extension MedalliaDXA.ImageQualityType : Swift.Hashable {}
 extension MedalliaDXA.ImageQualityType : Swift.RawRepresentable {}
 extension MedalliaDXA.PlatformType : Swift.Equatable {}
 extension MedalliaDXA.PlatformType : Swift.Hashable {}
-extension MedalliaDXA.SessionReplayMode : Swift.Equatable {}
-extension MedalliaDXA.SessionReplayMode : Swift.Hashable {}
-extension MedalliaDXA.LogLevel : Swift.Equatable {}
-extension MedalliaDXA.LogLevel : Swift.Hashable {}
-extension MedalliaDXA.LogLevel : Swift.RawRepresentable {}
 extension MedalliaDXA.MaskAutomatic : Swift.Equatable {}
 extension MedalliaDXA.MaskAutomatic : Swift.Hashable {}
 extension MedalliaDXA.MaskView : Swift.Equatable {}
