@@ -1,0 +1,11 @@
+framework module MedalliaDXA {
+  umbrella header "MedalliaDXA.h"
+
+  export *
+  module * { export * }
+}
+
+module MedalliaDXA.Swift {
+  header "MedalliaDXA-Swift.h"
+  requires objc
+}

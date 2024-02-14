@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.2.1"
+    classpath "com.android.tools.build:gradle:7.2.2"
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
@@ -81,7 +81,6 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
-
 }
 
 repositories {
@@ -89,7 +88,7 @@ repositories {
   google()
   ///Medallia DXA sdk nexus (Maven repo)
   maven {
-    url "https://nexus.decibel.com/repository/android-sdk-snapshot/"
+    url "https://nexus.decibel.com/repository/android-sdk"
   }
 }
 
@@ -101,8 +100,9 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  //implementation 'com.decibel:decibel-android-sdk-builder-dev:1.11.3.1'
-  implementation "com.medallia.dxa:dxa-android-builder-prod:2.0.0-050923-SNAPSHOT"
+
+  ///Medallia DXA dependency
+  implementation "com.medallia.dxa:dxa-android-builder-prod:2.2.1"
 }
 
 if (isNewArchitectureEnabled()) {

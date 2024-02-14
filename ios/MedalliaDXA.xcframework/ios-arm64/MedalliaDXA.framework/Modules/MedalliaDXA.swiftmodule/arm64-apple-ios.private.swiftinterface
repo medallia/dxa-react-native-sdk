@@ -1,0 +1,171 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
+// swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name MedalliaDXA
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import AVFoundation
+import CommonCrypto
+import Foundation
+import MapKit
+@_exported import MedalliaDXA
+import Swift
+import SwiftUI
+import SystemConfiguration
+import UIKit
+import WebKit
+import _Concurrency
+import _StringProcessing
+@available(iOS 13, *)
+extension SwiftUI.View {
+  public func dxaMaskView() -> some SwiftUI.View
+  
+}
+@available(iOS 13, *)
+extension SwiftUI.View {
+  public func dxaTrackScreen(name: Swift.String, disableRecordingOnThisScreen: Swift.Bool = false) -> some SwiftUI.View
+  
+}
+public enum Consent {
+  case recordingAndTracking
+  case tracking
+  case noConsent
+  public static func == (a: MedalliaDXA.Consent, b: MedalliaDXA.Consent) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class DXA {
+  public static func initialize(_ configuration: MedalliaDXA.Configuration)
+  public static func startNewScreen(name: Swift.String, disableRecordingOnThisScreen: Swift.Bool = false)
+  public static func stopScreen()
+  public static func setMaskingForCurrentScreen(mask: MedalliaDXA.MaskAutomatic)
+  public static func send(goal: Swift.String, with value: Swift.Float? = nil)
+  public static func send(dimension: Swift.String, value: Swift.String)
+  public static func send(dimension: Swift.String, value: Swift.Bool)
+  public static func send(dimension: Swift.String, value: Swift.Double)
+  public static func setAutomaticMask(_ maskType: MedalliaDXA.MaskAutomatic)
+  public static func mask(rect area: CoreFoundation.CGRect)
+  public static func setConsent(_ consent: MedalliaDXA.Consent)
+  public static func setImageQuality(_ quality: MedalliaDXA.ImageQualityType)
+  public static func setMaskingColor(_ color: UIKit.UIColor)
+  public static func sendHTTPError(statusCode: Swift.Int)
+  public static func sendError(_ error: Swift.String)
+  public static func formSuccess()
+  public static func formError(error: Swift.String, selector: UIKit.UIView?)
+  public static var webViewProperties: Swift.String? {
+    get
+  }
+  public static var sessionURL: ((Swift.String?) -> ())? {
+    get
+    set
+  }
+  public static var sessionId: Swift.String? {
+    get
+  }
+  public static var mobileDataEnable: Swift.Bool {
+    get
+    set
+  }
+  @objc deinit
+}
+extension MedalliaDXA.DXA {
+  public static func enableSessionForAnalytics(_ enabled: Swift.Bool)
+  public static func enableSessionForRecording(_ enabled: Swift.Bool)
+  public static func setRetention(_ enabled: Swift.Bool)
+}
+public enum ImageQualityType : Swift.Int, Swift.Codable {
+  case poor
+  case low
+  case average
+  case high
+  case ultra
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension UIKit.UIViewController {
+  @_Concurrency.MainActor(unsafe) public var dxaScreenName: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var dxaDisableRecordingOnThisScreen: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var dxaDisableAnalyticsAndRecordingOnThisScreen: Swift.Bool {
+    get
+    set
+  }
+}
+public class Platform {
+  public init(type: MedalliaDXA.PlatformType, version: Swift.String, language: Swift.String)
+  public static var native: MedalliaDXA.Platform
+  @objc deinit
+}
+public enum PlatformType {
+  case native
+  case flutter
+  case xamarin
+  public static func == (a: MedalliaDXA.PlatformType, b: MedalliaDXA.PlatformType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum MaskAutomatic {
+  case labels
+  case inputs
+  case images
+  case webViews
+  case forms
+  case all
+  case noMask
+  case unmaskInputs
+  case unmaskWebViews
+  public static func == (a: MedalliaDXA.MaskAutomatic, b: MedalliaDXA.MaskAutomatic) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum MaskView {
+  case automatic
+  case mask
+  case unmask
+  public static func == (a: MedalliaDXA.MaskView, b: MedalliaDXA.MaskView) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public class Configuration {
+  public init(account: Swift.String, property: Swift.String, consent: MedalliaDXA.Consent = .recordingAndTracking, crashReporterEnabled: Swift.Bool = true, mobileDataEnable: Swift.Bool = true, manualScreenTracking: Swift.Bool = false, enhancedLogsEnabled: Swift.Bool = false)
+  @objc deinit
+}
+extension UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public var dxaMasking: MedalliaDXA.MaskView {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var dxaFormTrack: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var dxaStringTag: Swift.String? {
+    get
+    set
+  }
+}
+extension MedalliaDXA.Consent : Swift.Equatable {}
+extension MedalliaDXA.Consent : Swift.Hashable {}
+extension MedalliaDXA.ImageQualityType : Swift.Equatable {}
+extension MedalliaDXA.ImageQualityType : Swift.Hashable {}
+extension MedalliaDXA.ImageQualityType : Swift.RawRepresentable {}
+extension MedalliaDXA.PlatformType : Swift.Equatable {}
+extension MedalliaDXA.PlatformType : Swift.Hashable {}
+extension MedalliaDXA.MaskAutomatic : Swift.Equatable {}
+extension MedalliaDXA.MaskAutomatic : Swift.Hashable {}
+extension MedalliaDXA.MaskView : Swift.Equatable {}
+extension MedalliaDXA.MaskView : Swift.Hashable {}

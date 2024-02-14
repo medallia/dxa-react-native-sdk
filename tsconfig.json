@@ -2,7 +2,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "dxa-react-native": ["./src/index"]
+      "dxa-react-native": ["./src/index"],
+      "react": [ "./node_modules/@types/react" ]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
