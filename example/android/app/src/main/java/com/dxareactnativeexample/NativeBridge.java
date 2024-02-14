@@ -19,11 +19,9 @@ public class NativeBridge extends ReactContextBaseJavaModule {
 
   @ReactMethod
 public void crashApp() {
-    new Thread(new Runnable() {
-      public void run() {
-       throw new RuntimeException("This is a Java exception");
-      }
-    }).start();
+   
+   throw new RuntimeException("This is a Java exception");
+     
 }
 
    @Override
