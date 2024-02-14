@@ -194,10 +194,10 @@ export class DXA {
         );
         entireRoute =
           entireRoute +
-          this.routeSeparator +
-          currentOnPrint.routes[currentOnPrint.index].name;
+          currentOnPrint.routes[currentOnPrint.index].name + this.routeSeparator;
         currentOnPrint = currentOnPrint.routes[currentOnPrint.index]?.state;
       } while (currentOnPrint && currentOnPrint.routes);
+      entireRoute = entireRoute.slice(0, -1);
       return entireRoute;
     } catch (ex) {
       return 'unknown';
