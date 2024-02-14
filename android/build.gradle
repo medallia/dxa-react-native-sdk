@@ -81,27 +81,6 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
-
-  // flavorDimensions = ["platform", "environment"]
-  // productFlavors {
-  //   android {
-  //     dimension "platform"
-  //   }
-  //   flutter {
-  //     dimension "platform"
-  //     versionNameSuffix "-flutter"
-  //   }
-  //   dev {
-  //     dimension "environment"
-  //   }
-  //   staging {
-  //     dimension "environment"
-  //   }
-  //   prod {
-  //     dimension "environment"
-  //   }
-  // }
-
 }
 
 repositories {
@@ -124,7 +103,6 @@ dependencies {
 
   ///Medallia DXA dependency
   implementation "com.medallia.dxa:dxa-android-builder-prod:2.2.1"
-  //implementation project(":dxa-android-builder-prod" )
 }
 
 if (isNewArchitectureEnabled()) {
