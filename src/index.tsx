@@ -100,11 +100,10 @@ export class DXA {
   // and new screen track starts.
   // @param - screenName - Name of current screen.
   startScreen(screenName: string): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'starting screen -> ', screenName);
     this.currentlyTrackingAScreen = true;
-    var alternativeScreenName = this.alternativeScreenNames.get(screenName);
-
-    return DxaReactNative.startScreen(alternativeScreenName ?? screenName);
+    var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
+    dxaLog.log('MedalliaDXA ->', 'starting screen -> ', finalScreenName);
+    return DxaReactNative.startScreen(finalScreenName);
   }
 
   stopScreen(): Promise<boolean> {
