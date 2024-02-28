@@ -3,8 +3,8 @@
 @interface RCT_EXTERN_MODULE(DxaReactNative, NSObject)
 
 RCT_EXTERN_METHOD(
-  initialize:(float)account 
-  withProperty:(float)property
+  initialize:(NSInteger)account 
+  withProperty:(NSInteger)property
   withConsents:(float)consents
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
