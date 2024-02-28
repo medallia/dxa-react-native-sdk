@@ -50,6 +50,8 @@ export class DXA {
   propertyId: number | undefined = undefined;
   consents: MedalliaDxaCustomerConsentType | undefined = undefined;
 
+  alternativeScreenNames: Map<string, string> = new Map();
+
   private routeSeparator: String = '.';
   private subscription: NativeEventSubscription | undefined;
   private navigationContainerRef: any | undefined;
@@ -100,7 +102,9 @@ export class DXA {
   startScreen(screenName: string): Promise<boolean> {
     dxaLog.log('MedalliaDXA ->', 'starting screen -> ', screenName);
     this.currentlyTrackingAScreen = true;
-    return DxaReactNative.startScreen(screenName);
+    var alternativeScreenName = this.alternativeScreenNames.get(screenName);
+
+    return DxaReactNative.startScreen(alternativeScreenName ?? screenName);
   }
 
   stopScreen(): Promise<boolean> {
@@ -182,7 +186,11 @@ export class DXA {
     return DxaReactNative.setRetention(enabled);
   }
 
-  private resolveCurrentRouteName(param: any) {
+  setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
+    this.alternativeScreenNames = alternativeScreenNames;
+  }
+
+  private resolveCurrentRouteName(param: any): string {
     try {
       let currentOnPrint: any = param.data.state;
       let entireRoute = '';
