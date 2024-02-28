@@ -5,8 +5,8 @@ class DxaReactNative: NSObject {
 
   @objc(initialize:withProperty:withConsents:withResolver:withRejecter:)
   func initialize(
-    account: Float, 
-    property: Float, 
+    account: Int, 
+    property: Int, 
     consents: Float, 
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
