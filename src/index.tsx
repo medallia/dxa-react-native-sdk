@@ -2,6 +2,7 @@ import { NativeModules, Platform } from 'react-native';
 import { DxaLog } from '../src/util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { Tracking } from './Tracking';
+import { ReactNavigation } from './NavigationLibraries';
 
 
 const LINKING_ERROR =
@@ -31,7 +32,7 @@ export class DxaConfig {
   accountId!: number;
   propertyId!: number;
   consents: MedalliaDxaCustomerConsentType | undefined = MedalliaDxaCustomerConsentType.recordingAndTracking;
-  manualTracking: boolean | undefined
+  manualTracking!: boolean;
 
   constructor(
     accountId: number,
@@ -42,7 +43,7 @@ export class DxaConfig {
     this.accountId = accountId;
     this.propertyId = propertyId;
     this.consents = consents;
-    this.manualTracking = manualTracking;
+    this.manualTracking = manualTracking ?? false;
   }
 }
 
@@ -52,8 +53,6 @@ export class DXA {
   propertyId: number | undefined = undefined;
   consents: MedalliaDxaCustomerConsentType | undefined = undefined;
 
-  private routeSeparator: String = '.';
-  private navigationContainerRef: any | undefined;
   private trackingInstance!: Tracking;
 
 
@@ -71,40 +70,29 @@ export class DXA {
       );
       return;
     }
-      dxaLog.log(
-        'MedalliaDXA ->',
-        'initializing SDK propertyId:',
-        this.accountId,
-        'accountId:',
-        this.propertyId
-      );
-      try {
-        this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
-      } catch (error) {
-        dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
-        return;
-      }
-    
-
-     this.trackingInstance= Tracking.getInstance({navigationCurrentScreenCallback: ()=>{return MedalliaDXA.resolveCurrentRouteName({
-      data: { state: this.navigationContainerRef.getRootState() },
-    })}});
+    dxaLog.log(
+      'MedalliaDXA ->',
+      'initializing SDK propertyId:',
+      this.accountId,
+      'accountId:',
+      this.propertyId
+    );
+    try {
+      this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
+    } catch (error) {
+      dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
+      return;
+    }
 
     if (navigationRef && dxaConfig.manualTracking != true) {
+      let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: navigationRef });
 
-      this.navigationContainerRef = navigationRef;
-      MedalliaDXA.startScreen(
-        MedalliaDXA.resolveCurrentRouteName({
-          data: { state: this.navigationContainerRef.getRootState() },
-        })
-      );
-
-      this.navigationContainerRef.addListener('state', (param: any) => {
-        const screenName = this.resolveCurrentRouteName(param);
-        this.stopScreen();
-        this.startScreen(screenName);
-      });
+      this.trackingInstance = Tracking.getInstance({ reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
+      return;
     }
+
+    this.trackingInstance = Tracking.getInstance({ manualTracking: dxaConfig.manualTracking });
+
   }
 
   // Starts to track a screen. If some screes is being tracked, that track will be stopped
@@ -192,35 +180,9 @@ export class DXA {
     return DxaReactNative.setRetention(enabled);
   }
 
-  private resolveCurrentRouteName(param: any) {
-    try {
-      let currentOnPrint: any = param.data.state;
-      let entireRoute = '';
-      do {
-        dxaLog.log(
-          'MedalliaDXA ->',
-          ' > detected route level:',
-          currentOnPrint
-        );
-        entireRoute =
-          entireRoute +
-          currentOnPrint.routes[currentOnPrint.index].name + this.routeSeparator;
-        currentOnPrint = currentOnPrint.routes[currentOnPrint.index]?.state;
-      } while (currentOnPrint && currentOnPrint.routes);
-      entireRoute = entireRoute.slice(0, -1);
-      return entireRoute;
-    } catch (ex) {
-      return 'unknown';
-    }
-  }
-
   setRouteSeparator(newSeparator: String) {
-    this.routeSeparator = newSeparator;
+    this.trackingInstance.setRouteSeparator(newSeparator);
   }
-
-
-  
-
 
 }
 
@@ -232,4 +194,4 @@ export { MedalliaDXA };
 export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
 export { DxaUnmask } from './DxaUnmask';
-export {DxaReactNative}
+export { DxaReactNative }

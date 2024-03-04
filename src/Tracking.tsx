@@ -2,16 +2,19 @@ import type { EmitterSubscription, NativeEventSubscription } from "react-native"
 import { AppState, Dimensions } from 'react-native';
 import { DxaLog } from "./util/DxaLog";
 import { DxaReactNative } from "dxa-react-native";
+import type { NavigationLibrary } from "./NavigationLibraries";
 
 
 const dxaLog = new DxaLog();
 
 type TrackingParams = {
-    navigationCurrentScreenCallback: () => string;
+    manualTracking: boolean;
+    reactNavigationLibrary?: NavigationLibrary | undefined;
 };
 
 export class Tracking {
     private static instance: Tracking;
+    private navigationLibrary: NavigationLibrary | undefined;
     private dimensionsSubscription: EmitterSubscription | undefined;
     private appStateSubscription: NativeEventSubscription | undefined;
 
@@ -20,20 +23,46 @@ export class Tracking {
     private currentlyTrackingAScreen: boolean = false;
 
     //create a variable to store a callback that returns a string
-    private navigationCurrentScreenCallback: () => string;
+    // private navigationCurrentScreenCallback: (screenName: string) => void;
 
-    private constructor({ navigationCurrentScreenCallback }: TrackingParams) {
-        this.navigationCurrentScreenCallback = navigationCurrentScreenCallback;
+    private constructor(params: TrackingParams) {
+        // this.navigationCurrentScreenCallback = reactNavigationLibrary.startScreenCallback;
+
+
         this.startAppStateListener();
         this.startDimensionsListener();
+        if (params.manualTracking) {
+            return;
+        }
+        if (params.reactNavigationLibrary) {
+            this.startScreen(params.reactNavigationLibrary.getScreenName());
+            this.autoTrackingSetup(params.reactNavigationLibrary);
+            return;
+        }
+        throw new Error('Tracking setup failed, please provide a valid setup');
+
     }
 
-    public static getInstance({ navigationCurrentScreenCallback }: TrackingParams): Tracking {
+    public static getInstance(params: TrackingParams): Tracking {
         if (!Tracking.instance) {
-            Tracking.instance = new Tracking({ navigationCurrentScreenCallback: navigationCurrentScreenCallback });
+            Tracking.instance = new Tracking(params);
         }
         return Tracking.instance;
     }
+
+
+
+    private autoTrackingSetup(reactNavigationLibrary: NavigationLibrary) {
+        this.navigationLibrary = reactNavigationLibrary;
+        this.navigationLibrary.addListener('startScreen', async (screenName: string) => {
+            if(this.currentlyTrackingAScreen){
+                await this.stopScreen();
+            }
+            await this.startScreen(screenName);
+
+        });
+    }
+
 
     startScreen(screenName: string): Promise<boolean> {
         dxaLog.log('MedalliaDXA ->', 'starting screen -> ', screenName);
@@ -47,6 +76,13 @@ export class Tracking {
         this.currentlyTrackingAScreen = false;
         return DxaReactNative.endScreen();
     }
+
+    setRouteSeparator(newSeparator: String) {
+        if (this.navigationLibrary) {
+            this.navigationLibrary.routeSeparator = newSeparator;
+        }
+    }
+
     private startDimensionsListener(): void {
         this.dimensionsSubscription = Dimensions.addEventListener('change', async ({ window: { width, height } }) => {
             dxaLog.log('MedalliaDXA ->',
@@ -58,7 +94,7 @@ export class Tracking {
             }
             this.screenSize = { width, height };
             await this.stopScreen();
-            this.startScreen(this.lastScreenName ?? "undefined");
+            await this.startScreen(this.lastScreenName ?? "undefined");
         });
     }
 
@@ -99,7 +135,7 @@ export class Tracking {
                 return;
             }
             this.startScreen(
-                this.navigationCurrentScreenCallback()
+                this.navigationLibrary?.getScreenName() ?? this.lastScreenName ?? "undefined"
             );
         } else if (nextAppState == 'background') {
             dxaLog.log('MedalliaDXA ->', 'App is going to background!!');
