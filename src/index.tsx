@@ -1,6 +1,8 @@
-import { NativeModules, Platform, type NativeEventSubscription, AppState } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import { DxaLog } from '../src/util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
+import { Tracking } from './Tracking';
+
 
 const LINKING_ERROR =
   `The package 'dxa-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -51,9 +53,10 @@ export class DXA {
   consents: MedalliaDxaCustomerConsentType | undefined = undefined;
 
   private routeSeparator: String = '.';
-  private subscription: NativeEventSubscription | undefined;
   private navigationContainerRef: any | undefined;
-  private currentlyTrackingAScreen: boolean = false;
+  private trackingInstance!: Tracking;
+
+
   // Initialize SDK for autotracking.
   // @param - propertyId - associated DXA client property id
   // @param - accountId - associated DXA client account id
@@ -61,7 +64,13 @@ export class DXA {
     this.accountId = dxaConfig.accountId;
     this.propertyId = dxaConfig.propertyId;
     this.consents = dxaConfig.consents;
-    if (!this.initialized) {
+    if (this.initialized) {
+      dxaLog.log(
+        'MedalliaDXA ->',
+        'SDK has already been initialized',
+      );
+      return;
+    }
       dxaLog.log(
         'MedalliaDXA ->',
         'initializing SDK propertyId:',
@@ -75,8 +84,12 @@ export class DXA {
         dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
         return;
       }
-    }
-    this.startAppStateListener();
+    
+
+     this.trackingInstance= Tracking.getInstance({navigationCurrentScreenCallback: ()=>{return MedalliaDXA.resolveCurrentRouteName({
+      data: { state: this.navigationContainerRef.getRootState() },
+    })}});
+
     if (navigationRef && dxaConfig.manualTracking != true) {
 
       this.navigationContainerRef = navigationRef;
@@ -98,15 +111,12 @@ export class DXA {
   // and new screen track starts.
   // @param - screenName - Name of current screen.
   startScreen(screenName: string): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'starting screen -> ', screenName);
-    this.currentlyTrackingAScreen = true;
-    return DxaReactNative.startScreen(screenName);
+    // dxaLog.log('MedalliaDXA ->', 'starting screen -> ', screenName);
+    return this.trackingInstance.startScreen(screenName);
   }
 
   stopScreen(): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'stopping screen.');
-    this.currentlyTrackingAScreen = false;
-    return DxaReactNative.endScreen();
+    return this.trackingInstance.stopScreen();
   }
 
   sendHttpError(errorCode: number): Promise<boolean> {
@@ -208,47 +218,10 @@ export class DXA {
     this.routeSeparator = newSeparator;
   }
 
-  private startAppStateListener(): void {
-    if (typeof this.subscription !== 'undefined') {
-      return;
-    }
-    dxaLog.log(
-      'MedalliaDXA ->',
-      'AppState event listerner(change)',
-      this.handleAppStateChange
-    );
-    this.subscription = AppState.addEventListener(
-      'change',
-      this.handleAppStateChange
-    );
-  }
 
-  private removeAppStateListener(): void {
-    dxaLog.log(
-      'MedalliaDXA ->',
-      'Unmounting DxaApp node',
-      AppState.currentState
-    );
-    this.subscription?.remove();
-    this.subscription = undefined;
-  }
+  
 
-  private handleAppStateChange = (nextAppState: any) => {
-    if (nextAppState == 'active') {
-      dxaLog.log('MedalliaDXA ->', 'App becomes to active!');
-      if (this.currentlyTrackingAScreen) {
-        return;
-      }
-      MedalliaDXA.startScreen(
-        MedalliaDXA.resolveCurrentRouteName({
-          data: { state: this.navigationContainerRef.getRootState() },
-        })
-      );
-    } else if (nextAppState == 'background') {
-      dxaLog.log('MedalliaDXA ->', 'App is going to background!!');
-      MedalliaDXA.stopScreen();
-    }
-  };
+
 }
 
 const MedalliaDXA = new DXA();
@@ -259,3 +232,4 @@ export { MedalliaDXA };
 export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
 export { DxaUnmask } from './DxaUnmask';
+export {DxaReactNative}
