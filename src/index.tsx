@@ -20,15 +20,15 @@ const DxaReactNative = NativeModules.DxaReactNative
   );
 
 export enum MedalliaDxaCustomerConsentType {
-  recordingAndTracking = 2,
-  tracking = 1,
+  analyticsAndTracking = 2,
+  analytics = 1,
   none = 0,
 }
 
 export class DxaConfig {
   accountId!: number;
   propertyId!: number;
-  consents: MedalliaDxaCustomerConsentType | undefined = MedalliaDxaCustomerConsentType.recordingAndTracking;
+  consents: MedalliaDxaCustomerConsentType | undefined = MedalliaDxaCustomerConsentType.analyticsAndTracking;
   manualTracking: boolean | undefined
 
   constructor(
