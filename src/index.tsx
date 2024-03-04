@@ -167,16 +167,6 @@ export class DXA {
     return DxaReactNative.disableAllAutoMasking();
   }
 
-  enableSessionForAnalytics(enabled: Boolean) {
-    dxaLog.log('MedalliaDXA ->', 'enableSessionForAnalytics: ', enabled);
-    return DxaReactNative.enableSessionForAnalytics(enabled);
-  }
-
-  enableSessionForRecording(enabled: Boolean) {
-    dxaLog.log('MedalliaDXA ->', 'enableSessionForRecording: ', enabled);
-    return DxaReactNative.enableSessionForRecording(enabled);
-  }
-
   setRetention(enabled: Boolean) {
     dxaLog.log('MedalliaDXA ->', 'setRetention: ', enabled);
     return DxaReactNative.setRetention(enabled);
