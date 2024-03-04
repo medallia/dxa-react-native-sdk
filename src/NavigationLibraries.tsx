@@ -7,7 +7,6 @@ const dxaLog = new DxaLog();
 
 export abstract class NavigationLibrary extends EventEmitter{
     abstract getScreenName(): string;
-    // abstract startScreenCallback: (screenName: string) => void;
     abstract routeSeparator: String;
     startScreenEventEmitter(){
         this.emit('startScreen', this.getScreenName());
@@ -23,16 +22,11 @@ type ReactNavigationParams = {
 export class ReactNavigation extends NavigationLibrary {
     private navigationContainerRef: any | undefined;
     public routeSeparator: String = '.';
-    // public startScreenCallback: (screenName: string) => void;
     private constructor({ navigationContainerRef }: ReactNavigationParams) {
         super();
         this.navigationContainerRef = navigationContainerRef;
         this.navigationContainerRef.addListener('state', () => {
             this.startScreenEventEmitter();
-
-            // this.startScreenCallback(screenName);
-            // this.stopScreen();
-            // this.startScreen(screenName);
         });
     }
     private static instance: ReactNavigation | null = null;
@@ -46,7 +40,6 @@ export class ReactNavigation extends NavigationLibrary {
 
 
     getScreenName() {
-        // Implement your get screen name logic here
         return this.resolveCurrentRouteName({
             data: { state: this.navigationContainerRef.getRootState() },
         })

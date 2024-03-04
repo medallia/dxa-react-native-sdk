@@ -12,22 +12,22 @@ type TrackingParams = {
     reactNavigationLibrary?: NavigationLibrary | undefined;
 };
 
+interface ScreenSize {
+    width: number;
+    height: number;
+}
+
 export class Tracking {
     private static instance: Tracking;
     private navigationLibrary: NavigationLibrary | undefined;
     private dimensionsSubscription: EmitterSubscription | undefined;
     private appStateSubscription: NativeEventSubscription | undefined;
-
     private lastScreenName: string | undefined;
     private screenSize: ScreenSize | undefined;
     private currentlyTrackingAScreen: boolean = false;
 
-    //create a variable to store a callback that returns a string
-    // private navigationCurrentScreenCallback: (screenName: string) => void;
 
     private constructor(params: TrackingParams) {
-        // this.navigationCurrentScreenCallback = reactNavigationLibrary.startScreenCallback;
-
 
         this.startAppStateListener();
         this.startDimensionsListener();
@@ -143,9 +143,3 @@ export class Tracking {
         }
     };
 }
-interface ScreenSize {
-    width: number;
-    height: number;
-}
-
-//   const TrackingInstance = Tracking.getInstance();

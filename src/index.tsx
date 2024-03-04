@@ -99,7 +99,6 @@ export class DXA {
   // and new screen track starts.
   // @param - screenName - Name of current screen.
   startScreen(screenName: string): Promise<boolean> {
-    // dxaLog.log('MedalliaDXA ->', 'starting screen -> ', screenName);
     return this.trackingInstance.startScreen(screenName);
   }
 
