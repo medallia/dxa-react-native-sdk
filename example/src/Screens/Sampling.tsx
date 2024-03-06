@@ -10,13 +10,11 @@ export function SamplingScreen({ navigation }: { navigation: any }) {
         <View style={{ height: 70 }}></View>
         <Text>Enable</Text>
         <Button title="SetRetention: true" onPress={() => MedalliaDXA.setRetention(true)} />
-        <Button title="enableSessionForAnalytics: true" onPress={() => MedalliaDXA.enableSessionForAnalytics(true)} />
-        <Button title="enableSessionForRecording: true" onPress={() => MedalliaDXA.enableSessionForRecording(true)} />
+
         <View style={{ height: 20 }}></View>
         <Text>Disable</Text>
         <Button title="SetRetention: false" onPress={() => MedalliaDXA.setRetention(false)} />
-        <Button title="enableSessionForAnalytics: false" onPress={() => MedalliaDXA.enableSessionForAnalytics(false)} />
-        <Button title="enableSessionForRecording: false" onPress={() => MedalliaDXA.enableSessionForRecording(false)} />
+
         <View style={{ height: 50 }}></View>
         <Button
           title="Go back"
