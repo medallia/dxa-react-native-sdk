@@ -18,9 +18,9 @@ class DxaReactNative: NSObject {
       consent: nativeConsents,
       manualScreenTracking: true
     )
-    // TODO: Delete in release
+      // TODO: Delete in release
     configuration.endpoint = .sigma
-    configuration.logLevel = .developer         
+    configuration.logLevel = .developer
 
     DXA.initialize(configuration)
     resolve(true)
@@ -173,24 +173,6 @@ class DxaReactNative: NSObject {
     reject:RCTPromiseRejectBlock
   ) {
     DXA.setAutomaticMask(.noMask)
-  }
-
-  @objc(enableSessionForAnalytics:withResolver:withRejecter:)
-  func enableSessionForAnalytics(
-    enabled: Bool,
-    resolve:RCTPromiseResolveBlock,
-    reject:RCTPromiseRejectBlock
-  ) {
-    DXA.enableSessionForAnalytics(enabled)
-  }
-
-  @objc(enableSessionForRecording:withResolver:withRejecter:)
-  func enableSessionForRecording(
-    enabled: Bool,
-    resolve:RCTPromiseResolveBlock,
-    reject:RCTPromiseRejectBlock
-  ) {
-      DXA.enableSessionForRecording(enabled)
   }
 
   @objc(setRetention:withResolver:withRejecter:)
