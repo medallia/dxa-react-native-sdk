@@ -1,7 +1,7 @@
 framework module MedalliaDXA {
   umbrella header "MedalliaDXA.h"
-
   export *
+
   module * { export * }
 }
 
