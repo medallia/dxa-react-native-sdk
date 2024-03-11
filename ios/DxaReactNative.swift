@@ -18,9 +18,6 @@ class DxaReactNative: NSObject {
       consent: nativeConsents,
       manualScreenTracking: true
     )
-      // TODO: Delete in release
-    configuration.endpoint = .sigma
-    configuration.logLevel = .developer
 
     DXA.initialize(configuration)
     resolve(true)
