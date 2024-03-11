@@ -31,7 +31,14 @@ export default function App() {
       manualTracking: false,
     },
     navigationRef
-  );
+  ).then (() => {
+    let myMap = new Map<string, string>();
+    // Set items
+    myMap.set('Screen1', 'Screen1Alternative');
+    myMap.set('Home', 'HomeAlternative');
+      MedalliaDXA.setAlternativeScreenNames(myMap);
+  });
+ 
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Screens">
