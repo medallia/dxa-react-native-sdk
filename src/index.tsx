@@ -56,6 +56,8 @@ export class DXA {
   private trackingInstance!: Tracking;
 
 
+  alternativeScreenNames: Map<string, string> = new Map();
+
   // Initialize SDK for autotracking.
   // @param - propertyId - associated DXA client property id
   // @param - accountId - associated DXA client account id
@@ -99,7 +101,8 @@ export class DXA {
   // and new screen track starts.
   // @param - screenName - Name of current screen.
   startScreen(screenName: string): Promise<boolean> {
-    return this.trackingInstance.startScreen(screenName);
+    var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
+    return this.trackingInstance.startScreen(finalScreenName);
   }
 
   stopScreen(): Promise<boolean> {
@@ -177,6 +180,10 @@ export class DXA {
   setRetention(enabled: Boolean) {
     dxaLog.log('MedalliaDXA ->', 'setRetention: ', enabled);
     return DxaReactNative.setRetention(enabled);
+  }
+
+  setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
+    this.alternativeScreenNames = alternativeScreenNames;
   }
 
   setRouteSeparator(newSeparator: String) {
