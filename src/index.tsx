@@ -1,6 +1,9 @@
-import { NativeModules, Platform, type NativeEventSubscription, AppState } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import { DxaLog } from '../src/util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
+import { Tracking } from './Tracking';
+import { ReactNavigation } from './NavigationLibraries';
+
 
 const LINKING_ERROR =
   `The package 'dxa-react-native' doesn't seem to be linked. Make sure: \n\n` +
@@ -29,7 +32,7 @@ export class DxaConfig {
   accountId!: number;
   propertyId!: number;
   consents: MedalliaDxaCustomerConsentType | undefined = MedalliaDxaCustomerConsentType.recordingAndTracking;
-  manualTracking: boolean | undefined
+  manualTracking!: boolean;
 
   constructor(
     accountId: number,
@@ -40,7 +43,7 @@ export class DxaConfig {
     this.accountId = accountId;
     this.propertyId = propertyId;
     this.consents = consents;
-    this.manualTracking = manualTracking;
+    this.manualTracking = manualTracking ?? false;
   }
 }
 
@@ -50,10 +53,9 @@ export class DXA {
   propertyId: number | undefined = undefined;
   consents: MedalliaDxaCustomerConsentType | undefined = undefined;
 
-  private routeSeparator: String = '.';
-  private subscription: NativeEventSubscription | undefined;
-  private navigationContainerRef: any | undefined;
-  private currentlyTrackingAScreen: boolean = false;
+  private trackingInstance!: Tracking;
+
+
   // Initialize SDK for autotracking.
   // @param - propertyId - associated DXA client property id
   // @param - accountId - associated DXA client account id
@@ -61,52 +63,47 @@ export class DXA {
     this.accountId = dxaConfig.accountId;
     this.propertyId = dxaConfig.propertyId;
     this.consents = dxaConfig.consents;
-    if (!this.initialized) {
+    if (this.initialized) {
       dxaLog.log(
         'MedalliaDXA ->',
-        'initializing SDK propertyId:',
-        this.accountId,
-        'accountId:',
-        this.propertyId
+        'SDK has already been initialized',
       );
-      try {
-        this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
-      } catch (error) {
-        dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
-        return;
-      }
+      return;
     }
-    this.startAppStateListener();
+    dxaLog.log(
+      'MedalliaDXA ->',
+      'initializing SDK propertyId:',
+      this.accountId,
+      'accountId:',
+      this.propertyId
+    );
+    try {
+      this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
+    } catch (error) {
+      dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
+      return;
+    }
+
     if (navigationRef && dxaConfig.manualTracking != true) {
+      let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: navigationRef });
 
-      this.navigationContainerRef = navigationRef;
-      MedalliaDXA.startScreen(
-        MedalliaDXA.resolveCurrentRouteName({
-          data: { state: this.navigationContainerRef.getRootState() },
-        })
-      );
-
-      this.navigationContainerRef.addListener('state', (param: any) => {
-        const screenName = this.resolveCurrentRouteName(param);
-        this.stopScreen();
-        this.startScreen(screenName);
-      });
+      this.trackingInstance = Tracking.getInstance({ reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
+      return;
     }
+
+    this.trackingInstance = Tracking.getInstance({ manualTracking: dxaConfig.manualTracking });
+
   }
 
   // Starts to track a screen. If some screes is being tracked, that track will be stopped
   // and new screen track starts.
   // @param - screenName - Name of current screen.
   startScreen(screenName: string): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'starting screen -> ', screenName);
-    this.currentlyTrackingAScreen = true;
-    return DxaReactNative.startScreen(screenName);
+    return this.trackingInstance.startScreen(screenName);
   }
 
   stopScreen(): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'stopping screen.');
-    this.currentlyTrackingAScreen = false;
-    return DxaReactNative.endScreen();
+    return this.trackingInstance.stopScreen();
   }
 
   sendHttpError(errorCode: number): Promise<boolean> {
@@ -182,73 +179,10 @@ export class DXA {
     return DxaReactNative.setRetention(enabled);
   }
 
-  private resolveCurrentRouteName(param: any) {
-    try {
-      let currentOnPrint: any = param.data.state;
-      let entireRoute = '';
-      do {
-        dxaLog.log(
-          'MedalliaDXA ->',
-          ' > detected route level:',
-          currentOnPrint
-        );
-        entireRoute =
-          entireRoute +
-          currentOnPrint.routes[currentOnPrint.index].name + this.routeSeparator;
-        currentOnPrint = currentOnPrint.routes[currentOnPrint.index]?.state;
-      } while (currentOnPrint && currentOnPrint.routes);
-      entireRoute = entireRoute.slice(0, -1);
-      return entireRoute;
-    } catch (ex) {
-      return 'unknown';
-    }
-  }
-
   setRouteSeparator(newSeparator: String) {
-    this.routeSeparator = newSeparator;
+    this.trackingInstance.setRouteSeparator(newSeparator);
   }
 
-  private startAppStateListener(): void {
-    if (typeof this.subscription !== 'undefined') {
-      return;
-    }
-    dxaLog.log(
-      'MedalliaDXA ->',
-      'AppState event listerner(change)',
-      this.handleAppStateChange
-    );
-    this.subscription = AppState.addEventListener(
-      'change',
-      this.handleAppStateChange
-    );
-  }
-
-  private removeAppStateListener(): void {
-    dxaLog.log(
-      'MedalliaDXA ->',
-      'Unmounting DxaApp node',
-      AppState.currentState
-    );
-    this.subscription?.remove();
-    this.subscription = undefined;
-  }
-
-  private handleAppStateChange = (nextAppState: any) => {
-    if (nextAppState == 'active') {
-      dxaLog.log('MedalliaDXA ->', 'App becomes to active!');
-      if (this.currentlyTrackingAScreen) {
-        return;
-      }
-      MedalliaDXA.startScreen(
-        MedalliaDXA.resolveCurrentRouteName({
-          data: { state: this.navigationContainerRef.getRootState() },
-        })
-      );
-    } else if (nextAppState == 'background') {
-      dxaLog.log('MedalliaDXA ->', 'App is going to background!!');
-      MedalliaDXA.stopScreen();
-    }
-  };
 }
 
 const MedalliaDXA = new DXA();
@@ -259,3 +193,4 @@ export { MedalliaDXA };
 export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
 export { DxaUnmask } from './DxaUnmask';
+export { DxaReactNative }
