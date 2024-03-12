@@ -39,7 +39,7 @@ allprojects {
     mavenCentral()
     ///Medallia DXA sdk nexus (Maven repo)
     maven {
-      url "https://nexus.decibel.com/repository/android-sdk/"
+      url "https://nexus.decibel.com/repository/android-sdk-snapshot/"
     }
   }
 }
