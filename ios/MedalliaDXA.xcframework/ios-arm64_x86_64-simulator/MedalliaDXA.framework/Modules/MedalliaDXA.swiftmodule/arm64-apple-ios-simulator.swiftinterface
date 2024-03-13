@@ -69,8 +69,6 @@ public enum Consent {
   @objc deinit
 }
 extension MedalliaDXA.DXA {
-  public static func enableSessionForAnalytics(_ enabled: Swift.Bool)
-  public static func enableSessionForRecording(_ enabled: Swift.Bool)
   public static func setRetention(_ enabled: Swift.Bool)
 }
 public enum ImageQualityType : Swift.Int, Swift.Codable {

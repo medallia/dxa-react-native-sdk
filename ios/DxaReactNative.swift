@@ -5,8 +5,8 @@ class DxaReactNative: NSObject {
 
   @objc(initialize:withProperty:withConsents:withResolver:withRejecter:)
   func initialize(
-    account: Float, 
-    property: Float, 
+    account: Int, 
+    property: Int, 
     consents: Float, 
     resolve:RCTPromiseResolveBlock,
     reject:RCTPromiseRejectBlock
@@ -170,24 +170,6 @@ class DxaReactNative: NSObject {
     reject:RCTPromiseRejectBlock
   ) {
     DXA.setAutomaticMask(.noMask)
-  }
-
-  @objc(enableSessionForAnalytics:withResolver:withRejecter:)
-  func enableSessionForAnalytics(
-    enabled: Bool,
-    resolve:RCTPromiseResolveBlock,
-    reject:RCTPromiseRejectBlock
-  ) {
-    DXA.enableSessionForAnalytics(enabled)
-  }
-
-  @objc(enableSessionForRecording:withResolver:withRejecter:)
-  func enableSessionForRecording(
-    enabled: Bool,
-    resolve:RCTPromiseResolveBlock,
-    reject:RCTPromiseRejectBlock
-  ) {
-      DXA.enableSessionForRecording(enabled)
   }
 
   @objc(setRetention:withResolver:withRejecter:)
