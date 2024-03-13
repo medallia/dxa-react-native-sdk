@@ -150,16 +150,6 @@ class DxaReactNativeModule(
   }
 
   @ReactMethod
-  fun enableSessionForAnalytics(enabled: Boolean) {
-    dxa.enableSessionForAnalytics(enabled)
-  }
-
-  @ReactMethod
-  fun enableSessionForRecording(enabled: Boolean) {
-    dxa.enableSessionForRecording(enabled)
-  }
-
-  @ReactMethod
   fun setRetention(enabled: Boolean) {
     dxa.setRetention(enabled)
   }

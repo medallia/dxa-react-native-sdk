@@ -55,9 +55,6 @@ export class DXA {
 
   private trackingInstance!: Tracking;
 
-
-  alternativeScreenNames: Map<string, string> = new Map();
-
   // Initialize SDK for autotracking.
   // @param - propertyId - associated DXA client property id
   // @param - accountId - associated DXA client account id
@@ -97,12 +94,10 @@ export class DXA {
 
   }
 
-  // Starts to track a screen. If some screes is being tracked, that track will be stopped
-  // and new screen track starts.
+  // Starts to track a screen. If another screen is being tracked, it will be stopped.
   // @param - screenName - Name of current screen.
   startScreen(screenName: string): Promise<boolean> {
-    var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
-    return this.trackingInstance.startScreen(finalScreenName);
+    return this.trackingInstance.startScreen(screenName);
   }
 
   stopScreen(): Promise<boolean> {
@@ -167,23 +162,13 @@ export class DXA {
     return DxaReactNative.disableAllAutoMasking();
   }
 
-  enableSessionForAnalytics(enabled: Boolean) {
-    dxaLog.log('MedalliaDXA ->', 'enableSessionForAnalytics: ', enabled);
-    return DxaReactNative.enableSessionForAnalytics(enabled);
-  }
-
-  enableSessionForRecording(enabled: Boolean) {
-    dxaLog.log('MedalliaDXA ->', 'enableSessionForRecording: ', enabled);
-    return DxaReactNative.enableSessionForRecording(enabled);
-  }
-
   setRetention(enabled: Boolean) {
     dxaLog.log('MedalliaDXA ->', 'setRetention: ', enabled);
     return DxaReactNative.setRetention(enabled);
   }
 
   setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
-    this.alternativeScreenNames = alternativeScreenNames;
+    this.trackingInstance.setAlternativeScreenName(alternativeScreenNames);
   }
 
   setRouteSeparator(newSeparator: String) {

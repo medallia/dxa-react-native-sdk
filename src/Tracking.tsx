@@ -25,6 +25,7 @@ export class Tracking {
     private lastScreenName: string | undefined;
     private screenSize: ScreenSize | undefined;
     private currentlyTrackingAScreen: boolean = false;
+    private alternativeScreenNames: Map<string, string> = new Map();
 
 
     private constructor(params: TrackingParams) {
@@ -55,7 +56,7 @@ export class Tracking {
     private autoTrackingSetup(reactNavigationLibrary: NavigationLibrary) {
         this.navigationLibrary = reactNavigationLibrary;
         this.navigationLibrary.addListener('startScreen', async (screenName: string) => {
-            if(this.currentlyTrackingAScreen){
+            if (this.currentlyTrackingAScreen) {
                 await this.stopScreen();
             }
             await this.startScreen(screenName);
@@ -65,10 +66,11 @@ export class Tracking {
 
 
     startScreen(screenName: string): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'starting screen -> ', screenName);
+        var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
+        dxaLog.log('MedalliaDXA ->', 'starting screen -> ', finalScreenName);
         this.currentlyTrackingAScreen = true;
-        this.lastScreenName = screenName;
-        return DxaReactNative.startScreen(screenName);
+        this.lastScreenName = finalScreenName;
+        return DxaReactNative.startScreen(finalScreenName);
     }
 
     stopScreen(): Promise<boolean> {
@@ -81,6 +83,11 @@ export class Tracking {
         if (this.navigationLibrary) {
             this.navigationLibrary.routeSeparator = newSeparator;
         }
+    }
+
+    setAlternativeScreenName(alternativeScreenNames: Map<string, string>
+    ) {
+        this.alternativeScreenNames = alternativeScreenNames;
     }
 
     private startDimensionsListener(): void {

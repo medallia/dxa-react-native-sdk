@@ -27,11 +27,18 @@ export default function App() {
     {
       accountId: 10010,
       propertyId: 250441,
-      consents: MedalliaDxaCustomerConsentType.recordingAndTracking,
+      consents: MedalliaDxaCustomerConsentType.analyticsAndTracking,
       manualTracking: false,
     },
     navigationRef
-  );
+  ).then (() => {
+    let myMap = new Map<string, string>();
+    // Set items
+    myMap.set('Screen1', 'Screen1Alternative');
+    myMap.set('Home', 'HomeAlternative');
+      MedalliaDXA.setAlternativeScreenNames(myMap);
+  });
+ 
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Screens">
@@ -235,11 +242,11 @@ const ConsentsButtons = () => {
       />
       <Button
         title="Set consents to only tracking"
-        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.tracking)}
+        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.analytics)}
       />
       <Button
         title="Set consents to recording and tracking"
-        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.recordingAndTracking)}
+        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.analyticsAndTracking)}
       />
     </View>
   );
