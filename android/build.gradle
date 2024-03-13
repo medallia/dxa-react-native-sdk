@@ -81,27 +81,6 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
-
-  // flavorDimensions = ["platform", "environment"]
-  // productFlavors {
-  //   android {
-  //     dimension "platform"
-  //   }
-  //   flutter {
-  //     dimension "platform"
-  //     versionNameSuffix "-flutter"
-  //   }
-  //   dev {
-  //     dimension "environment"
-  //   }
-  //   staging {
-  //     dimension "environment"
-  //   }
-  //   prod {
-  //     dimension "environment"
-  //   }
-  // }
-
 }
 
 repositories {
