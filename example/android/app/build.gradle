@@ -71,15 +71,17 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 android {
     ndkVersion rootProject.ext.ndkVersion
 
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 34
 
     namespace "com.dxareactnativeexample"
     defaultConfig {
         applicationId "com.dxareactnativeexample"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
+        missingDimensionStrategy("dxa-platform", "android")
+        missingDimensionStrategy("dxa-environment", "prod")
     }
     signingConfigs {
         debug {
