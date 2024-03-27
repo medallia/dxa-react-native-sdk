@@ -154,6 +154,11 @@ class DxaReactNativeModule(
     dxa.setRetention(enabled)
   }
 
+  @ReactMethod
+  fun setMaskingColor(hexadecimalColor: String) {
+    dxa.setMaskingColor(hexadecimalColor)
+  }
+
   private fun translateConsentsToAndroid(consents: Int): CustomerConsentType {
     return when (consents) {
       1 -> CustomerConsentType.ANALYTICS

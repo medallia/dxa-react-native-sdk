@@ -111,6 +111,12 @@ RCT_EXTERN_METHOD(
   withRejecter:(RCTPromiseRejectBlock)reject
 )
 
+RCT_EXTERN_METHOD(
+  setMaskingColor:(NSString)hexadecimalColor
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
 + (BOOL)requiresMainQueueSetup
 {
   return NO;

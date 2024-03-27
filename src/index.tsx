@@ -175,6 +175,21 @@ export class DXA {
     this.trackingInstance.setRouteSeparator(newSeparator);
   }
 
+  setMaskingColor(hexadecimalColor: string) {
+    if (!this.isHexColor(hexadecimalColor)) {
+      dxaLog.log('MedalliaDXA ->', 'invalid hex color: ', hexadecimalColor, ' hex color should be in the format #RRGGBB');
+      return;
+    }
+
+    dxaLog.log('MedalliaDXA ->', 'setMaskColor: ', hexadecimalColor);
+    return DxaReactNative.setMaskingColor(hexadecimalColor);
+  }
+
+  //Checks that the hex color is in the format #RRGGBB
+  private isHexColor(hex: string): boolean {
+    const hexColorRegex = /^#([A-Fa-f0-9]{6})$/;
+    return hexColorRegex.test(hex);
+  }
 }
 
 const MedalliaDXA = new DXA();
