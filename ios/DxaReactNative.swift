@@ -192,6 +192,16 @@ class DxaReactNative: NSObject {
         resolve(true)
     }
     
+    @objc(setImageQuality:withResolver:withRejecter:)
+    func setMaskingColor(
+        imageQuality: Int,
+        resolve:RCTPromiseResolveBlock,
+        reject:RCTPromiseRejectBlock
+    ) -> Void {
+        DXA.setImageQuality(ImageQualityType(rawValue: imageQuality) ?? .average)
+        resolve(true)
+    }
+    
     private func translateConsentsToIos(flutterConsents value: Float) -> Consent{
         var nativeConsent: Consent
         

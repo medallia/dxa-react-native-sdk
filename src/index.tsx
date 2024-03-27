@@ -3,6 +3,7 @@ import { DxaLog } from '../src/util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { Tracking } from './Tracking';
 import { ReactNavigation } from './NavigationLibraries';
+import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 
 
 const LINKING_ERROR =
@@ -22,11 +23,6 @@ const DxaReactNative = NativeModules.DxaReactNative
     }
   );
 
-export enum MedalliaDxaCustomerConsentType {
-  analyticsAndTracking = 2,
-  analytics = 1,
-  none = 0,
-}
 
 export class DxaConfig {
   accountId!: number;
@@ -185,6 +181,11 @@ export class DXA {
     return DxaReactNative.setMaskingColor(hexadecimalColor);
   }
 
+  setImageQuality(quality: ImageQualityType) {
+    dxaLog.log('MedalliaDXA ->', 'setImageQuality: ', quality);
+    return DxaReactNative.setImageQuality(quality.valueOf());
+  }
+
   //Checks that the hex color is in the format #RRGGBB
   private isHexColor(hex: string): boolean {
     const hexColorRegex = /^#([A-Fa-f0-9]{6})$/;
@@ -200,4 +201,5 @@ export { MedalliaDXA };
 export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
 export { DxaUnmask } from './DxaUnmask';
+export { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 export { DxaReactNative }

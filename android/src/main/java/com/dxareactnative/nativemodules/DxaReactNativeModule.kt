@@ -10,6 +10,7 @@ import com.medallia.dxa.buildercommon.MedalliaDXA
 import com.medallia.dxa.common.enums.CustomerConsentType
 import com.medallia.dxa.common.enums.DXAConfigurationMask
 import com.medallia.dxa.common.internal.models.DXAConfig
+import com.medallia.dxa.common.internal.models.ImageQualityLevel
 
 class DxaReactNativeModule(
   private val reactContext: ReactApplicationContext
@@ -157,6 +158,21 @@ class DxaReactNativeModule(
   @ReactMethod
   fun setMaskingColor(hexadecimalColor: String) {
     dxa.setMaskingColor(hexadecimalColor)
+  }
+
+  @ReactMethod
+  fun setImageQuality(imageQuality: Int) {
+    val imageQualityLevel = when (imageQuality) {
+      0 -> ImageQualityLevel.Poor
+      1 -> ImageQualityLevel.Low
+      2 -> ImageQualityLevel.Average
+      3 -> ImageQualityLevel.High
+      4 -> ImageQualityLevel.Ultra
+      else -> {
+          ImageQualityLevel.Average
+      }
+  }
+    dxa.setImageQuality(imageQualityLevel)
   }
 
   private fun translateConsentsToAndroid(consents: Int): CustomerConsentType {
