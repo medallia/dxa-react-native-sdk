@@ -5,7 +5,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.medallia.dxa.builder.prod.DXA
+import com.medallia.dxa.DXA
 import com.medallia.dxa.buildercommon.MedalliaDXA
 import com.medallia.dxa.common.enums.CustomerConsentType
 import com.medallia.dxa.common.enums.DXAConfigurationMask

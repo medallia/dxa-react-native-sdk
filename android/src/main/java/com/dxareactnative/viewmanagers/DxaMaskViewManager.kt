@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
-import com.medallia.dxa.builder.prod.DXA
+import com.medallia.dxa.DXA
 
 class DxaMaskViewManager : ViewGroupManager<FrameLayout>() {
 
