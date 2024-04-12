@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, View, Text, FlatList, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
-import { MedalliaDXA, DxaMask, MedalliaDxaCustomerConsentType, MedalliaDxaAutomaticMask, DxaUnmask } from 'dxa-react-native';
+import { MedalliaDXA, DxaMask, MedalliaDxaCustomerConsentType, DxaUnmask, ImageQualityType } from 'dxa-react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
 
@@ -17,6 +17,7 @@ import { SamplingScreen } from './Screens/Sampling';
 import { ManualAnalyticsScreen } from './Screens/ManualAnalytics';
 import { SessionDataScreen } from './Screens/SessionData';
 import { AutoMaskingScreen } from './Screens/Automasking';
+import { SdkConfigScreen } from './Screens/SdkConfig';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -31,14 +32,14 @@ export default function App() {
       manualTracking: false,
     },
     navigationRef
-  ).then (() => {
+  ).then(() => {
     let myMap = new Map<string, string>();
     // Set items
     myMap.set('Screen1', 'Screen1Alternative');
     myMap.set('Home', 'HomeAlternative');
-      MedalliaDXA.setAlternativeScreenNames(myMap);
+    MedalliaDXA.setAlternativeScreenNames(myMap);
   });
- 
+
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Screens">
@@ -85,11 +86,15 @@ export default function App() {
         <Stack.Screen
           name="WebviewScreen"
           component={WebviewScreen}
-          options={{ title: 'Webview Screen' }}/>
+          options={{ title: 'Webview Screen' }} />
         <Stack.Screen
           name="AutoMaskingScreen"
           component={AutoMaskingScreen}
-          options={{ title: 'AutoMasking Screen' }}/>
+          options={{ title: 'AutoMasking Screen' }} />
+        <Stack.Screen
+          name="SdkConfigScreen"
+          component={SdkConfigScreen}
+          options={{ title: 'Sdk Config Screen' }} />
         {SCREEN_NAMES.map((name) => (
           <Stack.Screen
             key={name}
@@ -119,7 +124,7 @@ function Screens({ navigation }: { navigation: any }) {
     <View>
       <ScrollView>
 
-        
+
         <Button
           title='Go to Screen 1'
           onPress={() => navigation.push('Screen1')} />
@@ -158,11 +163,12 @@ function Screen1({ navigation }: { navigation: any }) {
       <Button
         title='Go to Webview Screen'
         onPress={() => navigation.push('WebviewScreen')} />
-
       <Button
-      title='Go to Automasking Screen'
-      onPress={() => navigation.push('AutoMaskingScreen')} />
-      <ConsentsButtons />
+        title='Go to SdkConfig Screen'
+        onPress={() => navigation.push('SdkConfigScreen')} />
+      <Button
+        title='Go to Automasking Screen'
+        onPress={() => navigation.push('AutoMaskingScreen')} />
       <View style={{ height: 70 }}></View>
       <Text>*****</Text>
       <Text>Text inputs for maasking test</Text>
@@ -194,12 +200,12 @@ function Screen2({ navigation }: { navigation: any }) {
       <DxaMask>
         <Text>This text should not be visible</Text>
       </DxaMask>
-      
+
       <Button
         title="Go to Characters List"
         onPress={() => navigation.push('ScreenList')}
       />
-      <ConsentsButtons />
+
 
     </View>
   );
@@ -233,24 +239,7 @@ function CharactersList() {
   );
 }
 
-const ConsentsButtons = () => {
-  return (
-    <View>
-      <Button
-        title="Set consents none"
-        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.none)}
-      />
-      <Button
-        title="Set consents to only tracking"
-        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.analytics)}
-      />
-      <Button
-        title="Set consents to recording and tracking"
-        onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.analyticsAndTracking)}
-      />
-    </View>
-  );
-}
+
 
 
 function Feed({ navigation }: { navigation: any }) {
