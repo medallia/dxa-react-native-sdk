@@ -111,10 +111,8 @@ class DxaReactNative: NSObject {
         reject:RCTPromiseRejectBlock
     ) -> Void {
         DXA.sessionURL = {sessionUrl in
-            if sessionUrl != nil {
-                resolve(sessionUrl);
-                return
-            }
+            resolve(sessionUrl);
+            return
         }
     }
     
@@ -124,10 +122,8 @@ class DxaReactNative: NSObject {
         reject:RCTPromiseRejectBlock
     ) -> Void {
         let sessionId = DXA.sessionId
-        if sessionId != nil {
             resolve(sessionId);
             return
-        }
     }
     
     @objc(getWebViewProperties:withRejecter:)
@@ -136,11 +132,10 @@ class DxaReactNative: NSObject {
         reject:RCTPromiseRejectBlock
     ) -> Void {
         let webViewProperties = DXA.webViewProperties
-        if webViewProperties != nil {
             resolve(webViewProperties);
             return
-        }
     }
+
     @objc(setConsents:withResolver:withRejecter:)
     func setConsents(
         consents: Float,
