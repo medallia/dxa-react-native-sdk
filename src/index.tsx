@@ -128,17 +128,17 @@ export class DXA {
     return DxaReactNative.setDimensionWithBool(dimensionName, boolValue);
   }
 
-  getSessionUrl(): Promise<string> {
+  getSessionUrl(): Promise<string | null> {
     dxaLog.log('MedalliaDXA ->', 'getSessionUrl');
     return DxaReactNative.getSessionUrl();
   }
 
-  getSessionId(): Promise<string> {
+  getSessionId(): Promise<string | null> {
     dxaLog.log('MedalliaDXA ->', 'getSessionId');
     return DxaReactNative.getSessionId();
   }
 
-  getWebViewProperties(): Promise<string> {
+  getWebViewProperties(): Promise<string | null> {
     dxaLog.log('MedalliaDXA ->', 'getWebViewProperties');
     return DxaReactNative.getWebViewProperties();
   }
