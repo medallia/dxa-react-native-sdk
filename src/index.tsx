@@ -82,11 +82,11 @@ export class DXA {
     if (navigationRef && dxaConfig.manualTracking != true) {
       let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: navigationRef });
 
-      this.trackingInstance = Tracking.getInstance({ reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
+      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
       return;
     }
 
-    this.trackingInstance = Tracking.getInstance({ manualTracking: dxaConfig.manualTracking });
+    this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: dxaConfig.manualTracking });
 
   }
 
@@ -202,4 +202,3 @@ export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
 export { DxaUnmask } from './DxaUnmask';
 export { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
-export { DxaReactNative }
