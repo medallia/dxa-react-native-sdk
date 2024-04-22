@@ -17,7 +17,8 @@ interface ScreenSize {
     height: number;
 }
 
-export class Tracking {
+export class Tracking extends Blockable {
+
     private static instance: Tracking;
     private dxaNativeModule: NativeModulesStatic;
     private navigationLibrary: NavigationLibrary | undefined;
@@ -30,6 +31,7 @@ export class Tracking {
 
 
     private constructor(params: TrackingParams) {
+        super();
         this.dxaNativeModule = params.dxaNativeModule;
         this.startAppStateListener();
         this.startDimensionsListener();
@@ -52,19 +54,11 @@ export class Tracking {
         return Tracking.instance;
     }
 
-
-
-    private autoTrackingSetup(reactNavigationLibrary: NavigationLibrary) {
-        this.navigationLibrary = reactNavigationLibrary;
-        this.navigationLibrary.addListener('startScreen', async (screenName: string) => {
-            if (this.currentlyTrackingAScreen) {
-                await this.stopScreen();
-            }
-            await this.startScreen(screenName);
-
-        });
+    public executeBlock(): void {
+        this.removeAppStateListener();
+        this.removeDimensionsListener();
+        this.removeAutoTrackingSetup();
     }
-
 
     startScreen(screenName: string): Promise<boolean> {
         var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
@@ -89,6 +83,21 @@ export class Tracking {
     setAlternativeScreenName(alternativeScreenNames: Map<string, string>
     ) {
         this.alternativeScreenNames = alternativeScreenNames;
+    }
+
+    private autoTrackingSetup(reactNavigationLibrary: NavigationLibrary) {
+        this.navigationLibrary = reactNavigationLibrary;
+        this.navigationLibrary.startScreenListener(async (screenName: string) => {
+            if (this.currentlyTrackingAScreen) {
+                await this.stopScreen();
+            }
+            await this.startScreen(screenName);
+
+        });
+    }
+
+    private removeAutoTrackingSetup() {
+        this.navigationLibrary?.removeStartScreenListener();
     }
 
     private startDimensionsListener(): void {

@@ -1,4 +1,4 @@
-import EventEmitter from 'react-native/Libraries/vendor/emitter/EventEmitter';
+import EventEmitter, { type EmitterSubscription } from 'react-native/Libraries/vendor/emitter/EventEmitter';
 
 import { DxaLog } from "./util/DxaLog";
 
@@ -8,8 +8,16 @@ const dxaLog = new DxaLog();
 export abstract class NavigationLibrary extends EventEmitter{
     abstract getScreenName(): string;
     abstract routeSeparator: String;
-    startScreenEventEmitter(){
+    protected abstract removeNavigationListener(): void;
+    protected startScreenEventEmitter(){
         this.emit('startScreen', this.getScreenName());
+    }
+    startScreenListener(callback: (screenName: string) => void): EmitterSubscription {
+        return this.addListener('startScreen', callback);
+    }
+    removeStartScreenListener(){
+        this.removeNavigationListener();
+        this.removeAllListeners('startScreen');
     }
 
 }
@@ -43,6 +51,12 @@ export class ReactNavigation extends NavigationLibrary {
         return this.resolveCurrentRouteName({
             data: { state: this.navigationContainerRef.getRootState() },
         })
+    }
+
+    removeNavigationListener(){
+        this.navigationContainerRef.removeListener('state', () => {
+            this.startScreenEventEmitter();
+        });
     }
 
 
