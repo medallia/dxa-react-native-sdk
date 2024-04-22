@@ -82,11 +82,11 @@ export class DXA {
     if (navigationRef && dxaConfig.manualTracking != true) {
       let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: navigationRef });
 
-      this.trackingInstance = Tracking.getInstance({ reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
+      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
       return;
     }
 
-    this.trackingInstance = Tracking.getInstance({ manualTracking: dxaConfig.manualTracking });
+    this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: dxaConfig.manualTracking });
 
   }
 
@@ -128,17 +128,17 @@ export class DXA {
     return DxaReactNative.setDimensionWithBool(dimensionName, boolValue);
   }
 
-  getSessionUrl(): Promise<string> {
+  getSessionUrl(): Promise<string | null> {
     dxaLog.log('MedalliaDXA ->', 'getSessionUrl');
     return DxaReactNative.getSessionUrl();
   }
 
-  getSessionId(): Promise<string> {
+  getSessionId(): Promise<string | null> {
     dxaLog.log('MedalliaDXA ->', 'getSessionId');
     return DxaReactNative.getSessionId();
   }
 
-  getWebViewProperties(): Promise<string> {
+  getWebViewProperties(): Promise<string | null> {
     dxaLog.log('MedalliaDXA ->', 'getWebViewProperties');
     return DxaReactNative.getWebViewProperties();
   }
@@ -202,4 +202,3 @@ export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
 export { DxaUnmask } from './DxaUnmask';
 export { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
-export { DxaReactNative }

@@ -1,13 +1,13 @@
-import type { EmitterSubscription, NativeEventSubscription } from "react-native";
+import type { EmitterSubscription, NativeEventSubscription, NativeModulesStatic } from "react-native";
 import { AppState, Dimensions } from 'react-native';
 import { DxaLog } from "./util/DxaLog";
-import { DxaReactNative } from "dxa-react-native";
 import type { NavigationLibrary } from "./NavigationLibraries";
 
 
 const dxaLog = new DxaLog();
 
 type TrackingParams = {
+    dxaNativeModule: NativeModulesStatic;
     manualTracking: boolean;
     reactNavigationLibrary?: NavigationLibrary | undefined;
 };
@@ -19,6 +19,7 @@ interface ScreenSize {
 
 export class Tracking {
     private static instance: Tracking;
+    private dxaNativeModule: NativeModulesStatic;
     private navigationLibrary: NavigationLibrary | undefined;
     private dimensionsSubscription: EmitterSubscription | undefined;
     private appStateSubscription: NativeEventSubscription | undefined;
@@ -29,7 +30,7 @@ export class Tracking {
 
 
     private constructor(params: TrackingParams) {
-
+        this.dxaNativeModule = params.dxaNativeModule;
         this.startAppStateListener();
         this.startDimensionsListener();
         if (params.manualTracking) {
@@ -70,13 +71,13 @@ export class Tracking {
         dxaLog.log('MedalliaDXA ->', 'starting screen -> ', finalScreenName);
         this.currentlyTrackingAScreen = true;
         this.lastScreenName = finalScreenName;
-        return DxaReactNative.startScreen(finalScreenName);
+        return this.dxaNativeModule.startScreen(finalScreenName);
     }
 
     stopScreen(): Promise<boolean> {
         dxaLog.log('MedalliaDXA ->', 'stopping screen.');
         this.currentlyTrackingAScreen = false;
-        return DxaReactNative.endScreen();
+        return this.dxaNativeModule.endScreen();
     }
 
     setRouteSeparator(newSeparator: String) {
