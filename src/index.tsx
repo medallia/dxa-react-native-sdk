@@ -154,6 +154,11 @@ class DXA {
     return this.publicMethods.setDimensionWithBool(dimensionName, boolValue);
   }
 
+  sendError(error: string): Promise<boolean> {
+    dxaLog.log('MedalliaDXA ->', 'sendError -> ', error);
+    return DxaReactNative.sendError(error);
+  }
+
   getSessionUrl(): Promise<string | null> {
     return this.publicMethods.getSessionUrl();
   }
