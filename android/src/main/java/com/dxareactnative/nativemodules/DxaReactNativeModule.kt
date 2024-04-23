@@ -24,10 +24,6 @@ class DxaReactNativeModule(
 
   private lateinit var dxa: MedalliaDXA
 
-  private var setOfElementsToMask: MutableSet<DXAConfigurationMask> = mutableSetOf()
-
-  private val binderScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-
   override fun getName(): String {
     return NAME
   }
@@ -55,11 +51,11 @@ class DxaReactNativeModule(
             version = "santiLocal",
           )
         )
-        //setAutoMasking(listOf(DXAConfigurationMask.ALL))
-        promise.resolve(true)
-      }
+      
+      promise.resolve(true)
     }
   }
+}
 
   @ReactMethod
   fun startScreen(name: String, promise: Promise) {
@@ -151,17 +147,13 @@ class DxaReactNativeModule(
   }
 
   @ReactMethod
-  fun setAutoMasking(elementsToMask: Int) {
-    this.setOfElementsToMask.addAll(translateAutomaskingToAndroid(elementsToMask))
-    dxa.enableAutoMasking(
-      this.setOfElementsToMask.toList()
-    )
+  fun setAutoMasking(elementsToMask: List<Int>) {
+    dxa.enableAutoMasking(translateAutomaskingToAndroid(elementsToMask))
   }
 
   @ReactMethod
-  fun disableAllAutoMasking() {
-    setOfElementsToMask.clear()
-    dxa.disableAutoMasking(listOf(DXAConfigurationMask.ALL))
+  fun disableAllAutoMasking(elementsToUnmask: List<Int>) {
+    dxa.disableAutoMasking(translateAutomaskingToAndroid(elementsToUnmask))
   }
 
   @ReactMethod
@@ -197,18 +189,17 @@ class DxaReactNativeModule(
     }
   }
 
-  private fun translateAutomaskingToAndroid(elementsToMask: Int): List<DXAConfigurationMask> {
+  private fun translateAutomaskingToAndroid(elementsToMask: List<Int>): List<DXAConfigurationMask> {
 
-    return when (elementsToMask) {
-      0 -> listOf(DXAConfigurationMask.EDIT_TEXT, DXAConfigurationMask.TEXT_VIEW, DXAConfigurationMask.IMAGE_VIEW, DXAConfigurationMask.WEB_VIEW)
-      1 -> listOf(DXAConfigurationMask.EDIT_TEXT)
-      2 -> listOf(DXAConfigurationMask.TEXT_VIEW)
-      3 -> listOf(DXAConfigurationMask.IMAGE_VIEW)
-      4 -> listOf(DXAConfigurationMask.WEB_VIEW)
-      else ->
-        listOf()
-    }
-
+    val translatedElementsToMask: List<DXAConfigurationMask> = elementsToMask.map { element ->  when(element) {
+      0 -> DXAConfigurationMask.ALL
+      1 -> DXAConfigurationMask.EDIT_TEXT
+      2 -> DXAConfigurationMask.TEXT_VIEW
+      3 -> DXAConfigurationMask.IMAGE_VIEW
+      4 -> DXAConfigurationMask.WEB_VIEW
+      else -> DXAConfigurationMask.ALL
+    } }
+    return translatedElementsToMask
   }
 
   companion object {
