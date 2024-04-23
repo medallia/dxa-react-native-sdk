@@ -1,7 +1,8 @@
+
 class SdkBlocker {
-    private isSdkBlocked: boolean = false;
+    public isSdkBlocked: boolean = false;
     private blockableClasses: Blockable[] = []; // Initialize the callbacks property
-    
+
     public addClassToBlock(blockableClass: Blockable): void {
         this.blockableClasses.push(blockableClass);
     }
@@ -13,18 +14,20 @@ class SdkBlocker {
         });
     }
 }
-const sdkBlockerIstance = new SdkBlocker();
+
 
 abstract class Blockable {
     constructor() {
         this.subscribeToBlocker();
     }
 
-    protected subscribeToBlocker(): void{
+    protected subscribeToBlocker(): void {
         sdkBlockerIstance.addClassToBlock(this);
     }
-    
+
     abstract executeBlock(): void;
-    
+
 }
 
+const sdkBlockerIstance = new SdkBlocker();
+export { sdkBlockerIstance, Blockable };
