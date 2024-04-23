@@ -160,7 +160,8 @@ export class DXA {
     return this.publicMethods.setAutoMasking(elementsToMask);
   }
 
-  disableAllAutoMasking(): Promise<boolean> {
+
+  disableAllAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask): Promise<boolean> {
     return this.publicMethods.disableAllAutoMasking();
   }
 
