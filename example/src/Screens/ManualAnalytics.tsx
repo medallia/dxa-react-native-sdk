@@ -19,6 +19,7 @@ export function ManualAnalyticsScreen({ navigation }: { navigation: any }) {
         <View style={{ height: 50 }}></View>
         <Text>Http Error</Text>
         <Button title="send http error '500' " onPress={() => MedalliaDXA.sendHttpError(500)} />
+        <Button title="send error 'SIGKILL " onPress={() => MedalliaDXA.sendError('SIGKILL')} />
         <Button
           title="Go back"
           onPress={() => navigation.pop()}
