@@ -2,6 +2,7 @@ import type { EmitterSubscription, NativeEventSubscription, NativeModulesStatic 
 import { AppState, Dimensions } from 'react-native';
 import { DxaLog } from "./util/DxaLog";
 import type { NavigationLibrary } from "./NavigationLibraries";
+import { Blockable } from "./live_config/SdkBlocker";
 
 
 const dxaLog = new DxaLog();
