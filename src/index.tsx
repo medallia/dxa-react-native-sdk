@@ -76,8 +76,9 @@ export class DXA {
       'accountId:',
       this.propertyId
     );
+    let liveConfigData;
     try {
-      this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
+      liveConfigData = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
     } catch (error) {
       dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
       return;
@@ -86,12 +87,14 @@ export class DXA {
     if (navigationRef && dxaConfig.manualTracking != true) {
       let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: navigationRef });
 
+      //TODO
       this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
 
     } else {
-
+      //TODO
       this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: dxaConfig.manualTracking });
     }
+    this.initialized = true;
 
   }
 
