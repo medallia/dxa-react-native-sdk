@@ -11,6 +11,7 @@ type TrackingParams = {
     dxaNativeModule: NativeModulesStatic;
     manualTracking: boolean;
     reactNavigationLibrary?: NavigationLibrary | undefined;
+    disabledScreenTracking: string[];
 };
 
 interface ScreenSize {
@@ -29,11 +30,12 @@ export class Tracking extends Blockable {
     private screenSize: ScreenSize | undefined;
     private currentlyTrackingAScreen: boolean = false;
     private alternativeScreenNames: Map<string, string> = new Map();
-
+    private disabledScreenTracking: string[] = [];
 
     private constructor(params: TrackingParams) {
         super();
         this.dxaNativeModule = params.dxaNativeModule;
+        this.disabledScreenTracking = params.disabledScreenTracking;
         this.startAppStateListener();
         this.startDimensionsListener();
         if (params.manualTracking) {
@@ -63,6 +65,10 @@ export class Tracking extends Blockable {
 
     startScreen(screenName: string): Promise<boolean> {
         var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
+        if(this.disabledScreenTracking.includes(finalScreenName)){
+            dxaLog.log('MedalliaDXA ->', 'Screen tracking is disabled for screen:', finalScreenName);
+            return Promise.resolve(false);
+        }
         dxaLog.log('MedalliaDXA ->', 'starting screen -> ', finalScreenName);
         this.currentlyTrackingAScreen = true;
         this.lastScreenName = finalScreenName;
