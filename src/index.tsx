@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 import { DxaLog } from '../src/util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { Tracking } from './Tracking';
@@ -62,6 +62,7 @@ export class DXA {
     this.accountId = dxaConfig.accountId;
     this.propertyId = dxaConfig.propertyId;
     this.consents = dxaConfig.consents;
+    let sdkVersion = '0.3.0'
     if (this.initialized) {
       dxaLog.log(
         'MedalliaDXA ->',
@@ -77,8 +78,13 @@ export class DXA {
       this.propertyId
     );
     let liveConfigData;
+    
+    this.setUpNativeListeners();
     try {
-      liveConfigData = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
+      this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, (callbackResult: any) =>{
+        dxaLog.log('MedalliaDXA ->', 'initialize callback:', callbackResult);
+        liveConfigData = callbackResult;
+      });
     } catch (error) {
       dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
       return;
@@ -161,7 +167,7 @@ export class DXA {
   }
 
 
-  disableAllAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask): Promise<boolean> {
+  disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask): Promise<boolean> {
     return this.publicMethods.disableAutoMasking(elementsToUnmask);
   }
 
@@ -185,6 +191,13 @@ export class DXA {
     return this.publicMethods.setImageQuality(quality);
   }
 
+  private setUpNativeListeners() {
+    const eventEmitter = new NativeEventEmitter(NativeModules.ToastExample);
+    let eventListener = eventEmitter.addListener('EventReminder', event => {
+      console.log(event.eventProperty) // "someValue"
+    });
+
+  }
 }
 
 const MedalliaDXA = new DXA();

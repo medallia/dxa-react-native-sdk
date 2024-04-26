@@ -8,8 +8,8 @@ class DxaReactNative: NSObject {
         account: Int,
         property: Int,
         consents: Float,
-        resolve:RCTPromiseResolveBlock,
-        reject:RCTPromiseRejectBlock
+        sdkVersion: String,
+        callback:RCTResponseSenderBlock,
     ) -> Void {
         let nativeConsents: Consent = translateConsentsToIos(flutterConsents: consents)
         let configuration = Configuration(
@@ -20,7 +20,7 @@ class DxaReactNative: NSObject {
         )
         
         DXA.initialize(configuration)
-        resolve(true)
+        callback(true)
     }
     
     @objc(startScreen:withResolver:withRejecter:)
@@ -149,8 +149,8 @@ class DxaReactNative: NSObject {
         
     }
     
-    @objc(setAutoMasking:withResolver:withRejecter:)
-    func setAutoMasking(
+    @objc(enableAutoMasking:withResolver:withRejecter:)
+    func enableAutoMasking(
         elementsToMask: Float,
         resolve:RCTPromiseResolveBlock,
         reject:RCTPromiseRejectBlock
@@ -159,8 +159,8 @@ class DxaReactNative: NSObject {
         DXA.setAutomaticMask(nativeElementsToMask)
     }
     
-    @objc(disableAllAutoMasking:withRejecter:)
-    func disableAllAutoMasking(
+    @objc(disableAutoMasking:withRejecter:)
+    func disableAutoMasking(
         resolve:RCTPromiseResolveBlock,
         reject:RCTPromiseRejectBlock
     ) {

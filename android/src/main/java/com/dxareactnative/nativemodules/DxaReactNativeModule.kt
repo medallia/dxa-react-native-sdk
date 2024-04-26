@@ -1,10 +1,14 @@
 package com.dxareactnative.nativemodules
 
 import android.util.Log
+import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.medallia.dxa.DXA
 import com.medallia.dxa.buildercommon.MedalliaDXA
 import com.medallia.dxa.common.enums.CustomerConsentType
@@ -13,6 +17,7 @@ import com.medallia.dxa.common.enums.PlatformType
 import com.medallia.dxa.common.internal.models.DXAConfig
 import com.medallia.dxa.common.internal.models.ImageQualityLevel
 import com.medallia.dxa.common.internal.models.Multiplatform
+import com.medallia.dxa.common.internal.models.SdkConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,8 +29,27 @@ class DxaReactNativeModule(
 
   private lateinit var dxa: MedalliaDXA
 
+  private val binderScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+  private var lastConfig: SdkConfig? = null
+
   override fun getName(): String {
     return NAME
+  }
+  private fun sendEvent(reactContext: ReactContext, eventName: String, params: WritableMap?) {
+    reactContext
+      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+      .emit(eventName, params)
+  }
+
+
+  @ReactMethod
+  fun addListener(eventName: String) {
+
+  }
+
+  @ReactMethod
+  fun removeListeners(count: Int) {
+
   }
 
   @ReactMethod
@@ -33,26 +57,37 @@ class DxaReactNativeModule(
     accountId: Int,
     propertyId: Int,
     consents: Int,
-    promise: Promise
+    sdkVersion: String,
+    callback: Callback
   ) {
+    startCollectSdkConfig()
     DXA.getInstance(reactContext.applicationContext).run {
       dxa = this
       binderScope.launch {
-        dxa.standaloneInitialize(
-          dxaConfig = DXAConfig(
+        getConfigFlow()
+        val config: SdkConfig = standaloneInitialize(
+          dxaConfig =
+          DXAConfig(
             accountId = accountId.toLong(),
             propertyId = propertyId.toLong(),
             customerConsent = translateConsentsToAndroid(consents),
             mobileDataEnabled = true,
             manualTrackingEnabled = true,
-          ),
+
+            ),
           platform = Multiplatform(
-            type = PlatformType.REACT_NATIVE,
-            version = "santiLocal",
+            type = PlatformType.ANDROID,
+            version = sdkVersion
           )
         )
-      
-      promise.resolve(true)
+       val configMap = SdkConfigInfo(
+          vcBlockedReactNativeSDKVersions = config.vcBlockedReactNativeSDKVersions,
+          vcBlockedReactNativeAppVersions = config.vcBlockedReactNativeAppVersions,
+          daShowLocalLogs = config.daShowLocalLogs,
+          dstDisableScreenTracking = config.dstDisableScreenTracking
+        ).toWritableNativeMap()
+        callback.invoke(configMap)
+      }
     }
   }
 }
@@ -175,10 +210,36 @@ class DxaReactNativeModule(
       3 -> ImageQualityLevel.High
       4 -> ImageQualityLevel.Ultra
       else -> {
-          ImageQualityLevel.Average
+        ImageQualityLevel.Average
       }
-  }
+    }
     dxa.setImageQuality(imageQualityLevel)
+  }
+
+  private fun startCollectSdkConfig() {
+    binderScope.launch {
+      dxa.getConfigFlow().collect { newConfig: SdkConfig? ->
+
+        lastConfig = newConfig
+        if (newConfig == null) {
+          return@collect
+        }
+
+
+        val configMap = SdkConfigInfo(
+          vcBlockedReactNativeSDKVersions = newConfig.vcBlockedAndroidSDKVersions,
+          vcBlockedReactNativeAppVersions = newConfig.vcBlockedReactNativeAppVersions,
+          daShowLocalLogs = newConfig.daShowLocalLogs,
+          dstDisableScreenTracking = newConfig.dstDisableScreenTracking
+        ).toWritableNativeMap()
+        configMap.putString("eventChannelId",  "live_configuration")
+
+        sendEvent(reactContext, "event", configMap)
+
+
+
+      }
+    }
   }
 
   private fun translateConsentsToAndroid(consents: Int): CustomerConsentType {
@@ -191,14 +252,16 @@ class DxaReactNativeModule(
 
   private fun translateAutomaskingToAndroid(elementsToMask: List<Int>): List<DXAConfigurationMask> {
 
-    val translatedElementsToMask: List<DXAConfigurationMask> = elementsToMask.map { element ->  when(element) {
-      0 -> DXAConfigurationMask.ALL
-      1 -> DXAConfigurationMask.EDIT_TEXT
-      2 -> DXAConfigurationMask.TEXT_VIEW
-      3 -> DXAConfigurationMask.IMAGE_VIEW
-      4 -> DXAConfigurationMask.WEB_VIEW
-      else -> DXAConfigurationMask.ALL
-    } }
+    val translatedElementsToMask: List<DXAConfigurationMask> = elementsToMask.map { element ->
+      when (element) {
+        0 -> DXAConfigurationMask.ALL
+        1 -> DXAConfigurationMask.EDIT_TEXT
+        2 -> DXAConfigurationMask.TEXT_VIEW
+        3 -> DXAConfigurationMask.IMAGE_VIEW
+        4 -> DXAConfigurationMask.WEB_VIEW
+        else -> DXAConfigurationMask.ALL
+      }
+    }
     return translatedElementsToMask
   }
 

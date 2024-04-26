@@ -6,8 +6,8 @@ RCT_EXTERN_METHOD(
   initialize:(NSInteger)account 
   withProperty:(NSInteger)property
   withConsents:(float)consents
-  withResolver:(RCTPromiseResolveBlock)resolve
-  withRejecter:(RCTPromiseRejectBlock)reject
+  withSdkVersion:(NSString)sdkVersion
+  callback:(RCTResponseSenderBlock)callback
 )
 
 RCT_EXTERN_METHOD(
@@ -83,13 +83,13 @@ RCT_EXTERN_METHOD(
 ) 
 
 RCT_EXTERN_METHOD(
-  setAutoMasking:(float)elementsToMask
+  enableAutoMasking:(float)elementsToMask
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
 
 RCT_EXTERN_METHOD(
-  disableAllAutoMasking:(RCTPromiseResolveBlock)resolve
+  disableAutoMasking:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
 
