@@ -147,12 +147,12 @@ class DxaReactNativeModule(
   }
 
   @ReactMethod
-  fun setAutoMasking(elementsToMask: List<Int>) {
+  fun enableAutoMasking(elementsToMask: List<Int>) {
     dxa.enableAutoMasking(translateAutomaskingToAndroid(elementsToMask))
   }
 
   @ReactMethod
-  fun disableAllAutoMasking(elementsToUnmask: List<Int>) {
+  fun disableAutoMasking(elementsToUnmask: List<Int>) {
     dxa.disableAutoMasking(translateAutomaskingToAndroid(elementsToUnmask))
   }
 

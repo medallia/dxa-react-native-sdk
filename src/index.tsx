@@ -156,13 +156,13 @@ export class DXA {
     return this.publicMethods.setConsents(consents);
   }
 
-  setAutoMasking(elementsToMask: MedalliaDxaAutomaticMask): Promise<boolean> {
-    return this.publicMethods.setAutoMasking(elementsToMask);
+  enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask): Promise<boolean> {
+    return this.publicMethods.enableAutoMasking(elementsToMask);
   }
 
 
   disableAllAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask): Promise<boolean> {
-    return this.publicMethods.disableAllAutoMasking();
+    return this.publicMethods.disableAutoMasking(elementsToUnmask);
   }
 
   setRetention(enabled: Boolean) {
