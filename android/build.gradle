@@ -63,7 +63,7 @@ android {
   compileSdkVersion 34
 
   defaultConfig {
-    missingDimensionStrategy("dxa-platform", "android")
+    missingDimensionStrategy("dxa-platform", "react")
     missingDimensionStrategy("dxa-environment", "prod")
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion 33
@@ -83,27 +83,6 @@ android {
     sourceCompatibility JavaVersion.VERSION_17
     targetCompatibility JavaVersion.VERSION_17
   }
-
-  // flavorDimensions = ["platform", "environment"]
-  // productFlavors {
-  //   android {
-  //     dimension "platform"
-  //   }
-  //   flutter {
-  //     dimension "platform"
-  //     versionNameSuffix "-flutter"
-  //   }
-  //   dev {
-  //     dimension "environment"
-  //   }
-  //   staging {
-  //     dimension "environment"
-  //   }
-  //   prod {
-  //     dimension "environment"
-  //   }
-  // }
-
 }
 
 repositories {

@@ -9,8 +9,14 @@ import com.medallia.dxa.DXA
 import com.medallia.dxa.buildercommon.MedalliaDXA
 import com.medallia.dxa.common.enums.CustomerConsentType
 import com.medallia.dxa.common.enums.DXAConfigurationMask
+import com.medallia.dxa.common.enums.PlatformType
 import com.medallia.dxa.common.internal.models.DXAConfig
 import com.medallia.dxa.common.internal.models.ImageQualityLevel
+import com.medallia.dxa.common.internal.models.Multiplatform
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class DxaReactNativeModule(
   private val reactContext: ReactApplicationContext
@@ -19,6 +25,8 @@ class DxaReactNativeModule(
   private lateinit var dxa: MedalliaDXA
 
   private var setOfElementsToMask: MutableSet<DXAConfigurationMask> = mutableSetOf()
+
+  private val binderScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
   override fun getName(): String {
     return NAME
@@ -33,17 +41,23 @@ class DxaReactNativeModule(
   ) {
     DXA.getInstance(reactContext.applicationContext).run {
       dxa = this
-      initialize(
-        DXAConfig(
-          accountId = accountId.toLong(),
-          propertyId = propertyId.toLong(),
-          customerConsent = translateConsentsToAndroid(consents),
-          mobileDataEnabled = true,
-          manualTrackingEnabled = true,
+      binderScope.launch {
+        dxa.standaloneInitialize(
+          dxaConfig = DXAConfig(
+            accountId = accountId.toLong(),
+            propertyId = propertyId.toLong(),
+            customerConsent = translateConsentsToAndroid(consents),
+            mobileDataEnabled = true,
+            manualTrackingEnabled = true,
+          ),
+          platform = Multiplatform(
+            type = PlatformType.REACT_NATIVE,
+            version = "santiLocal",
+          )
         )
-      )
-      setAutoMasking(listOf(DXAConfigurationMask.NO_MASK))
-      promise.resolve(true)
+        //setAutoMasking(listOf(DXAConfigurationMask.ALL))
+        promise.resolve(true)
+      }
     }
   }
 
@@ -139,7 +153,7 @@ class DxaReactNativeModule(
   @ReactMethod
   fun setAutoMasking(elementsToMask: Int) {
     this.setOfElementsToMask.addAll(translateAutomaskingToAndroid(elementsToMask))
-    dxa.setAutoMasking(
+    dxa.enableAutoMasking(
       this.setOfElementsToMask.toList()
     )
   }
@@ -147,7 +161,7 @@ class DxaReactNativeModule(
   @ReactMethod
   fun disableAllAutoMasking() {
     setOfElementsToMask.clear()
-    dxa.setAutoMasking(listOf(DXAConfigurationMask.NO_MASK))
+    dxa.disableAutoMasking(listOf(DXAConfigurationMask.ALL))
   }
 
   @ReactMethod

@@ -80,7 +80,7 @@ android {
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
-        missingDimensionStrategy("dxa-platform", "android")
+        missingDimensionStrategy("dxa-platform", "react")
         missingDimensionStrategy("dxa-environment", "prod")
     }
     signingConfigs {
@@ -103,25 +103,6 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
-  flavorDimensions = ["platform", "environment"]
-  productFlavors {
-    android {
-      dimension "platform"
-    }
-    flutter {
-      dimension "platform"
-      versionNameSuffix "-flutter"
-    }
-    dev {
-      dimension "environment"
-    }
-    staging {
-      dimension "environment"
-    }
-    prod {
-      dimension "environment"
-    }
-  }
 }
 
 dependencies {
