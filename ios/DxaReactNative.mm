@@ -1,6 +1,7 @@
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(DxaReactNative, NSObject)
+@interface RCT_EXTERN_MODULE(DxaReactNative, RCTEventEmitter)
 
 RCT_EXTERN_METHOD(
   initialize:(NSInteger)account 
