@@ -7,6 +7,8 @@ import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums'
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
 import { sdkBlockerIstance } from './live_config/SdkBlocker';
 import { BlockedPublicMethods } from './public_api/BlockedMethods';
+import { liveConfigData } from './live_config/live_config_data';
+import { SdkMetaData } from './util/MetaData';
 
 
 const LINKING_ERROR =
@@ -62,7 +64,7 @@ export class DXA {
     this.accountId = dxaConfig.accountId;
     this.propertyId = dxaConfig.propertyId;
     this.consents = dxaConfig.consents;
-    let sdkVersion = '0.3.0'
+    let sdkVersion = SdkMetaData.sdkVersion;
     if (this.initialized) {
       dxaLog.log(
         'MedalliaDXA ->',
@@ -77,28 +79,30 @@ export class DXA {
       'accountId:',
       this.propertyId
     );
-    let liveConfigData;
     
+
     this.setUpNativeListeners();
+
     try {
-      this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, (callbackResult: any) =>{
-        dxaLog.log('MedalliaDXA ->', 'initialize callback:', callbackResult);
-        liveConfigData = callbackResult;
-      });
+       await new Promise((resolve) => { DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, (callbackResult: any) => {
+        liveConfigData.fillfromNative(callbackResult);        
+        this.initialized = true;
+        resolve(true);
+      })
+    });
     } catch (error) {
       dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
       return;
     }
 
+    //TODO check for blocked SDK
     if (navigationRef && dxaConfig.manualTracking != true) {
       let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: navigationRef });
 
-      //TODO
-      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
+      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking, disabledScreenTracking: liveConfigData.disableScreenTracking });
 
     } else {
-      //TODO
-      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: dxaConfig.manualTracking });
+      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: dxaConfig.manualTracking, disabledScreenTracking: liveConfigData.disableScreenTracking });
     }
     this.initialized = true;
 
@@ -112,7 +116,7 @@ export class DXA {
     if (this.trackingInstance === undefined) {
       throw new Error('MedalliaDXA -> SDK has not been initialized correctly');
     }
-    if(this.activePublicMethpodInstance === undefined){
+    if (this.activePublicMethpodInstance === undefined) {
       this.activePublicMethpodInstance = new ActivePublicMethods(this.trackingInstance!);
     }
     return sdkBlockerIstance.isSdkBlocked ? this.blockedPublicMethods : this.activePublicMethpodInstance;
@@ -192,9 +196,18 @@ export class DXA {
   }
 
   private setUpNativeListeners() {
-    const eventEmitter = new NativeEventEmitter(NativeModules.ToastExample);
-    let eventListener = eventEmitter.addListener('EventReminder', event => {
-      console.log(event.eventProperty) // "someValue"
+
+    const eventEmitter = new NativeEventEmitter(DxaReactNative);
+    eventEmitter.addListener('dxa-event', event => {
+      dxaLog.log('MedalliaDXA ->', 'event listener:', event);
+      switch (event.eventType) {
+        case liveConfigData.eventType:
+          liveConfigData.fillfromNative(event);
+          break;
+      
+        default:
+          break;
+      }
     });
 
   }

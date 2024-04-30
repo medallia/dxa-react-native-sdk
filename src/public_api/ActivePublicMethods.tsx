@@ -1,4 +1,4 @@
-import { DxaReactNative, MedalliaDxaAutomaticMask, dxaLog } from "src/index";
+import { DxaReactNative, MedalliaDxaAutomaticMask, dxaLog } from "../index";
 import type { Tracking } from "src/Tracking";
 import type { ImageQualityType, MedalliaDxaCustomerConsentType } from "src/publicEnums";
 

@@ -31,11 +31,13 @@ export class Tracking extends Blockable {
     private currentlyTrackingAScreen: boolean = false;
     private alternativeScreenNames: Map<string, string> = new Map();
     private disabledScreenTracking: string[] = [];
+    private reactNavigationLibrary: NavigationLibrary | undefined;
 
     private constructor(params: TrackingParams) {
         super();
         this.dxaNativeModule = params.dxaNativeModule;
         this.disabledScreenTracking = params.disabledScreenTracking;
+        this.reactNavigationLibrary = params.reactNavigationLibrary;
         this.startAppStateListener();
         this.startDimensionsListener();
         if (params.manualTracking) {
@@ -58,14 +60,25 @@ export class Tracking extends Blockable {
     }
 
     public executeBlock(): void {
+        dxaLog.log('MedalliaDXA ->', 'execute block on Tracking module');
         this.removeAppStateListener();
         this.removeDimensionsListener();
         this.removeAutoTrackingSetup();
     }
 
+    public removeBlock(): void {
+        dxaLog.log('MedalliaDXA ->', 'remove block on Tracking module');
+        this.startAppStateListener();
+        this.startDimensionsListener();
+        if (this.reactNavigationLibrary) {
+            this.autoTrackingSetup(this.navigationLibrary!);
+            return;
+        }
+    }
+
     startScreen(screenName: string): Promise<boolean> {
         var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
-        if(this.disabledScreenTracking.includes(finalScreenName)){
+        if (this.disabledScreenTracking.includes(finalScreenName)) {
             dxaLog.log('MedalliaDXA ->', 'Screen tracking is disabled for screen:', finalScreenName);
             return Promise.resolve(false);
         }
@@ -104,7 +117,7 @@ export class Tracking extends Blockable {
     }
 
     private removeAutoTrackingSetup() {
-        this.navigationLibrary?.removeStartScreenListener();
+        this.navigationLibrary?.removeListeners();
     }
 
     private startDimensionsListener(): void {

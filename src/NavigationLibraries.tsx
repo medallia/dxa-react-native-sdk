@@ -5,20 +5,24 @@ import { DxaLog } from "./util/DxaLog";
 
 const dxaLog = new DxaLog();
 
-export abstract class NavigationLibrary extends EventEmitter{
+export abstract class NavigationLibrary extends EventEmitter {
     abstract getScreenName(): string;
     abstract routeSeparator: String;
     protected abstract removeNavigationListener(): void;
-    protected startScreenEventEmitter(){
+    protected abstract createNavigationListener(): void;
+    protected startScreenEventEmitter() {
         this.emit('startScreen', this.getScreenName());
     }
-    startScreenListener(callback: (screenName: string) => void): EmitterSubscription {
+
+    public startScreenListener(callback: (screenName: string) => void): EmitterSubscription {
+        this.createNavigationListener();
         return this.addListener('startScreen', callback);
     }
-    removeStartScreenListener(){
+    public removeListeners() {
         this.removeNavigationListener();
         this.removeAllListeners('startScreen');
     }
+
 
 }
 
@@ -30,12 +34,10 @@ type ReactNavigationParams = {
 export class ReactNavigation extends NavigationLibrary {
     private navigationContainerRef: any | undefined;
     public routeSeparator: String = '.';
+    private unsubscribeStateListener: any | undefined;
     private constructor({ navigationContainerRef }: ReactNavigationParams) {
         super();
         this.navigationContainerRef = navigationContainerRef;
-        this.navigationContainerRef.addListener('state', () => {
-            this.startScreenEventEmitter();
-        });
     }
     private static instance: ReactNavigation | null = null;
 
@@ -53,10 +55,14 @@ export class ReactNavigation extends NavigationLibrary {
         })
     }
 
-    removeNavigationListener(){
-        this.navigationContainerRef.removeListener('state', () => {
+    protected createNavigationListener(): void {
+        this.unsubscribeStateListener = this.navigationContainerRef.addListener('state', () => {
             this.startScreenEventEmitter();
         });
+    }
+
+    removeNavigationListener() {
+        this.unsubscribeStateListener();
     }
 
 
