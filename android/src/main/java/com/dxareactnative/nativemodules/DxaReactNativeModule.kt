@@ -1,5 +1,6 @@
 package com.dxareactnative.nativemodules
 
+import SdkConfigInfo
 import android.util.Log
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.Promise
@@ -8,12 +9,14 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.medallia.dxa.DXA
 import com.medallia.dxa.buildercommon.MedalliaDXA
 import com.medallia.dxa.common.enums.CustomerConsentType
 import com.medallia.dxa.common.enums.DXAConfigurationMask
 import com.medallia.dxa.common.enums.PlatformType
+import com.medallia.dxa.common.internal.logic.providers.AppVersionProvider
 import com.medallia.dxa.common.internal.models.DXAConfig
 import com.medallia.dxa.common.internal.models.ImageQualityLevel
 import com.medallia.dxa.common.internal.models.Multiplatform
@@ -36,7 +39,7 @@ class DxaReactNativeModule(
     return NAME
   }
   private fun sendEvent(reactContext: ReactContext, eventName: String, params: WritableMap?) {
-    reactContext
+        reactContext
       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
       .emit(eventName, params)
   }
@@ -44,7 +47,7 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun addListener(eventName: String) {
-
+    
   }
 
   @ReactMethod
@@ -60,11 +63,11 @@ class DxaReactNativeModule(
     sdkVersion: String,
     callback: Callback
   ) {
-    startCollectSdkConfig()
+
     DXA.getInstance(reactContext.applicationContext).run {
       dxa = this
       binderScope.launch {
-        getConfigFlow()
+
         val config: SdkConfig = standaloneInitialize(
           dxaConfig =
           DXAConfig(
@@ -84,9 +87,11 @@ class DxaReactNativeModule(
           vcBlockedReactNativeSDKVersions = config.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = config.vcBlockedReactNativeAppVersions,
           daShowLocalLogs = config.daShowLocalLogs,
-          dstDisableScreenTracking = config.dstDisableScreenTracking
+          dstDisableScreenTracking = config.dstDisableScreenTracking,
+          appVersion = AppVersionProvider.version
         ).toWritableNativeMap()
         callback.invoke(configMap)
+        bootstrapperInitialize()
       }
     }
   }
@@ -216,6 +221,10 @@ class DxaReactNativeModule(
     dxa.setImageQuality(imageQualityLevel)
   }
 
+  private fun bootstrapperInitialize() {
+    startCollectSdkConfig()
+
+  }
   private fun startCollectSdkConfig() {
     binderScope.launch {
       dxa.getConfigFlow().collect { newConfig: SdkConfig? ->
@@ -225,16 +234,17 @@ class DxaReactNativeModule(
           return@collect
         }
 
-
+        
         val configMap = SdkConfigInfo(
-          vcBlockedReactNativeSDKVersions = newConfig.vcBlockedAndroidSDKVersions,
+          vcBlockedReactNativeSDKVersions = newConfig.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = newConfig.vcBlockedReactNativeAppVersions,
           daShowLocalLogs = newConfig.daShowLocalLogs,
-          dstDisableScreenTracking = newConfig.dstDisableScreenTracking
+          dstDisableScreenTracking = newConfig.dstDisableScreenTracking,
+          appVersion = AppVersionProvider.version
         ).toWritableNativeMap()
-        configMap.putString("eventChannelId",  "live_configuration")
 
-        sendEvent(reactContext, "event", configMap)
+
+        sendEvent(reactContext, "dxa-event", configMap)
 
 
 
