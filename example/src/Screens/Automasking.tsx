@@ -17,21 +17,21 @@ export const AutoMaskingButtons = () => {
     <View>
       <Button
         title="MedalliaDxaAutomaticMask.text"
-        onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.text)}
+        onPress={() => MedalliaDXA.enableAutoMasking(MedalliaDxaAutomaticMask.text)}
       />
       <Button
         title="MedalliaDxaAutomaticMask.images"
-        onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.images)}
+        onPress={() => MedalliaDXA.enableAutoMasking(MedalliaDxaAutomaticMask.images)}
       />
-      <Button title="MedalliaDxaAutomaticMask.inputs" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.inputs)}
+      <Button title="MedalliaDxaAutomaticMask.inputs" onPress={() => MedalliaDXA.enableAutoMasking(MedalliaDxaAutomaticMask.inputs)}
       />
-      <Button title="MedalliaDxaAutomaticMask.webViews" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.webViews)}
+      <Button title="MedalliaDxaAutomaticMask.webViews" onPress={() => MedalliaDXA.enableAutoMasking(MedalliaDxaAutomaticMask.webViews)}
       />
-      <Button title="MedalliaDxaAutomaticMask.all" onPress={() => MedalliaDXA.setAutoMasking(MedalliaDxaAutomaticMask.all)}
+      <Button title="MedalliaDxaAutomaticMask.all" onPress={() => MedalliaDXA.enableAutoMasking(MedalliaDxaAutomaticMask.all)}
       />
       <Button
         title="disableAllAutoMasking"
-        onPress={() => MedalliaDXA.disableAllAutoMasking()}
+        onPress={() => MedalliaDXA.disableAutoMasking(MedalliaDxaAutomaticMask.all)}
       />
       <Button
         title='Set masking color black'
