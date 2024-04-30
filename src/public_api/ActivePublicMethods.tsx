@@ -74,6 +74,7 @@ export class ActivePublicMethods {
     }
 
     public setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
+        dxaLog.log('MedalliaDXA ->', 'setAlternativeScreenNames: ', alternativeScreenNames);
         this.trackingInstance.setAlternativeScreenName(alternativeScreenNames);
     }
 

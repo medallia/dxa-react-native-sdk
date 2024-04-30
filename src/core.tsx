@@ -5,7 +5,7 @@ import { DxaReactNative, dxaLog } from "dxa-react-native";
 import { liveConfigData } from "./live_config/live_config_data";
 
 class Core {
-    private trackingInstance: Tracking | undefined;
+    public trackingInstance: Tracking | undefined;
     public areModulesInstantiated: boolean = false;
 
     public navigationRef: any;

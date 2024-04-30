@@ -54,7 +54,6 @@ class DXA {
   propertyId: number | undefined = undefined;
   consents: MedalliaDxaCustomerConsentType | undefined = undefined;
 
-  private trackingInstance: Tracking | undefined;
   private activePublicMethpodInstance: ActivePublicMethods | undefined;
   private blockedPublicMethods: BlockedPublicMethods = new BlockedPublicMethods();
 
@@ -122,7 +121,7 @@ class DXA {
       throw new Error('MedalliaDXA -> SDK has not been initialized correctly');
     }
     if (this.activePublicMethpodInstance === undefined) {
-      this.activePublicMethpodInstance = new ActivePublicMethods(this.trackingInstance!);
+      this.activePublicMethpodInstance = new ActivePublicMethods(core.trackingInstance!);
     }
     return this.activePublicMethpodInstance;
   }
@@ -185,6 +184,7 @@ class DXA {
   }
 
   setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
+    dxaLog.log('MedalliaDXA ->', 'publicMethods', this.publicMethods);
     return this.publicMethods.setAlternativeScreenNames(alternativeScreenNames);
   }
 
