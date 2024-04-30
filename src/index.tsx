@@ -5,7 +5,7 @@ import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums'
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
 import { sdkBlockerIstance } from './live_config/SdkBlocker';
 import { BlockedPublicMethods } from './public_api/BlockedMethods';
-import { liveConfigDataInstance } from './live_config/live_config_data';
+import { liveConfigDataInstance } from './live_config/LiveConfigData';
 import { SdkMetaData } from './util/MetaData';
 import { core } from './Core';
 import { samplingDataInstance } from './Sampling';

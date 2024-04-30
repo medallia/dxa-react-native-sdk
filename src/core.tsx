@@ -1,7 +1,7 @@
 import { Tracking } from "./Tracking";
 import { ReactNavigation } from './NavigationLibraries';
 import { DxaReactNative, dxaLog } from "dxa-react-native";
-import { liveConfigDataInstance } from "./live_config/live_config_data";
+import { liveConfigDataInstance } from "./live_config/LiveConfigData";
 
 class Core {
     public trackingInstance: Tracking | undefined;
