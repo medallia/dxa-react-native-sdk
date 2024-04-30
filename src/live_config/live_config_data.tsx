@@ -31,6 +31,7 @@ class LiveConfigData {
     }
 
     fillfromNative(data: any): void{
+        dxaLog.log("Live config data received from native: ", data);
         this._blockedRNSDKVersions = data.vcBlockedReactNativeSDKVersions as string[];
         this._blockedRNAppVersions = data.vcBlockedReactNativeAppVersions as string[];
         this._showLocalLogs = data.daShowLocalLogs as boolean; 
@@ -58,4 +59,4 @@ class LiveConfigData {
 }
 
 const liveConfigDataInstance = new LiveConfigData();
-export { liveConfigDataInstance as liveConfigData }
+export { liveConfigDataInstance }

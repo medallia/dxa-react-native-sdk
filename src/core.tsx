@@ -1,8 +1,7 @@
 import { Tracking } from "./Tracking";
-import { sdkBlockerIstance } from "./live_config/SdkBlocker";
 import { ReactNavigation } from './NavigationLibraries';
 import { DxaReactNative, dxaLog } from "dxa-react-native";
-import { liveConfigData } from "./live_config/live_config_data";
+import { liveConfigDataInstance } from "./live_config/live_config_data";
 
 class Core {
     public trackingInstance: Tracking | undefined;
@@ -20,10 +19,10 @@ class Core {
         if (this.navigationRef && this.manualTracking != true) {
           let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: this.navigationRef });
     
-          this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: this.manualTracking, disabledScreenTracking: liveConfigData.disableScreenTracking });
+          this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: this.manualTracking, disabledScreenTracking: liveConfigDataInstance.disableScreenTracking });
     
         } else {
-          this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: this.manualTracking, disabledScreenTracking: liveConfigData.disableScreenTracking });
+          this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: this.manualTracking, disabledScreenTracking: liveConfigDataInstance.disableScreenTracking });
         }
         this.areModulesInstantiated = true;
       }

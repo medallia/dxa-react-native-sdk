@@ -1,14 +1,14 @@
 import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 import { DxaLog } from '../src/util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
-import { Tracking } from './Tracking';
 import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
 import { sdkBlockerIstance } from './live_config/SdkBlocker';
 import { BlockedPublicMethods } from './public_api/BlockedMethods';
-import { liveConfigData } from './live_config/live_config_data';
+import { liveConfigDataInstance } from './live_config/live_config_data';
 import { SdkMetaData } from './util/MetaData';
-import { core } from './core';
+import { core } from './Core';
+import { samplingDataInstance } from './Sampling';
 
 
 const LINKING_ERROR =
@@ -89,7 +89,7 @@ class DXA {
     try {
       await new Promise((resolve) => {
         DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, (callbackResult: any) => {
-          liveConfigData.fillfromNative(callbackResult);
+          liveConfigDataInstance.fillfromNative(callbackResult);
           this.initialized = true;
           resolve(true);
         })
@@ -206,10 +206,12 @@ class DXA {
     eventEmitter.addListener('dxa-event', event => {
       dxaLog.log('MedalliaDXA ->', 'event listener:', event);
       switch (event.eventType) {
-        case liveConfigData.eventType:
-          liveConfigData.fillfromNative(event);
+        case liveConfigDataInstance.eventType:
+          liveConfigDataInstance.fillfromNative(event);
           break;
-
+        case samplingDataInstance.eventType:
+          samplingDataInstance.fillfromNative(event);
+          break;
         default:
           break;
       }
