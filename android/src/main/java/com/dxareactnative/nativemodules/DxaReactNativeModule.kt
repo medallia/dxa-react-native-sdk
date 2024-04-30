@@ -47,7 +47,7 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun addListener(eventName: String) {
-    
+
   }
 
   @ReactMethod
@@ -79,7 +79,7 @@ class DxaReactNativeModule(
 
             ),
           platform = Multiplatform(
-            type = PlatformType.ANDROID,
+            type = PlatformType.REACT_NATIVE,
             version = sdkVersion
           )
         )
@@ -234,7 +234,6 @@ class DxaReactNativeModule(
           return@collect
         }
 
-        
         val configMap = SdkConfigInfo(
           vcBlockedReactNativeSDKVersions = newConfig.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = newConfig.vcBlockedReactNativeAppVersions,
