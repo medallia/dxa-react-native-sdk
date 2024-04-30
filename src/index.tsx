@@ -2,13 +2,13 @@ import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 import { DxaLog } from '../src/util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { Tracking } from './Tracking';
-import { ReactNavigation } from './NavigationLibraries';
 import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
 import { sdkBlockerIstance } from './live_config/SdkBlocker';
 import { BlockedPublicMethods } from './public_api/BlockedMethods';
 import { liveConfigData } from './live_config/live_config_data';
 import { SdkMetaData } from './util/MetaData';
+import { core } from './core';
 
 
 const LINKING_ERROR =
@@ -48,7 +48,7 @@ export class DxaConfig {
   }
 }
 
-export class DXA {
+class DXA {
   initialized: boolean = false;
   accountId: number | undefined = undefined;
   propertyId: number | undefined = undefined;
@@ -57,6 +57,8 @@ export class DXA {
   private trackingInstance: Tracking | undefined;
   private activePublicMethpodInstance: ActivePublicMethods | undefined;
   private blockedPublicMethods: BlockedPublicMethods = new BlockedPublicMethods();
+
+
   // Initialize SDK for autotracking.
   // @param - propertyId - associated DXA client property id
   // @param - accountId - associated DXA client account id
@@ -64,6 +66,8 @@ export class DXA {
     this.accountId = dxaConfig.accountId;
     this.propertyId = dxaConfig.propertyId;
     this.consents = dxaConfig.consents;
+    core.manualTracking = dxaConfig.manualTracking;
+    core.navigationRef = navigationRef;
     let sdkVersion = SdkMetaData.sdkVersion;
     if (this.initialized) {
       dxaLog.log(
@@ -79,47 +83,48 @@ export class DXA {
       'accountId:',
       this.propertyId
     );
-    
+
 
     this.setUpNativeListeners();
 
     try {
-       await new Promise((resolve) => { DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, (callbackResult: any) => {
-        liveConfigData.fillfromNative(callbackResult);        
-        this.initialized = true;
-        resolve(true);
-      })
-    });
+      await new Promise((resolve) => {
+        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, (callbackResult: any) => {
+          liveConfigData.fillfromNative(callbackResult);
+          this.initialized = true;
+          resolve(true);
+        })
+      });
     } catch (error) {
       dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
       return;
     }
-
-    //TODO check for blocked SDK
-    if (navigationRef && dxaConfig.manualTracking != true) {
-      let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: navigationRef });
-
-      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking, disabledScreenTracking: liveConfigData.disableScreenTracking });
-
-    } else {
-      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: dxaConfig.manualTracking, disabledScreenTracking: liveConfigData.disableScreenTracking });
-    }
     this.initialized = true;
+    if (sdkBlockerIstance.isSdkBlocked) {
+      return;
+    }
+    core.instantiateModules();
 
   }
+
+
 
   private get publicMethods(): ActivePublicMethods {
     if (this.initialized === false) {
       throw new Error('MedalliaDXA -> SDK has not been initialized');
     }
 
-    if (this.trackingInstance === undefined) {
+    if (sdkBlockerIstance.isSdkBlocked) {
+      return this.blockedPublicMethods;
+    }
+
+    if (core.areModulesInstantiated == false) {
       throw new Error('MedalliaDXA -> SDK has not been initialized correctly');
     }
     if (this.activePublicMethpodInstance === undefined) {
       this.activePublicMethpodInstance = new ActivePublicMethods(this.trackingInstance!);
     }
-    return sdkBlockerIstance.isSdkBlocked ? this.blockedPublicMethods : this.activePublicMethpodInstance;
+    return this.activePublicMethpodInstance;
   }
 
   // Starts to track a screen. If another screen is being tracked, it will be stopped.
@@ -204,7 +209,7 @@ export class DXA {
         case liveConfigData.eventType:
           liveConfigData.fillfromNative(event);
           break;
-      
+
         default:
           break;
       }
