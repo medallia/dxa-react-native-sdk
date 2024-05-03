@@ -91,6 +91,13 @@ export class ActivePublicMethods {
         dxaLog.log('MedalliaDXA ->', 'setMaskColor: ', hexadecimalColor);
         return DxaReactNative.setMaskingColor(hexadecimalColor);
     }
+
+    public sendDataOverWifiOnly(onlyWifi: boolean) {
+        dxaLog.log('MedalliaDXA ->', 'sendDataOverWifiOnly: ', onlyWifi);
+        return DxaReactNative.sendDataOverWifiOnly(onlyWifi);
+    }
+
+
     //Checks that the hex color is in the format #RRGGBB
     isHexColor(hex: string): boolean {
         const hexColorRegex = /^#([A-Fa-f0-9]{6})$/;

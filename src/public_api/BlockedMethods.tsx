@@ -66,6 +66,10 @@ export class BlockedPublicMethods implements ActivePublicMethods {
         return;
     }
 
+    public sendDataOverWifiOnly(_onlyWifi: boolean) {
+        return;
+    }
+
     //Checks that the hex color is in the format #RRGGBB
     isHexColor(_hex: string): boolean {
         return false;
