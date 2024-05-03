@@ -32,11 +32,11 @@ class LiveConfigData {
 
     fillfromNative(data: any): void{
         dxaLog.log("Live config data received from native: ", data);
-        this._blockedRNSDKVersions = data.vcBlockedReactNativeSDKVersions as string[];
-        this._blockedRNAppVersions = data.vcBlockedReactNativeAppVersions as string[];
-        this._showLocalLogs = data.daShowLocalLogs as boolean; 
-        this._disableScreenTracking = data.dstDisableScreenTracking as string[]; 
-        this._appVersion = data.appVersion as string; 
+        this._blockedRNSDKVersions = data.vcBlockedReactNativeSDKVersions ?? this._blockedRNSDKVersions;
+        this._blockedRNAppVersions = data.vcBlockedReactNativeAppVersions ?? this._blockedRNAppVersions;
+        this._showLocalLogs = data.daShowLocalLogs ?? this._showLocalLogs; 
+        this._disableScreenTracking = data.dstDisableScreenTracking ?? this._disableScreenTracking; 
+        this._appVersion = data.appVersion ?? this._appVersion; 
         this.runTasksAfterUpdate();
 
     }
