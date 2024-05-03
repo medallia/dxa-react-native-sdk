@@ -47,10 +47,10 @@ export class BlockedPublicMethods implements ActivePublicMethods {
     public setConsents(_consents: MedalliaDxaCustomerConsentType): Promise<boolean> {
         return Promise.resolve(false);
     }
-    public enableAutoMasking(_elementsToMask: MedalliaDxaAutomaticMask): Promise<boolean> {
+    public enableAutoMasking(_elementsToMask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
         return Promise.resolve(false);
     }
-    public disableAutoMasking(): Promise<boolean> {
+    public disableAutoMasking(_elementsToUnmask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
         return Promise.resolve(false);
     }
     public setRetention(_enabled: Boolean): void {

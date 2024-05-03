@@ -58,12 +58,12 @@ export class ActivePublicMethods {
         return DxaReactNative.setConsents(consents);
     }
 
-    public enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask): Promise<boolean> {
+    public enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
         dxaLog.log('MedalliaDXA ->', 'setAutomasking', elementsToMask);
         return DxaReactNative.enableAutoMasking(elementsToMask);
     }
 
-    public disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask): Promise<boolean> {
+    public disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
         dxaLog.log('MedalliaDXA ->', 'disableAllAutoMasking');
         return DxaReactNative.disableAutoMasking(elementsToUnmask);
     }

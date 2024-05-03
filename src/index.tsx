@@ -170,12 +170,12 @@ class DXA {
     return this.publicMethods.setConsents(consents);
   }
 
-  enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask): Promise<boolean> {
+  enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
     return this.publicMethods.enableAutoMasking(elementsToMask);
   }
 
 
-  disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask): Promise<boolean> {
+  disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
     return this.publicMethods.disableAutoMasking(elementsToUnmask);
   }
 
