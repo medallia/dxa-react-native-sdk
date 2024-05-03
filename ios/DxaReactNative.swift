@@ -179,22 +179,27 @@ class DxaReactNative: RCTEventEmitter {
     
     @objc(enableAutoMasking:withResolver:withRejecter:)
     func enableAutoMasking(
-        elementsToMask: Float,
+        elementsToMask: [Float],
         resolve:RCTPromiseResolveBlock,
         reject:RCTPromiseRejectBlock
     ) {
-        //TODO
-        guard let nativeElementsToMask = translateAutomaskingToIos(elementsToMask: elementsToMask) else { return }
-        DXA.enableAutoMasking([nativeElementsToMask])
+        let transformedElements = elementsToMask.compactMap { element in
+            return translateAutomaskingToIos(elementToMask: element)
+        }
+                
+        DXA.enableAutoMasking(transformedElements)
     }
     
-    @objc(disableAutoMasking:withRejecter:)
+    @objc(disableAutoMasking:withResolver:withRejecter:)
     func disableAutoMasking(
+        elementsToUnmask: [Float],
         resolve:RCTPromiseResolveBlock,
         reject:RCTPromiseRejectBlock
     ) {
-        //TODO
-        DXA.disableAutoMasking([.all])
+        let transformedElements = elementsToUnmask.compactMap { element in
+            return translateAutomaskingToIos(elementToMask: element)
+        }
+        DXA.disableAutoMasking(transformedElements)
     }
     
     @objc(setRetention:withResolver:withRejecter:)
@@ -243,7 +248,7 @@ class DxaReactNative: RCTEventEmitter {
         return nativeConsent
     }
     
-    private func translateAutomaskingToIos(elementsToMask value: Float) -> MaskAutomatic?{
+    private func translateAutomaskingToIos(elementToMask value: Float) -> MaskAutomatic?{
         
         switch value {
         case 0:
@@ -313,17 +318,8 @@ extension DxaReactNative : DXADelegate {
         
         do {
             var dictData = [String: Any]()
-            dictData["overrideUserConfig"] = configuration.useLiveConfiguration
             dictData["disableScreenTracking"] = configuration.disableScreenTracking
-            dictData["screensMasking"] = configuration.screensMasking
-            dictData["imageQualityType"] = configuration.imageQualityType
-            dictData["videoQualityType"] = configuration.videoQualityType
-            dictData["maxScreenshots"] = configuration.maxScreenshots
-            dictData["maxScreenDuration"] = configuration.maxScreenDuration
-            dictData["maskingColor"] = configuration.maskingColor
             dictData["showLocalLogs"] = configuration.showLocalLogs
-            dictData["blockedFlutterSDKVersions"] = configuration.blockedFlutterSDKVersions
-            dictData["blockedFlutterAppVersions"] = configuration.blockedFlutterAppVersions
             dictData["vcBlockedReactNativeSDKVersions"] = configuration.blockedRNSDKVersions
             dictData["vcBlockedReactNativeAppVersions"] = configuration.blockedRNAppVersions
             dictData["appVersion"] = DXA.appVersion

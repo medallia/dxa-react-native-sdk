@@ -261,14 +261,14 @@ class DxaReactNativeModule(
 
   private fun translateAutomaskingToAndroid(elementsToMask: List<Int>): List<DXAConfigurationMask> {
 
-    val translatedElementsToMask: List<DXAConfigurationMask> = elementsToMask.map { element ->
+    val translatedElementsToMask: List<DXAConfigurationMask> = elementsToMask.mapNotNull { element ->
       when (element) {
         0 -> DXAConfigurationMask.ALL
         1 -> DXAConfigurationMask.EDIT_TEXT
         2 -> DXAConfigurationMask.TEXT_VIEW
         3 -> DXAConfigurationMask.IMAGE_VIEW
         4 -> DXAConfigurationMask.WEB_VIEW
-        else -> DXAConfigurationMask.ALL
+        else -> {null}
       }
     }
     return translatedElementsToMask
