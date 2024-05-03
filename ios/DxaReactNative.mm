@@ -91,7 +91,7 @@ RCT_EXTERN_METHOD(
 
 RCT_EXTERN_METHOD(
   disableAutoMasking:(NSArray<NSNumber *> *)elementsToUnmask
-  disableAutoMasking:(RCTPromiseResolveBlock)resolve
+  withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
 
