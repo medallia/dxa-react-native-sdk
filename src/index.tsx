@@ -1,9 +1,14 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 import { DxaLog } from '../src/util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
-import { Tracking } from './Tracking';
-import { ReactNavigation } from './NavigationLibraries';
 import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
+import { ActivePublicMethods } from './public_api/ActivePublicMethods';
+import { sdkBlockerIstance } from './live_config/SdkBlocker';
+import { BlockedPublicMethods } from './public_api/BlockedMethods';
+import { liveConfigDataInstance } from './live_config/LiveConfigData';
+import { SdkMetaData } from './util/MetaData';
+import { core } from './Core';
+import { samplingDataInstance } from './Sampling';
 
 
 const LINKING_ERROR =
@@ -12,7 +17,7 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo Go\n';
 
-const DxaReactNative = NativeModules.DxaReactNative
+export const DxaReactNative = NativeModules.DxaReactNative
   ? NativeModules.DxaReactNative
   : new Proxy(
     {},
@@ -43,13 +48,15 @@ export class DxaConfig {
   }
 }
 
-export class DXA {
+class DXA {
   initialized: boolean = false;
   accountId: number | undefined = undefined;
   propertyId: number | undefined = undefined;
   consents: MedalliaDxaCustomerConsentType | undefined = undefined;
 
-  private trackingInstance!: Tracking;
+  private activePublicMethpodInstance: ActivePublicMethods | undefined;
+  private blockedPublicMethods: BlockedPublicMethods = new BlockedPublicMethods();
+
 
   // Initialize SDK for autotracking.
   // @param - propertyId - associated DXA client property id
@@ -58,6 +65,9 @@ export class DXA {
     this.accountId = dxaConfig.accountId;
     this.propertyId = dxaConfig.propertyId;
     this.consents = dxaConfig.consents;
+    core.manualTracking = dxaConfig.manualTracking;
+    core.navigationRef = navigationRef;
+    let sdkVersion = SdkMetaData.sdkVersion;
     if (this.initialized) {
       dxaLog.log(
         'MedalliaDXA ->',
@@ -72,124 +82,141 @@ export class DXA {
       'accountId:',
       this.propertyId
     );
+
+
+    this.setUpNativeListeners();
+
     try {
-      this.initialized = await DxaReactNative.initialize(this.accountId, this.propertyId, this.consents);
+      await new Promise((resolve) => {
+        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, (callbackResult: any) => {
+          liveConfigDataInstance.fillfromNative(callbackResult);
+          this.initialized = true;
+          resolve(true);
+        })
+      });
     } catch (error) {
       dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
       return;
     }
-
-    if (navigationRef && dxaConfig.manualTracking != true) {
-      let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: navigationRef });
-
-      this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, reactNavigationLibrary: reactNavigationLibrary, manualTracking: dxaConfig.manualTracking });
+    this.initialized = true;
+    if (sdkBlockerIstance.isSdkBlocked) {
       return;
     }
+    core.instantiateModules();
 
-    this.trackingInstance = Tracking.getInstance({ dxaNativeModule: DxaReactNative, manualTracking: dxaConfig.manualTracking });
+  }
 
+
+
+  private get publicMethods(): ActivePublicMethods {
+    if (this.initialized === false) {
+      throw new Error('MedalliaDXA -> SDK has not been initialized');
+    }
+
+    if (sdkBlockerIstance.isSdkBlocked) {
+      return this.blockedPublicMethods;
+    }
+
+    if (core.areModulesInstantiated == false) {
+      throw new Error('MedalliaDXA -> SDK has not been initialized correctly');
+    }
+    if (this.activePublicMethpodInstance === undefined) {
+      this.activePublicMethpodInstance = new ActivePublicMethods(core.trackingInstance!);
+    }
+    return this.activePublicMethpodInstance;
   }
 
   // Starts to track a screen. If another screen is being tracked, it will be stopped.
   // @param - screenName - Name of current screen.
   startScreen(screenName: string): Promise<boolean> {
-    return this.trackingInstance.startScreen(screenName);
+    return this.publicMethods.startScreen(screenName);
   }
 
   stopScreen(): Promise<boolean> {
-    return this.trackingInstance.stopScreen();
+    return this.publicMethods.stopScreen();
   }
 
   sendHttpError(errorCode: number): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'send http error -> ', errorCode);
-    return DxaReactNative.sendHttpError(errorCode);
+    return this.publicMethods.sendHttpError(errorCode);
   }
 
   sendGoal(goalName: string, value?: number): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'sendGoal -> ', goalName, 'value -> ', value);
-    //React native doesn't allow nullable parameters or native modules, so 2
-    //methods are needed.
-    if (value) {
-      return DxaReactNative.sendGoalWithValue(goalName, value);
-    }
-    return DxaReactNative.sendGoal(goalName);
+    return this.publicMethods.sendGoal(goalName, value);
   }
 
   setDimensionWithString(dimensionName: string, stringValue: string): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'setDimensionWithString -> ', dimensionName, 'value -> ', stringValue);
-    return DxaReactNative.setDimensionWithString(dimensionName, stringValue);
+    return this.publicMethods.setDimensionWithString(dimensionName, stringValue);
   }
   setDimensionWithNumber(dimensionName: string, numberValue: number): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'setDimensionWithNumber -> ', dimensionName, 'value -> ', numberValue);
-    return DxaReactNative.setDimensionWithNumber(dimensionName, numberValue);
+    return this.publicMethods.setDimensionWithNumber(dimensionName, numberValue);
   }
   setDimensionWithBool(dimensionName: string, boolValue: boolean): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'setDimensionWithBool -> ', dimensionName, 'value -> ', boolValue);
-    return DxaReactNative.setDimensionWithBool(dimensionName, boolValue);
+    return this.publicMethods.setDimensionWithBool(dimensionName, boolValue);
   }
 
   getSessionUrl(): Promise<string | null> {
-    dxaLog.log('MedalliaDXA ->', 'getSessionUrl');
-    return DxaReactNative.getSessionUrl();
+    return this.publicMethods.getSessionUrl();
   }
 
   getSessionId(): Promise<string | null> {
-    dxaLog.log('MedalliaDXA ->', 'getSessionId');
-    return DxaReactNative.getSessionId();
+    return this.publicMethods.getSessionId();
   }
 
   getWebViewProperties(): Promise<string | null> {
-    dxaLog.log('MedalliaDXA ->', 'getWebViewProperties');
-    return DxaReactNative.getWebViewProperties();
+    return this.publicMethods.getWebViewProperties();
   }
 
   setConsents(consents: MedalliaDxaCustomerConsentType): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'setConsents', consents);
-    return DxaReactNative.setConsents(consents);
+    return this.publicMethods.setConsents(consents);
   }
 
-  setAutoMasking(elementsToMask: MedalliaDxaAutomaticMask): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'setAutomasking', elementsToMask);
-    return DxaReactNative.setAutoMasking(elementsToMask);
+  enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
+    return this.publicMethods.enableAutoMasking(elementsToMask);
   }
 
-  disableAllAutoMasking(): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'disableAllAutoMasking');
-    return DxaReactNative.disableAllAutoMasking();
+
+  disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
+    return this.publicMethods.disableAutoMasking(elementsToUnmask);
   }
 
   setRetention(enabled: Boolean) {
-    dxaLog.log('MedalliaDXA ->', 'setRetention: ', enabled);
-    return DxaReactNative.setRetention(enabled);
+    return this.publicMethods.setRetention(enabled);
   }
 
   setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
-    this.trackingInstance.setAlternativeScreenName(alternativeScreenNames);
+    dxaLog.log('MedalliaDXA ->', 'publicMethods', this.publicMethods);
+    return this.publicMethods.setAlternativeScreenNames(alternativeScreenNames);
   }
 
   setRouteSeparator(newSeparator: String) {
-    this.trackingInstance.setRouteSeparator(newSeparator);
+    return this.publicMethods.setRouteSeparator(newSeparator);
   }
 
   setMaskingColor(hexadecimalColor: string) {
-    if (!this.isHexColor(hexadecimalColor)) {
-      dxaLog.log('MedalliaDXA ->', 'invalid hex color: ', hexadecimalColor, ' hex color should be in the format #RRGGBB');
-      return;
-    }
-
-    dxaLog.log('MedalliaDXA ->', 'setMaskColor: ', hexadecimalColor);
-    return DxaReactNative.setMaskingColor(hexadecimalColor);
+    return this.publicMethods.setMaskingColor(hexadecimalColor);
   }
 
   setImageQuality(quality: ImageQualityType) {
-    dxaLog.log('MedalliaDXA ->', 'setImageQuality: ', quality);
-    return DxaReactNative.setImageQuality(quality.valueOf());
+    return this.publicMethods.setImageQuality(quality);
   }
 
-  //Checks that the hex color is in the format #RRGGBB
-  private isHexColor(hex: string): boolean {
-    const hexColorRegex = /^#([A-Fa-f0-9]{6})$/;
-    return hexColorRegex.test(hex);
+  private setUpNativeListeners() {
+
+    const eventEmitter = new NativeEventEmitter(DxaReactNative);
+    eventEmitter.addListener('dxa-event', event => {
+      dxaLog.log('MedalliaDXA ->', 'event listener:', event);
+      switch (event.eventType) {
+        case liveConfigDataInstance.eventType:
+          liveConfigDataInstance.fillfromNative(event);
+          break;
+        case samplingDataInstance.eventType:
+          samplingDataInstance.fillfromNative(event);
+          break;
+        default:
+          break;
+      }
+    });
+
   }
 }
 

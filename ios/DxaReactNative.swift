@@ -1,15 +1,36 @@
-import MedalliaDXA
+import MedalliaDXAReactNative
+import Foundation
+import React
 
 @objc(DxaReactNative)
-class DxaReactNative: NSObject {
+class DxaReactNative: RCTEventEmitter {
     
-    @objc(initialize:withProperty:withConsents:withResolver:withRejecter:)
+    private var hasListeners = false
+    @objc override func supportedEvents() -> [String]! {
+        return ["dxa-event"]
+    }
+
+    @objc override func startObserving() {
+        hasListeners = true 
+    }
+
+    @objc override func stopObserving() {
+        hasListeners = false 
+    }
+
+    func sendDxaEvent(withData data: [String: Any]) {
+        if hasListeners { // Add this line
+            sendEvent(withName: "dxa-event", body: data)
+        }
+    }
+
+    @objc(initialize:withProperty:withConsents:withSdkVersion:callback:)
     func initialize(
         account: Int,
         property: Int,
         consents: Float,
-        resolve:RCTPromiseResolveBlock,
-        reject:RCTPromiseRejectBlock
+        sdkVersion: String,
+        callback:RCTResponseSenderBlock
     ) -> Void {
         let nativeConsents: Consent = translateConsentsToIos(flutterConsents: consents)
         let configuration = Configuration(
@@ -19,8 +40,15 @@ class DxaReactNative: NSObject {
             manualScreenTracking: true
         )
         
-        DXA.initialize(configuration)
-        resolve(true)
+      let liveConfig = DXA.initialize(configuration: configuration, multiplatform: Platform(type: .reactNative, version: String(describing: sdkVersion), language: "TypeScript"), dxaDelegate: self)
+        var dictData = [String: Any]()
+        
+        dictData["dstDisableScreenTracking"] = liveConfig.disableScreenTracking
+        dictData["daShowLocalLogs"] = liveConfig.showLocalLogs
+        dictData["vcBlockedReactNativeSDKVersions"] = liveConfig.blockedRNSDKVersions
+        dictData["vcBlockedReactNativeAppVersions"] = liveConfig.blockedRNAppVersions
+        dictData["appVersion"] = DXA.appVersion
+        callback([dictData])
     }
     
     @objc(startScreen:withResolver:withRejecter:)
@@ -149,22 +177,29 @@ class DxaReactNative: NSObject {
         
     }
     
-    @objc(setAutoMasking:withResolver:withRejecter:)
-    func setAutoMasking(
-        elementsToMask: Float,
+    @objc(enableAutoMasking:withResolver:withRejecter:)
+    func enableAutoMasking(
+        elementsToMask: [Float],
         resolve:RCTPromiseResolveBlock,
         reject:RCTPromiseRejectBlock
     ) {
-        guard let nativeElementsToMask = translateAutomaskingToIos(elementsToMask: elementsToMask) else { return }
-        DXA.setAutomaticMask(nativeElementsToMask)
+        let transformedElements = elementsToMask.compactMap { element in
+            return translateAutomaskingToIos(elementToMask: element)
+        }
+                
+        DXA.enableAutoMasking(transformedElements)
     }
     
-    @objc(disableAllAutoMasking:withRejecter:)
-    func disableAllAutoMasking(
+    @objc(disableAutoMasking:withResolver:withRejecter:)
+    func disableAutoMasking(
+        elementsToUnmask: [Float],
         resolve:RCTPromiseResolveBlock,
         reject:RCTPromiseRejectBlock
     ) {
-        DXA.setAutomaticMask(.noMask)
+        let transformedElements = elementsToUnmask.compactMap { element in
+            return translateAutomaskingToIos(elementToMask: element)
+        }
+        DXA.disableAutoMasking(transformedElements)
     }
     
     @objc(setRetention:withResolver:withRejecter:)
@@ -202,18 +237,18 @@ class DxaReactNative: NSObject {
         
         switch value {
         case 0:
-            nativeConsent = .noConsent
+            nativeConsent = .none
         case 1:
-            nativeConsent = .tracking
+            nativeConsent = .analytics
         case 2:
-            nativeConsent = .recordingAndTracking
+            nativeConsent = .analyticsAndRecording
         default:
-            nativeConsent = .noConsent
+            nativeConsent = .none
         }
         return nativeConsent
     }
     
-    private func translateAutomaskingToIos(elementsToMask value: Float) -> MaskAutomatic?{
+    private func translateAutomaskingToIos(elementToMask value: Float) -> MaskAutomatic?{
         
         switch value {
         case 0:
@@ -255,3 +290,50 @@ class DxaReactNative: NSObject {
     
 }
 
+extension DxaReactNative : DXADelegate {
+    func performance(_ data: MedalliaDXAReactNative.PerformanceMultiplatform) {
+        
+    }
+    
+    public func sampling(_ sampling: MedalliaDXAReactNative.SamplingMultiplatform) {
+
+        do {
+            var dictData = [String: Any]()
+            dictData["stopTrackingDueToSampling"] = !sampling.stopTrackingDueToSampling
+            dictData["stopRecordingDueToSampling"] = !sampling.stopRecordingDueToSampling
+            dictData["eventType"] = "sampling_data"
+            // let dictId: [String: Any] = ["sampling_data": dictData]
+            // let jsonData = try JSONSerialization.data(withJSONObject: dictId, options: [.prettyPrinted, .sortedKeys])
+            // let jsonString = String(data: jsonData, encoding: .utf8)!
+            
+            DispatchQueue.main.async {
+                self.sendEvent(withName: "dxa-event", body: dictData)
+            }
+        } catch {
+            print("Sampling data JSON serialization error: \(error)")
+        }
+    }
+    
+    public func liveConfig(_ configuration: MedalliaDXAReactNative.LiveConfigurationMultiplatform) {
+        
+        do {
+            var dictData = [String: Any]()
+            dictData["disableScreenTracking"] = configuration.disableScreenTracking
+            dictData["showLocalLogs"] = configuration.showLocalLogs
+            dictData["vcBlockedReactNativeSDKVersions"] = configuration.blockedRNSDKVersions
+            dictData["vcBlockedReactNativeAppVersions"] = configuration.blockedRNAppVersions
+            dictData["appVersion"] = DXA.appVersion
+            dictData["eventType"] = "live_configuration"
+
+            // let dictId: [String: Any] = ["live_configuration": dictData]
+            // let jsonData = try JSONSerialization.data(withJSONObject: dictId, options: [.prettyPrinted, .sortedKeys])
+            // let jsonString = String(data: jsonData, encoding: .utf8)!
+            DispatchQueue.main.async {
+                self.sendEvent(withName: "dxa-event", body: dictData)
+            }
+        
+        } catch {
+            print("Live Config JSON serialization error: \(error)")
+        }
+    }
+}

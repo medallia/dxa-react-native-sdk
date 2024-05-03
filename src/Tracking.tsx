@@ -2,6 +2,7 @@ import type { EmitterSubscription, NativeEventSubscription, NativeModulesStatic 
 import { AppState, Dimensions } from 'react-native';
 import { DxaLog } from "./util/DxaLog";
 import type { NavigationLibrary } from "./NavigationLibraries";
+import { Blockable } from "./live_config/SdkBlocker";
 
 
 const dxaLog = new DxaLog();
@@ -10,6 +11,7 @@ type TrackingParams = {
     dxaNativeModule: NativeModulesStatic;
     manualTracking: boolean;
     reactNavigationLibrary?: NavigationLibrary | undefined;
+    disabledScreenTracking: string[];
 };
 
 interface ScreenSize {
@@ -17,7 +19,8 @@ interface ScreenSize {
     height: number;
 }
 
-export class Tracking {
+export class Tracking extends Blockable {
+
     private static instance: Tracking;
     private dxaNativeModule: NativeModulesStatic;
     private navigationLibrary: NavigationLibrary | undefined;
@@ -27,10 +30,14 @@ export class Tracking {
     private screenSize: ScreenSize | undefined;
     private currentlyTrackingAScreen: boolean = false;
     private alternativeScreenNames: Map<string, string> = new Map();
-
+    private disabledScreenTracking: string[] = [];
+    private reactNavigationLibrary: NavigationLibrary | undefined;
 
     private constructor(params: TrackingParams) {
+        super();
         this.dxaNativeModule = params.dxaNativeModule;
+        this.disabledScreenTracking = params.disabledScreenTracking;
+        this.reactNavigationLibrary = params.reactNavigationLibrary;
         this.startAppStateListener();
         this.startDimensionsListener();
         if (params.manualTracking) {
@@ -52,22 +59,29 @@ export class Tracking {
         return Tracking.instance;
     }
 
-
-
-    private autoTrackingSetup(reactNavigationLibrary: NavigationLibrary) {
-        this.navigationLibrary = reactNavigationLibrary;
-        this.navigationLibrary.addListener('startScreen', async (screenName: string) => {
-            if (this.currentlyTrackingAScreen) {
-                await this.stopScreen();
-            }
-            await this.startScreen(screenName);
-
-        });
+    public executeBlock(): void {
+        dxaLog.log('MedalliaDXA ->', 'execute block on Tracking module');
+        this.removeAppStateListener();
+        this.removeDimensionsListener();
+        this.removeAutoTrackingSetup();
     }
 
+    public removeBlock(): void {
+        dxaLog.log('MedalliaDXA ->', 'remove block on Tracking module');
+        this.startAppStateListener();
+        this.startDimensionsListener();
+        if (this.reactNavigationLibrary) {
+            this.autoTrackingSetup(this.navigationLibrary!);
+            return;
+        }
+    }
 
     startScreen(screenName: string): Promise<boolean> {
         var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
+        if (this.disabledScreenTracking.includes(finalScreenName)) {
+            dxaLog.log('MedalliaDXA ->', 'Screen tracking is disabled for screen:', finalScreenName);
+            return Promise.resolve(false);
+        }
         dxaLog.log('MedalliaDXA ->', 'starting screen -> ', finalScreenName);
         this.currentlyTrackingAScreen = true;
         this.lastScreenName = finalScreenName;
@@ -89,6 +103,21 @@ export class Tracking {
     setAlternativeScreenName(alternativeScreenNames: Map<string, string>
     ) {
         this.alternativeScreenNames = alternativeScreenNames;
+    }
+
+    private autoTrackingSetup(reactNavigationLibrary: NavigationLibrary) {
+        this.navigationLibrary = reactNavigationLibrary;
+        this.navigationLibrary.startScreenListener(async (screenName: string) => {
+            if (this.currentlyTrackingAScreen) {
+                await this.stopScreen();
+            }
+            await this.startScreen(screenName);
+
+        });
+    }
+
+    private removeAutoTrackingSetup() {
+        this.navigationLibrary?.removeListeners();
     }
 
     private startDimensionsListener(): void {

@@ -16,6 +16,7 @@ class DxaMaskViewManager : ViewGroupManager<FrameLayout>() {
     val containerView = FrameLayout(context).apply {
       id = View.generateViewId()
     }
+
     context.currentActivity?.let {
       DXA.getInstance(context).mask(it, listOf(containerView))
     }
