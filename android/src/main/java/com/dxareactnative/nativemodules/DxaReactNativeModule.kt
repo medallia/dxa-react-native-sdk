@@ -9,7 +9,6 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.WritableMap
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.medallia.dxa.DXA
@@ -39,8 +38,9 @@ class DxaReactNativeModule(
   override fun getName(): String {
     return NAME
   }
+
   private fun sendEvent(reactContext: ReactContext, eventName: String, params: WritableMap?) {
-        reactContext
+    reactContext
       .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
       .emit(eventName, params)
   }
@@ -84,7 +84,7 @@ class DxaReactNativeModule(
             version = sdkVersion
           )
         )
-       val configMap = SdkConfigInfo(
+        val configMap = SdkConfigInfo(
           vcBlockedReactNativeSDKVersions = config.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = config.vcBlockedReactNativeAppVersions,
           daShowLocalLogs = config.daShowLocalLogs,
@@ -96,7 +96,6 @@ class DxaReactNativeModule(
       }
     }
   }
-}
 
   @ReactMethod
   fun startScreen(name: String, promise: Promise) {
@@ -234,6 +233,7 @@ class DxaReactNativeModule(
     startCollectSdkConfig()
 
   }
+
   private fun startCollectSdkConfig() {
     binderScope.launch {
       dxa.getConfigFlow().collect { newConfig: SdkConfig? ->
@@ -255,7 +255,6 @@ class DxaReactNativeModule(
         sendEvent(reactContext, "dxa-event", configMap)
 
 
-
       }
     }
   }
@@ -270,16 +269,19 @@ class DxaReactNativeModule(
 
   private fun translateAutomaskingToAndroid(elementsToMask: List<Int>): List<DXAConfigurationMask> {
 
-    val translatedElementsToMask: List<DXAConfigurationMask> = elementsToMask.mapNotNull { element ->
-      when (element) {
-        0 -> DXAConfigurationMask.ALL
-        1 -> DXAConfigurationMask.EDIT_TEXT
-        2 -> DXAConfigurationMask.TEXT_VIEW
-        3 -> DXAConfigurationMask.IMAGE_VIEW
-        4 -> DXAConfigurationMask.WEB_VIEW
-        else -> {null}
+    val translatedElementsToMask: List<DXAConfigurationMask> =
+      elementsToMask.mapNotNull { element ->
+        when (element) {
+          0 -> DXAConfigurationMask.ALL
+          1 -> DXAConfigurationMask.EDIT_TEXT
+          2 -> DXAConfigurationMask.TEXT_VIEW
+          3 -> DXAConfigurationMask.IMAGE_VIEW
+          4 -> DXAConfigurationMask.WEB_VIEW
+          else -> {
+            null
+          }
+        }
       }
-    }
     return translatedElementsToMask
   }
 
