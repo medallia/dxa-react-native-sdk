@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.medallia.dxa.DXA
 import com.medallia.dxa.buildercommon.MedalliaDXA
@@ -187,13 +188,21 @@ class DxaReactNativeModule(
   }
 
   @ReactMethod
-  fun enableAutoMasking(elementsToMask: List<Int>) {
-    dxa.enableAutoMasking(translateAutomaskingToAndroid(elementsToMask))
+  fun enableAutoMasking(elementsToMask: ReadableArray) {
+    val intList = mutableListOf<Int>()
+    for (i in 0 until elementsToMask.size()) {
+      intList.add(elementsToMask.getInt(i))
+    }
+    dxa.enableAutoMasking(translateAutomaskingToAndroid(intList))
   }
 
   @ReactMethod
-  fun disableAutoMasking(elementsToUnmask: List<Int>) {
-    dxa.disableAutoMasking(translateAutomaskingToAndroid(elementsToUnmask))
+  fun disableAutoMasking(elementsToUnmask: ReadableArray) {
+    val intList = mutableListOf<Int>()
+    for (i in 0 until elementsToUnmask.size()) {
+      intList.add(elementsToUnmask.getInt(i))
+    }
+    dxa.disableAutoMasking(translateAutomaskingToAndroid(intList))
   }
 
   @ReactMethod
