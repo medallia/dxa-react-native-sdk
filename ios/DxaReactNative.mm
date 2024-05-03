@@ -8,6 +8,7 @@ RCT_EXTERN_METHOD(
   withProperty:(NSInteger)property
   withConsents:(float)consents
   withSdkVersion:(NSString)sdkVersion
+  withMobileDataEnabled:(BOOL)mobileDataEnabled
   callback:(RCTResponseSenderBlock)callback
 )
 
@@ -96,18 +97,6 @@ RCT_EXTERN_METHOD(
 )
 
 RCT_EXTERN_METHOD(
-  enableSessionForAnalytics:(BOOL)enabled
-  withResolver:(RCTPromiseResolveBlock)resolve
-  withRejecter:(RCTPromiseRejectBlock)reject
-)
-
-RCT_EXTERN_METHOD(
-  enableSessionForRecording:(BOOL)enabled
-  withResolver:(RCTPromiseResolveBlock)resolve
-  withRejecter:(RCTPromiseRejectBlock)reject
-)
-
-RCT_EXTERN_METHOD(
   setRetention:(BOOL)enabled
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
@@ -121,6 +110,12 @@ RCT_EXTERN_METHOD(
 
 RCT_EXTERN_METHOD(
   setImageQuality:(NSInteger)hexadecimalColor
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  sendDataOverWifiOnly:(BOOL)onlyWifi
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
