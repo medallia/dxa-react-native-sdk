@@ -109,7 +109,7 @@ RCT_EXTERN_METHOD(
 ) 
 
 RCT_EXTERN_METHOD(
-  setImageQuality:(NSInteger)hexadecimalColor
+  setImageQuality:(NSInteger)imageQuality
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
