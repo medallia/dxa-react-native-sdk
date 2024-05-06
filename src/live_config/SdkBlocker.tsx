@@ -1,5 +1,5 @@
 import { dxaLog } from "dxa-react-native";
-import { core } from "../Core";
+import { core } from "../core";
 
 class SdkBlocker {
     public isSdkBlocked: boolean = false;

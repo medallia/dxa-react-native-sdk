@@ -7,7 +7,7 @@ import { sdkBlockerIstance } from './live_config/SdkBlocker';
 import { BlockedPublicMethods } from './public_api/BlockedMethods';
 import { liveConfigDataInstance } from './live_config/LiveConfigData';
 import { SdkMetaData } from './util/MetaData';
-import { core } from './Core';
+import { core } from './core';
 import { samplingDataInstance } from './Sampling';
 
 
