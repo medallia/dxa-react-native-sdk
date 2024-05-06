@@ -38,8 +38,8 @@ class DxaReactNative: RCTEventEmitter {
             account: String(account),
             property: String(property),
             consent: nativeConsents,
-            manualScreenTracking: true,
-            mobileDataEnable: mobileDataEnabled
+            mobileDataEnable: mobileDataEnabled,
+      -+      manualScreenTracking: true
         )
         
       let liveConfig = DXA.initialize(configuration: configuration, multiplatform: Platform(type: .reactNative, version: String(describing: sdkVersion), language: "TypeScript"), dxaDelegate: self)
