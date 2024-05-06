@@ -7,7 +7,7 @@ import { sdkBlockerIstance } from './live_config/SdkBlocker';
 import { BlockedPublicMethods } from './public_api/BlockedMethods';
 import { liveConfigDataInstance } from './live_config/LiveConfigData';
 import { SdkMetaData } from './util/MetaData';
-import { core } from './core';
+import { core } from './Core';
 import { samplingDataInstance } from './Sampling';
 
 
@@ -32,22 +32,22 @@ export const DxaReactNative = NativeModules.DxaReactNative
 export class DxaConfig {
   accountId!: number;
   propertyId!: number;
-  consents: MedalliaDxaCustomerConsentType | undefined = MedalliaDxaCustomerConsentType.analyticsAndTracking;
-  manualTracking: boolean = false;
-  mobileDataEnabled: boolean = true;
+  consents: MedalliaDxaCustomerConsentType = MedalliaDxaCustomerConsentType.analyticsAndTracking;
+  manualTracking: boolean;
+  mobileDataEnabled: boolean;
 
   constructor(
     accountId: number,
     propertyId: number,
-    consents: MedalliaDxaCustomerConsentType | undefined,
-    manualTracking: boolean,
-    mobileDataEnabled: boolean
+    consents: MedalliaDxaCustomerConsentType,
+    manualTracking?: boolean,
+    mobileDataEnabled?: boolean
   ) {
     this.accountId = accountId;
     this.propertyId = propertyId;
     this.consents = consents;
-    this.manualTracking = manualTracking ;
-    this.mobileDataEnabled = mobileDataEnabled;
+    this.manualTracking = manualTracking = false;
+    this.mobileDataEnabled = mobileDataEnabled = true;
   }
 }
 
