@@ -10,6 +10,12 @@ export function SdkConfigScreen({ navigation }: { navigation: any }) {
             <ConsentsButtons />
             <View style={{ height: 20 }}></View>
             <Button
+                title='Send data over wifi only: true'
+                onPress={() => MedalliaDXA.sendDataOverWifiOnly(true)} />
+            <Button
+                title='Send data over wifi only: false'
+                onPress={() => MedalliaDXA.sendDataOverWifiOnly(false)} />
+            <Button
                 title='Set image quality poor'
                 onPress={() => MedalliaDXA.setImageQuality(ImageQualityType.poor)} />
             <Button

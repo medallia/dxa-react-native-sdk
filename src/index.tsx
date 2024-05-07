@@ -32,19 +32,22 @@ export const DxaReactNative = NativeModules.DxaReactNative
 export class DxaConfig {
   accountId!: number;
   propertyId!: number;
-  consents: MedalliaDxaCustomerConsentType | undefined = MedalliaDxaCustomerConsentType.analyticsAndTracking;
-  manualTracking!: boolean;
+  consents: MedalliaDxaCustomerConsentType = MedalliaDxaCustomerConsentType.analyticsAndTracking;
+  manualTracking: boolean;
+  mobileDataEnabled: boolean;
 
   constructor(
     accountId: number,
     propertyId: number,
-    consents: MedalliaDxaCustomerConsentType | undefined,
-    manualTracking: boolean | undefined
+    consents: MedalliaDxaCustomerConsentType,
+    manualTracking?: boolean,
+    mobileDataEnabled?: boolean
   ) {
     this.accountId = accountId;
     this.propertyId = propertyId;
     this.consents = consents;
-    this.manualTracking = manualTracking ?? false;
+    this.manualTracking = manualTracking = false;
+    this.mobileDataEnabled = mobileDataEnabled = true;
   }
 }
 
@@ -88,7 +91,7 @@ class DXA {
 
     try {
       await new Promise((resolve) => {
-        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, (callbackResult: any) => {
+        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, (callbackResult: any) => {
           liveConfigDataInstance.fillfromNative(callbackResult);
           this.initialized = true;
           resolve(true);
@@ -203,6 +206,10 @@ class DXA {
 
   setImageQuality(quality: ImageQualityType) {
     return this.publicMethods.setImageQuality(quality);
+  }
+
+  sendDataOverWifiOnly(onlyWifi: boolean) {
+    return this.publicMethods.sendDataOverWifiOnly(onlyWifi);
   }
 
   private setUpNativeListeners() {

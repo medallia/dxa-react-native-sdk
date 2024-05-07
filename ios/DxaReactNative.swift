@@ -24,12 +24,13 @@ class DxaReactNative: RCTEventEmitter {
         }
     }
 
-    @objc(initialize:withProperty:withConsents:withSdkVersion:callback:)
+    @objc(initialize:withProperty:withConsents:withSdkVersion:withMobileDataEnabled:callback:)
     func initialize(
         account: Int,
         property: Int,
         consents: Float,
         sdkVersion: String,
+        mobileDataEnabled: Bool,
         callback:RCTResponseSenderBlock
     ) -> Void {
         let nativeConsents: Consent = translateConsentsToIos(flutterConsents: consents)
@@ -37,6 +38,7 @@ class DxaReactNative: RCTEventEmitter {
             account: String(account),
             property: String(property),
             consent: nativeConsents,
+            mobileDataEnable: mobileDataEnabled,
             manualScreenTracking: true
         )
         
@@ -240,6 +242,15 @@ class DxaReactNative: RCTEventEmitter {
     ) -> Void {
         DXA.setImageQuality(ImageQualityType(rawValue: imageQuality) ?? .average)
         resolve(true)
+    }
+
+    @objc(sendDataOverWifiOnly:withResolver:withRejecter:)
+    func sendDataOverWifiOnly(
+        onlyWifi: Bool,
+        resolve:RCTPromiseResolveBlock,
+        reject:RCTPromiseRejectBlock
+    ) {
+        DXA.mobileDataEnable = !onlyWifi
     }
     
     private func translateConsentsToIos(flutterConsents value: Float) -> Consent{

@@ -62,6 +62,7 @@ class DxaReactNativeModule(
     propertyId: Int,
     consents: Int,
     sdkVersion: String,
+    mobileDataEnabled: Boolean,
     callback: Callback
   ) {
 
@@ -75,7 +76,7 @@ class DxaReactNativeModule(
             accountId = accountId.toLong(),
             propertyId = propertyId.toLong(),
             customerConsent = translateConsentsToAndroid(consents),
-            mobileDataEnabled = true,
+            mobileDataEnabled = mobileDataEnabled,
             manualTrackingEnabled = true,
 
             ),
@@ -232,6 +233,11 @@ class DxaReactNativeModule(
       }
     }
     dxa.setImageQuality(imageQualityLevel)
+  }
+
+  @ReactMethod
+  fun sendDataOverWifiOnly(onlyWifi: Boolean) {
+    dxa.sendDataOverWifiOnly(enabled = onlyWifi)
   }
 
   private fun bootstrapperInitialize() {
