@@ -100,6 +100,16 @@ class DxaReactNative: RCTEventEmitter {
         resolve(true)
     }
     
+    @objc(sendError:withResolver:withRejecter:)
+    func sendError(
+        error: String,
+        resolve:RCTPromiseResolveBlock,
+        reject:RCTPromiseRejectBlock
+    ) -> Void {
+        DXA.sendError(error)
+        resolve(true)
+    }
+
     @objc(setDimensionWithString:withStringValue:withResolver:withRejecter:)
     func setDimensionWithString(
         dimensionName: String,

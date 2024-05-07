@@ -42,6 +42,12 @@ RCT_EXTERN_METHOD(
 ) 
 
 RCT_EXTERN_METHOD(
+  sendError:(NSString)error
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
+RCT_EXTERN_METHOD(
   setDimensionWithString:(NSString)dimensionName
   withStringValue:(NSString)stringValue
   withResolver:(RCTPromiseResolveBlock)resolve

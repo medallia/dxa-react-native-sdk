@@ -165,6 +165,11 @@ class DxaReactNativeModule(
   }
 
   @ReactMethod
+  fun sendError(error: String) {
+    dxa.sendError(error)
+  }
+
+  @ReactMethod
   fun getWebViewProperties(promise: Promise) {
     promise.resolve(dxa.getWebViewParams())
   }
