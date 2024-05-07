@@ -74,6 +74,7 @@ android {
     compileSdkVersion 34
 
     namespace "com.dxareactnativeexample"
+  android.buildFeatures.buildConfig true
     defaultConfig {
         applicationId "com.dxareactnativeexample"
         minSdkVersion rootProject.ext.minSdkVersion

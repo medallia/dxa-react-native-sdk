@@ -18,33 +18,26 @@ dependencyResolutionManagement {
 
     ///Medallia DXA sdk nexus (Maven repo)
     maven {
-      url "https://nexus.decibel.com/repository/android-sdk/"
-
-      credentials {
-        username ""
-        password ""
-      }
+      url "https://nexus.decibel.com/repository/android-sdk-snapshot/"
     }
   }
 }
 
 ///Medallia DXA local modules
-include ':dxa-android-common'
-include ':dxa-android-builder-common'
-include ':dxa-android-builder-dev'
-include ':dxa-android-builder-prod'
-include ':dxa-android-core'
-include ':dxa-android-test'
-
-def localPropertiesFile = new File('local.properties')
-def basePath = localPropertiesFile.exists() ? new Properties().with {
-  load(localPropertiesFile.newDataInputStream())
-  getProperty('dxa.sdk.dir')
-} : "SETUP_DIR_TO_ANDROID_SDK"
-
-project(':dxa-android-common').projectDir = new File("$basePath/dxa-android-common")
-project(':dxa-android-builder-common').projectDir = new File("$basePath/dxa-android-builder-common")
-project(':dxa-android-builder-dev').projectDir = new File("$basePath/dxa-android-builder-dev")
-project(':dxa-android-builder-prod').projectDir = new File("$basePath/dxa-android-builder-prod")
-project(':dxa-android-core').projectDir = new File("$basePath/dxa-android-core")
-project(':dxa-android-test').projectDir = new File("$basePath/dxa-android-test")
+// include ':dxa-android-common'
+// include ':dxa-android-builder-common'
+// include ':dxa-android-sdk'
+// include ':dxa-android-core'
+// include ':dxa-android-test'
+//
+// def localPropertiesFile = new File('local.properties')
+// def basePath = localPropertiesFile.exists() ? new Properties().with {
+//   load(localPropertiesFile.newDataInputStream())
+//   getProperty('dxa.sdk.dir')
+// } : "SETUP_DIR_TO_ANDROID_SDK"
+//
+// project(':dxa-android-common').projectDir = new File("$basePath/dxa-android-common")
+// project(':dxa-android-builder-common').projectDir = new File("$basePath/dxa-android-builder-common")
+// project(':dxa-android-sdk').projectDir = new File("$basePath/dxa-android-sdk")
+// project(':dxa-android-core').projectDir = new File("$basePath/dxa-android-core")
+// project(':dxa-android-test').projectDir = new File("$basePath/dxa-android-test")

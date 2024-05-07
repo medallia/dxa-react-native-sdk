@@ -79,6 +79,8 @@ android {
     disable "GradleCompatible"
   }
 
+  android.buildFeatures.buildConfig true
+
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_17
     targetCompatibility JavaVersion.VERSION_17
@@ -107,7 +109,8 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   ///Medallia DXA dependency
-  implementation "com.medallia.dxa:dxa-android-sdk:3.1.1"
+  implementation "com.medallia.dxa:dxa-android-sdk:rc-3.1.0-2-SNAPSHOT"
+  //implementation project(":dxa-android-sdk")
 }
 
 if (isNewArchitectureEnabled()) {
