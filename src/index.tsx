@@ -1,5 +1,5 @@
 import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
-import { DxaLog } from '../src/util/DxaLog';
+import { dxaLog } from './util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
@@ -233,11 +233,9 @@ class DXA {
 }
 
 const MedalliaDXA = new DXA();
-const dxaLog = new DxaLog();
 
 /// DXA binder.
 export { MedalliaDXA };
-export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
 export { DxaUnmask } from './DxaUnmask';
 export { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';

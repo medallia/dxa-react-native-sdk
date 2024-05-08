@@ -1,4 +1,4 @@
-import { dxaLog } from "dxa-react-native";
+import { dxaLog } from '../util/DxaLog';
 import { sdkBlockerIstance } from "./SdkBlocker";
 import { SdkMetaData } from "../util/MetaData";
 
