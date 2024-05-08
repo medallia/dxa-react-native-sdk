@@ -1,6 +1,6 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.9.2 (swiftlang-5.9.2.2.56 clang-1500.1.0.2.5)
-// swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name MedalliaDXAReactNative
+// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
+// swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name MedalliaDXAReactNative
 // swift-module-flags-ignorable: -enable-bare-slash-regex
 import AVFoundation
 import CommonCrypto
@@ -13,7 +13,6 @@ import UIKit
 import WebKit
 import _Concurrency
 import _StringProcessing
-import _SwiftConcurrencyShims
 extension MedalliaDXAReactNative.DXA {
   public static func initialize(configuration: MedalliaDXAReactNative.Configuration, multiplatform: MedalliaDXAReactNative.Platform, dxaDelegate: (any MedalliaDXAReactNative.DXADelegate)? = nil) -> MedalliaDXAReactNative.LiveConfigurationMultiplatform
   public static func saveLog(message: Swift.String)
@@ -144,30 +143,9 @@ public enum PlatformType {
     get
   }
 }
-public enum SessionReplayMode {
-  case hiFi
-  case loFi
-  case automatic
-  public static func == (a: MedalliaDXAReactNative.SessionReplayMode, b: MedalliaDXAReactNative.SessionReplayMode) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
-}
 public struct SamplingMultiplatform {
   public var stopTrackingDueToSampling: Swift.Bool
   public var stopRecordingDueToSampling: Swift.Bool
-}
-public enum LogLevel : Swift.Int {
-  case `public`
-  case customer
-  case qa
-  case developer
-  public init?(rawValue: Swift.Int)
-  public typealias RawValue = Swift.Int
-  public var rawValue: Swift.Int {
-    get
-  }
 }
 public enum MaskAutomatic {
   case labels
@@ -192,22 +170,8 @@ public enum MaskView {
   }
 }
 public class Configuration {
-  public var sessionReplayMode: MedalliaDXAReactNative.SessionReplayMode
-  public var endpoint: MedalliaDXAReactNative.Endpoint
-  public var logLevel: MedalliaDXAReactNative.LogLevel
   public init(account: Swift.String, property: Swift.String, consent: MedalliaDXAReactNative.Consent = .analyticsAndRecording, crashReporterEnabled: Swift.Bool = true, mobileDataEnable: Swift.Bool = true, manualScreenTracking: Swift.Bool = false, enhancedLogsEnabled: Swift.Bool = false, networkAnalyticsEnable: Swift.Bool = true)
   @objc deinit
-}
-public enum Endpoint {
-  case production
-  case staging
-  case sigma
-  case omega
-  public static func == (a: MedalliaDXAReactNative.Endpoint, b: MedalliaDXAReactNative.Endpoint) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
 }
 public struct LiveConfigurationMultiplatform {
   public var ipHandling: Swift.Int?
@@ -264,18 +228,11 @@ extension MedalliaDXAReactNative.DeviceStressedTypeFlutter : Swift.Hashable {}
 extension MedalliaDXAReactNative.DeviceStressedTypeFlutter : Swift.RawRepresentable {}
 extension MedalliaDXAReactNative.Consent : Swift.Equatable {}
 extension MedalliaDXAReactNative.Consent : Swift.Hashable {}
-extension MedalliaDXAReactNative.Endpoint : Swift.Equatable {}
-extension MedalliaDXAReactNative.Endpoint : Swift.Hashable {}
 extension MedalliaDXAReactNative.ImageQualityType : Swift.Equatable {}
 extension MedalliaDXAReactNative.ImageQualityType : Swift.Hashable {}
 extension MedalliaDXAReactNative.ImageQualityType : Swift.RawRepresentable {}
 extension MedalliaDXAReactNative.PlatformType : Swift.Equatable {}
 extension MedalliaDXAReactNative.PlatformType : Swift.Hashable {}
-extension MedalliaDXAReactNative.SessionReplayMode : Swift.Equatable {}
-extension MedalliaDXAReactNative.SessionReplayMode : Swift.Hashable {}
-extension MedalliaDXAReactNative.LogLevel : Swift.Equatable {}
-extension MedalliaDXAReactNative.LogLevel : Swift.Hashable {}
-extension MedalliaDXAReactNative.LogLevel : Swift.RawRepresentable {}
 extension MedalliaDXAReactNative.MaskAutomatic : Swift.Equatable {}
 extension MedalliaDXAReactNative.MaskAutomatic : Swift.Hashable {}
 extension MedalliaDXAReactNative.MaskView : Swift.Equatable {}
