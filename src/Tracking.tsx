@@ -76,6 +76,10 @@ export class Tracking extends Blockable {
         }
     }
 
+    public updateDisabledScreenTracking(disabledScreenTracking: string[]): void {
+        this.disabledScreenTracking = disabledScreenTracking;
+    }
+
     startScreen(screenName: string): Promise<boolean> {
         var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
         if (this.disabledScreenTracking.includes(finalScreenName)) {
