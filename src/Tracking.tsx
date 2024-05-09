@@ -1,11 +1,8 @@
 import type { EmitterSubscription, NativeEventSubscription, NativeModulesStatic } from "react-native";
 import { AppState, Dimensions } from 'react-native';
-import { DxaLog } from "./util/DxaLog";
 import type { NavigationLibrary } from "./NavigationLibraries";
 import { Blockable } from "./live_config/SdkBlocker";
-
-
-const dxaLog = new DxaLog();
+import { dxaLog } from "./util/DxaLog";
 
 type TrackingParams = {
     dxaNativeModule: NativeModulesStatic;
@@ -60,14 +57,14 @@ export class Tracking extends Blockable {
     }
 
     public executeBlock(): void {
-        dxaLog.log('MedalliaDXA ->', 'execute block on Tracking module');
+        dxaLog.log('execute block on Tracking module');
         this.removeAppStateListener();
         this.removeDimensionsListener();
         this.removeAutoTrackingSetup();
     }
 
     public removeBlock(): void {
-        dxaLog.log('MedalliaDXA ->', 'remove block on Tracking module');
+        dxaLog.log('remove block on Tracking module');
         this.startAppStateListener();
         this.startDimensionsListener();
         if (this.reactNavigationLibrary) {
@@ -79,17 +76,17 @@ export class Tracking extends Blockable {
     startScreen(screenName: string): Promise<boolean> {
         var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
         if (this.disabledScreenTracking.includes(finalScreenName)) {
-            dxaLog.log('MedalliaDXA ->', 'Screen tracking is disabled for screen:', finalScreenName);
+            dxaLog.log('Screen tracking is disabled for screen:', finalScreenName);
             return Promise.resolve(false);
         }
-        dxaLog.log('MedalliaDXA ->', 'starting screen -> ', finalScreenName);
+        dxaLog.log('starting screen -> ', finalScreenName);
         this.currentlyTrackingAScreen = true;
         this.lastScreenName = finalScreenName;
         return this.dxaNativeModule.startScreen(finalScreenName);
     }
 
     stopScreen(): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'stopping screen.');
+        dxaLog.log('stopping screen.');
         this.currentlyTrackingAScreen = false;
         return this.dxaNativeModule.endScreen();
     }
@@ -167,7 +164,7 @@ export class Tracking extends Blockable {
 
     private handleAppStateChange = (nextAppState: any) => {
         if (nextAppState == 'active') {
-            dxaLog.log('MedalliaDXA ->', 'App becomes to active!');
+            dxaLog.log('App becomes to active!');
             if (this.currentlyTrackingAScreen) {
                 return;
             }
@@ -175,7 +172,7 @@ export class Tracking extends Blockable {
                 this.navigationLibrary?.getScreenName() ?? this.lastScreenName ?? "undefined"
             );
         } else if (nextAppState == 'background') {
-            dxaLog.log('MedalliaDXA ->', 'App is going to background!!');
+            dxaLog.log('App is going to background!!');
             this.stopScreen();
         }
     };

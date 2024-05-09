@@ -98,7 +98,7 @@ class DXA {
         })
       });
     } catch (error) {
-      dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
+      dxaLog.log('initialize error:', error);
       return;
     }
     this.initialized = true;
@@ -158,7 +158,7 @@ class DXA {
   }
 
   sendError(error: string): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'sendError -> ', error);
+    dxaLog.log('sendError -> ', error);
     return DxaReactNative.sendError(error);
   }
 
@@ -192,7 +192,7 @@ class DXA {
   }
 
   setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
-    dxaLog.log('MedalliaDXA ->', 'publicMethods', this.publicMethods);
+    dxaLog.log('publicMethods', this.publicMethods);
     return this.publicMethods.setAlternativeScreenNames(alternativeScreenNames);
   }
 
@@ -216,7 +216,7 @@ class DXA {
 
     const eventEmitter = new NativeEventEmitter(DxaReactNative);
     eventEmitter.addListener('dxa-event', event => {
-      dxaLog.log('MedalliaDXA ->', 'event listener:', event);
+      dxaLog.log('event listener:', event);
       switch (event.eventType) {
         case liveConfigDataInstance.eventType:
           liveConfigDataInstance.fillfromNative(event);

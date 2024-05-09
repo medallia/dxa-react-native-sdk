@@ -1,6 +1,6 @@
 class DxaLog {
   log(...message: any[]) {
-    console.log(message);
+    console.log('MedalliaDXA ->', message);
   }
 }
 const dxaLog = new DxaLog();

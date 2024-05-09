@@ -1,4 +1,4 @@
-import { dxaLog } from "dxa-react-native";
+import { dxaLog } from "src/util/DxaLog";
 import { core } from "../Core";
 
 class SdkBlocker {
@@ -10,7 +10,7 @@ class SdkBlocker {
     }
 
     public blockSdk(): void {
-        dxaLog.log('MedalliaDXA ->', 'Sdk has been blocked');
+        dxaLog.log('Sdk has been blocked');
         this.isSdkBlocked = true;
         this.blockableClasses.forEach(blockableClass => {
             blockableClass.executeBlock();

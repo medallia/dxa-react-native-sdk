@@ -1,7 +1,8 @@
 import { Tracking } from "./Tracking";
 import { ReactNavigation } from './NavigationLibraries';
-import { DxaReactNative, dxaLog } from "dxa-react-native";
+import { DxaReactNative } from "dxa-react-native";
 import { liveConfigDataInstance } from "./live_config/LiveConfigData";
+import { dxaLog } from "./util/DxaLog";
 
 class Core {
     public trackingInstance: Tracking | undefined;
@@ -12,10 +13,10 @@ class Core {
 
     public instantiateModules(): void {
         if(this.areModulesInstantiated){
-          dxaLog.log('MedalliaDXA ->', 'SDK modules have already been instantiated');
+          dxaLog.log('SDK modules have already been instantiated');
           return;
         }
-        dxaLog.log('MedalliaDXA ->', 'instantiating SDK modules');
+        dxaLog.log('instantiating SDK modules');
         if (this.navigationRef && this.manualTracking != true) {
           let reactNavigationLibrary = ReactNavigation.getInstance({ navigationContainerRef: this.navigationRef });
     

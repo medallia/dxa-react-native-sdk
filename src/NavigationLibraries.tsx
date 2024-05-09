@@ -1,10 +1,5 @@
 import EventEmitter, { type EmitterSubscription } from 'react-native/Libraries/vendor/emitter/EventEmitter';
 
-import { DxaLog } from "./util/DxaLog";
-
-
-const dxaLog = new DxaLog();
-
 export abstract class NavigationLibrary extends EventEmitter {
     abstract getScreenName(): string;
     abstract routeSeparator: String;
@@ -71,11 +66,6 @@ export class ReactNavigation extends NavigationLibrary {
             let currentOnPrint: any = param.data.state;
             let entireRoute = '';
             do {
-                dxaLog.log(
-                    'MedalliaDXA ->',
-                    ' > detected route level:',
-                    currentOnPrint
-                );
                 entireRoute =
                     entireRoute +
                     currentOnPrint.routes[currentOnPrint.index].name + this.routeSeparator;

@@ -1,4 +1,4 @@
-import { dxaLog } from "dxa-react-native";
+import { dxaLog } from "./util/DxaLog";
 
 class SamplingData {
     eventType: string = "sampling_data";

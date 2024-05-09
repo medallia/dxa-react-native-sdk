@@ -1,6 +1,7 @@
-import { DxaReactNative, MedalliaDxaAutomaticMask, dxaLog } from "../index";
+import { DxaReactNative, MedalliaDxaAutomaticMask } from "../index";
 import type { Tracking } from "src/Tracking";
 import type { ImageQualityType, MedalliaDxaCustomerConsentType } from "src/publicEnums";
+import { dxaLog } from "src/util/DxaLog";
 
 export class ActivePublicMethods {
     trackingInstance: Tracking;
@@ -15,11 +16,11 @@ export class ActivePublicMethods {
         return this.trackingInstance.stopScreen();
     }
     public sendHttpError(errorCode: number): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'send http error -> ', errorCode);
+        dxaLog.log('send http error -> ', errorCode);
         return DxaReactNative.sendHttpError(errorCode);
     }
     public sendGoal(goalName: string, value?: number): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'sendGoal -> ', goalName, 'value -> ', value);
+        dxaLog.log('sendGoal -> ', goalName, 'value -> ', value);
         //React native doesn't allow nullable parameters or native modules, so 2
         //methods are needed.
         if (value) {
@@ -28,53 +29,53 @@ export class ActivePublicMethods {
         return DxaReactNative.sendGoal(goalName);
     }
     public setDimensionWithString(dimensionName: string, stringValue: string): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'setDimensionWithString -> ', dimensionName, 'value -> ', stringValue);
+        dxaLog.log('setDimensionWithString -> ', dimensionName, 'value -> ', stringValue);
         return DxaReactNative.setDimensionWithString(dimensionName, stringValue);
     }
     public setDimensionWithNumber(dimensionName: string, numberValue: number): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'setDimensionWithNumber -> ', dimensionName, 'value -> ', numberValue);
+        dxaLog.log('setDimensionWithNumber -> ', dimensionName, 'value -> ', numberValue);
         return DxaReactNative.setDimensionWithNumber(dimensionName, numberValue);
     }
     public setDimensionWithBool(dimensionName: string, boolValue: boolean): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'setDimensionWithBool -> ', dimensionName, 'value -> ', boolValue);
+        dxaLog.log('setDimensionWithBool -> ', dimensionName, 'value -> ', boolValue);
         return DxaReactNative.setDimensionWithBool(dimensionName, boolValue);
     }
     public getSessionUrl(): Promise<string | null> {
-        dxaLog.log('MedalliaDXA ->', 'getSessionUrl');
+        dxaLog.log('getSessionUrl');
         return DxaReactNative.getSessionUrl();
     }
     public getSessionId(): Promise<string | null> {
-        dxaLog.log('MedalliaDXA ->', 'getSessionId');
+        dxaLog.log('getSessionId');
         return DxaReactNative.getSessionId();
     }
 
     public getWebViewProperties(): Promise<string | null> {
-        dxaLog.log('MedalliaDXA ->', 'getWebViewProperties');
+        dxaLog.log('getWebViewProperties');
         return DxaReactNative.getWebViewProperties();
     }
 
     public setConsents(consents: MedalliaDxaCustomerConsentType): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'setConsents', consents);
+        dxaLog.log('setConsents', consents);
         return DxaReactNative.setConsents(consents);
     }
 
     public enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'setAutomasking', elementsToMask);
+        dxaLog.log('setAutomasking', elementsToMask);
         return DxaReactNative.enableAutoMasking(elementsToMask);
     }
 
     public disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
-        dxaLog.log('MedalliaDXA ->', 'disableAllAutoMasking');
+        dxaLog.log('disableAllAutoMasking');
         return DxaReactNative.disableAutoMasking(elementsToUnmask);
     }
 
     public setRetention(enabled: Boolean) {
-        dxaLog.log('MedalliaDXA ->', 'setRetention: ', enabled);
+        dxaLog.log('setRetention: ', enabled);
         return DxaReactNative.setRetention(enabled);
     }
 
     public setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
-        dxaLog.log('MedalliaDXA ->', 'setAlternativeScreenNames: ', alternativeScreenNames);
+        dxaLog.log('setAlternativeScreenNames: ', alternativeScreenNames);
         this.trackingInstance.setAlternativeScreenName(alternativeScreenNames);
     }
 
@@ -84,16 +85,16 @@ export class ActivePublicMethods {
 
     public setMaskingColor(hexadecimalColor: string) {
         if (!this.isHexColor(hexadecimalColor)) {
-            dxaLog.log('MedalliaDXA ->', 'invalid hex color: ', hexadecimalColor, ' hex color should be in the format #RRGGBB');
+            dxaLog.log('invalid hex color: ', hexadecimalColor, ' hex color should be in the format #RRGGBB');
             return;
         }
 
-        dxaLog.log('MedalliaDXA ->', 'setMaskColor: ', hexadecimalColor);
+        dxaLog.log('setMaskColor: ', hexadecimalColor);
         return DxaReactNative.setMaskingColor(hexadecimalColor);
     }
 
     public sendDataOverWifiOnly(onlyWifi: boolean) {
-        dxaLog.log('MedalliaDXA ->', 'sendDataOverWifiOnly: ', onlyWifi);
+        dxaLog.log('sendDataOverWifiOnly: ', onlyWifi);
         return DxaReactNative.sendDataOverWifiOnly(onlyWifi);
     }
 
@@ -104,7 +105,7 @@ export class ActivePublicMethods {
         return hexColorRegex.test(hex);
     }
     public setImageQuality(quality: ImageQualityType) {
-        dxaLog.log('MedalliaDXA ->', 'setImageQuality: ', quality);
+        dxaLog.log('setImageQuality: ', quality);
         return DxaReactNative.setImageQuality(quality.valueOf());
     }
 
