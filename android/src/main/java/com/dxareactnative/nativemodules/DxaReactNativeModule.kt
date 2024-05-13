@@ -63,6 +63,7 @@ class DxaReactNativeModule(
     consents: Int,
     sdkVersion: String,
     mobileDataEnabled: Boolean,
+    enhancedLogsEnabled: Boolean,
     callback: Callback
   ) {
 
@@ -78,7 +79,7 @@ class DxaReactNativeModule(
             customerConsent = translateConsentsToAndroid(consents),
             mobileDataEnabled = mobileDataEnabled,
             manualTrackingEnabled = true,
-
+            enhancedLogsEnabled = enhancedLogsEnabled,
             ),
           platform = Multiplatform(
             type = PlatformType.REACT_NATIVE,
