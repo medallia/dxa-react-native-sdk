@@ -66,15 +66,18 @@ class LoggerSdkLevelRelease implements LoggerSdkLevelLogic {
 class DxaLogger {
   private plainLogger: PlainLogger;
   private enabled: boolean = true;
-  private _nativeModule: NativeModulesStatic;
+  private allowLocalLogs: boolean = false;
+  private dxaNativeModule: NativeModulesStatic;
   private loggerSdkLevelLogic: LoggerSdkLevelLogic;
-  
+
   constructor(
     isSdkRunning: () => boolean,
-    private nativeModule: NativeModulesStatic,
+    nativeModule: NativeModulesStatic,
   ) {
-    this._nativeModule = nativeModule;
-    this.plainLogger = new PlainLogger(() => this.enabled, isSdkRunning, (message: string) => null //send to native);
+    this.dxaNativeModule = nativeModule;
+    this.plainLogger = new PlainLogger(() => this.enabled, isSdkRunning, (message: string) => {
+      if (this.allowLocalLogs) this.dxaNativeModule.saveLogs(`react-native: ${message}`);
+    } 
     );
     this.loggerSdkLevelLogic = SdkMetaData.releaseMode ? new LoggerSdkLevelRelease() : new LoggerSdkLevelDevelopment();
   }
@@ -87,6 +90,10 @@ class DxaLogger {
   }
   setEnhancedLogs(enable: boolean) {
     this.loggerSdkLevelLogic.setEnhancedLogs(enable);
+  }
+
+  setAllowLocalLogs(enable: boolean) {
+    this.allowLocalLogs = enable;
   }
 
   log(messageLevel: LoggerSdkLevel, message: String, emoji?: String) {

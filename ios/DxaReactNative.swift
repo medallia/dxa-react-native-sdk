@@ -254,6 +254,16 @@ class DxaReactNative: RCTEventEmitter {
     ) {
         DXA.mobileDataEnable = !onlyWifi
     }
+
+    @objc(saveLogs:withResolver:withRejecter:)
+    func saveLogs(
+        log: String,
+        resolve:RCTPromiseResolveBlock,
+        reject:RCTPromiseRejectBlock
+    ) -> Void {
+        DXA.saveLog(message: log)
+        resolve(true)
+    }
     
     private func translateConsentsToIos(flutterConsents value: Float) -> Consent{
         var nativeConsent: Consent

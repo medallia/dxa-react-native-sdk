@@ -241,6 +241,11 @@ class DxaReactNativeModule(
     dxa.sendDataOverWifiOnly(enabled = onlyWifi)
   }
 
+  @ReactMethod
+  fun saveLogs(log: String) {
+    dxa.saveLog(log)
+  }
+
   private fun bootstrapperInitialize() {
     startCollectSdkConfig()
 

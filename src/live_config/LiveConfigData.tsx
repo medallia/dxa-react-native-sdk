@@ -8,6 +8,7 @@ class LiveConfigData {
     private _blockedRNSDKVersions: string[] = [];
     private _blockedRNAppVersions: string[] = [];
     private _showLocalLogs: boolean = false;
+    private _allowLocalLogs: boolean = false;
     private _disableScreenTracking: string[] = [];
     private _appVersion: string = "";
 
@@ -23,6 +24,10 @@ class LiveConfigData {
         return this._showLocalLogs;
     }
 
+    get allowLocalLogs(): boolean {
+        return this._allowLocalLogs;
+    }
+
     get disableScreenTracking(): string[] {
         return this._disableScreenTracking;
     }
@@ -35,6 +40,7 @@ class LiveConfigData {
         this._blockedRNSDKVersions = data.vcBlockedReactNativeSDKVersions ?? this._blockedRNSDKVersions;
         this._blockedRNAppVersions = data.vcBlockedReactNativeAppVersions ?? this._blockedRNAppVersions;
         this._showLocalLogs = data.daShowLocalLogs ?? this._showLocalLogs;
+        this._allowLocalLogs = data.daAllowLocalLogs ?? this._allowLocalLogs;
         this._disableScreenTracking = data.dstDisableScreenTracking ?? this._disableScreenTracking;
         this._appVersion = data.appVersion ?? this._appVersion;
         this.runTasksAfterUpdate();
@@ -46,6 +52,10 @@ class LiveConfigData {
 
         if(this._showLocalLogs != undefined){
             dxaLog.setShowLocalLogs(this.showLocalLogs);
+        }
+
+        if(this._allowLocalLogs != undefined){
+            dxaLog.setAllowLocalLogs(this.allowLocalLogs);
         }
 
         if (this._blockedRNAppVersions.includes(this._appVersion)) {
