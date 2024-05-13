@@ -1,6 +1,7 @@
 import { LoggerSdkLevel, dxaLog } from '../util/DxaLog';
 import { sdkBlockerIstance } from "./SdkBlocker";
 import { SdkMetaData } from "../util/MetaData";
+import { core } from "../Core";
 
 class LiveConfigData {
     eventType: string = "live_configuration"
@@ -41,6 +42,7 @@ class LiveConfigData {
     }
 
     private runTasksAfterUpdate(): void {
+        core.trackingInstance?.updateDisabledScreenTracking(this._disableScreenTracking);
 
         if(this._showLocalLogs != undefined){
             dxaLog.setShowLocalLogs(this.showLocalLogs);
