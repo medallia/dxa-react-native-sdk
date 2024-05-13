@@ -41,6 +41,11 @@ class LiveConfigData {
     }
 
     private runTasksAfterUpdate(): void {
+
+        if(this._showLocalLogs != undefined){
+            dxaLog.setShowLocalLogs(this.showLocalLogs);
+        }
+
         if (this._blockedRNAppVersions.includes(this._appVersion)) {
             dxaLog.log(LoggerSdkLevel.public, "This version of the app has been blocked");
             sdkBlockerIstance.blockSdk();

@@ -64,21 +64,29 @@ class LoggerSdkLevelRelease implements LoggerSdkLevelLogic {
 
 
 class DxaLogger {
-  private _plainLogger: PlainLogger;
-  private _enabled: boolean = true;
+  private plainLogger: PlainLogger;
+  private enabled: boolean = true;
   private _nativeModule: NativeModulesStatic;
-  private _loggerSdkLevelLogic: LoggerSdkLevelLogic;
+  private loggerSdkLevelLogic: LoggerSdkLevelLogic;
+  
   constructor(
     private isSdkRunning: () => boolean,
     private nativeModule: NativeModulesStatic,
   ) {
     this._nativeModule = nativeModule;
-    this._plainLogger = new PlainLogger(() => this._enabled, isSdkRunning, (message: string) => null //send to native);
+    this.plainLogger = new PlainLogger(() => this.enabled, isSdkRunning, (message: string) => null //send to native);
     );
-    this._loggerSdkLevelLogic = SdkMetaData.releaseMode ? new LoggerSdkLevelRelease() : new LoggerSdkLevelDevelopment();
+    this.loggerSdkLevelLogic = SdkMetaData.releaseMode ? new LoggerSdkLevelRelease() : new LoggerSdkLevelDevelopment();
   }
   get _loggerSdkLevel(): LoggerSdkLevel {
-    return this._loggerSdkLevelLogic.getLevel();
+    return this.loggerSdkLevelLogic.getLevel();
+  }
+
+  setShowLocalLogs(enable: boolean) {
+    this.loggerSdkLevelLogic.setShowLocalLogs(enable);
+  }
+  setEnhancedLogs(enable: boolean) {
+    this.loggerSdkLevelLogic.setEnhancedLogs(enable);
   }
 
   log(messageLevel: LoggerSdkLevel, message: String, emoji?: String) {
@@ -87,7 +95,7 @@ class DxaLogger {
       finalMessage = `${emoji} ${finalMessage}`;
     }
     if (messageLevel <= this._loggerSdkLevel) {
-      this._plainLogger.log(finalMessage);
+      this.plainLogger.log(finalMessage);
     }
   }
 }
