@@ -50,7 +50,7 @@ class DxaReactNative: RCTEventEmitter {
         dictData["vcBlockedReactNativeSDKVersions"] = liveConfig.blockedRNSDKVersions
         dictData["vcBlockedReactNativeAppVersions"] = liveConfig.blockedRNAppVersions
         dictData["appVersion"] = DXA.appVersion
-        callback([dictData])
+                callback([dictData])
     }
     
     @objc(startScreen:withResolver:withRejecter:)
@@ -320,8 +320,8 @@ extension DxaReactNative : DXADelegate {
 
         do {
             var dictData = [String: Any]()
-            dictData["stopTrackingDueToSampling"] = !sampling.stopTrackingDueToSampling
-            dictData["stopRecordingDueToSampling"] = !sampling.stopRecordingDueToSampling
+            dictData["stopTrackingDueToSampling"] = sampling.stopTrackingDueToSampling
+            dictData["stopRecordingDueToSampling"] = sampling.stopRecordingDueToSampling
             dictData["eventType"] = "sampling_data"
             // let dictId: [String: Any] = ["sampling_data": dictData]
             // let jsonData = try JSONSerialization.data(withJSONObject: dictId, options: [.prettyPrinted, .sortedKeys])
@@ -339,13 +339,13 @@ extension DxaReactNative : DXADelegate {
         
         do {
             var dictData = [String: Any]()
-            dictData["disableScreenTracking"] = configuration.disableScreenTracking
-            dictData["showLocalLogs"] = configuration.showLocalLogs
+            dictData["dstDisableScreenTracking"] = configuration.disableScreenTracking
+            dictData["daShowLocalLogs"] = configuration.showLocalLogs
             dictData["vcBlockedReactNativeSDKVersions"] = configuration.blockedRNSDKVersions
             dictData["vcBlockedReactNativeAppVersions"] = configuration.blockedRNAppVersions
             dictData["appVersion"] = DXA.appVersion
             dictData["eventType"] = "live_configuration"
-
+            
             // let dictId: [String: Any] = ["live_configuration": dictData]
             // let jsonData = try JSONSerialization.data(withJSONObject: dictId, options: [.prettyPrinted, .sortedKeys])
             // let jsonString = String(data: jsonData, encoding: .utf8)!

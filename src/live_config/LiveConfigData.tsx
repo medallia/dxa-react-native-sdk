@@ -1,6 +1,7 @@
 import { dxaLog } from "dxa-react-native";
 import { sdkBlockerIstance } from "./SdkBlocker";
 import { SdkMetaData } from "../util/MetaData";
+import { core } from "../Core";
 
 class LiveConfigData {
     eventType: string = "live_configuration"
@@ -42,6 +43,7 @@ class LiveConfigData {
     }
 
     private runTasksAfterUpdate(): void {
+        core.trackingInstance?.updateDisabledScreenTracking(this._disableScreenTracking);
         if(this._blockedRNAppVersions.includes(this._appVersion)){
             dxaLog.log("App version is blocked");
             sdkBlockerIstance.blockSdk();
