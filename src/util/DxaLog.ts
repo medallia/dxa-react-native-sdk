@@ -1,6 +1,6 @@
 import { DxaReactNative } from "dxa-react-native";
 import type { NativeModulesStatic } from "react-native";
-import { sdkBlockerIstance } from "src/live_config/SdkBlocker";
+import { sdkBlockerIstance } from "../live_config/SdkBlocker";
 import { SdkMetaData } from "./MetaData";
 
 enum LoggerSdkLevel {

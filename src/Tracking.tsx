@@ -77,14 +77,14 @@ export class Tracking extends Blockable {
             dxaLog.log(LoggerSdkLevel.development, `Screen tracking is disabled for screen: ${finalScreenName}`);
             return Promise.resolve(false);
         }
-        dxaLog.log(LoggerSdkLevel.development, `starting screen ->  ${finalScreenName}`);
+        dxaLog.log(LoggerSdkLevel.customer, `starting screen ->  ${finalScreenName}`);
         this.currentlyTrackingAScreen = true;
         this.lastScreenName = finalScreenName;
         return this.dxaNativeModule.startScreen(finalScreenName);
     }
 
     stopScreen(): Promise<boolean> {
-        dxaLog.log(LoggerSdkLevel.development, 'stopping screen.');
+        dxaLog.log(LoggerSdkLevel.customer, 'stopping screen.');
         this.currentlyTrackingAScreen = false;
         return this.dxaNativeModule.endScreen();
     }
@@ -136,7 +136,7 @@ export class Tracking extends Blockable {
         if (typeof this.appStateSubscription !== 'undefined') {
             return;
         }
-        dxaLog.log(LoggerSdkLevel.development, `MedalliaDXA -> AppState event listener(change) ${this.handleAppStateChange}`);
+        dxaLog.log(LoggerSdkLevel.development, `MedalliaDXA -> AppState event`);
         this.appStateSubscription = AppState.addEventListener(
             'change',
             this.handleAppStateChange
@@ -144,14 +144,14 @@ export class Tracking extends Blockable {
     }
 
     private removeAppStateListener(): void {
-        dxaLog.log(LoggerSdkLevel.development, `MedalliaDXA -> Unmounting DxaApp node ${AppState.currentState}`);
+        dxaLog.log(LoggerSdkLevel.development, `MedalliaDXA -> Unmounting DxaApp node`);
         this.appStateSubscription?.remove();
         this.appStateSubscription = undefined;
     }
 
     private handleAppStateChange = (nextAppState: any) => {
         if (nextAppState == 'active') {
-            dxaLog.log(LoggerSdkLevel.development,'App becomes active');
+            dxaLog.log(LoggerSdkLevel.qa,'App becomes active');
             if (this.currentlyTrackingAScreen) {
                 return;
             }
@@ -159,7 +159,7 @@ export class Tracking extends Blockable {
                 this.navigationLibrary?.getScreenName() ?? this.lastScreenName ?? "undefined"
             );
         } else if (nextAppState == 'background') {
-            dxaLog.log(LoggerSdkLevel.development,'App went to bacground');
+            dxaLog.log(LoggerSdkLevel.qa,'App went to background');
             this.stopScreen();
         }
     };

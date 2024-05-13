@@ -93,6 +93,7 @@ class DXA {
         })
       });
       dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
+      dxaLog.log(LoggerSdkLevel.customer, `MedalliaDXA initalized with account id: ${this.accountId} and property id: ${this.propertyId}. Consents: ${this.consents}. Mobile data enabled: ${dxaConfig.mobileDataEnabled}. ManualTracking: ${dxaConfig.manualTracking}.`);
     } catch (error) {
       dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA failed to initialize ${error}`);
       return;
@@ -154,7 +155,7 @@ class DXA {
   }
 
   sendError(error: string): Promise<boolean> {
-    return DxaReactNative.sendError(error);
+    return this.publicMethods.sendError(error);
   }
 
   getSessionUrl(): Promise<string | null> {
