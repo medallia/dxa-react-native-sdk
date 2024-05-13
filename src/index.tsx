@@ -35,19 +35,22 @@ export class DxaConfig {
   consents: MedalliaDxaCustomerConsentType = MedalliaDxaCustomerConsentType.analyticsAndTracking;
   manualTracking: boolean;
   mobileDataEnabled: boolean;
+  enhancedLogsEnabled: boolean;
 
   constructor(
     accountId: number,
     propertyId: number,
     consents: MedalliaDxaCustomerConsentType,
     manualTracking?: boolean,
-    mobileDataEnabled?: boolean
+    mobileDataEnabled?: boolean,
+    enhancedLogsEnabled?: boolean
   ) {
     this.accountId = accountId;
     this.propertyId = propertyId;
     this.consents = consents;
     this.manualTracking = manualTracking = false;
     this.mobileDataEnabled = mobileDataEnabled = true;
+    this.enhancedLogsEnabled = enhancedLogsEnabled = false;
   }
 }
 
@@ -83,7 +86,7 @@ class DXA {
 
     try {
       await new Promise((resolve) => {
-        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, (callbackResult: any) => {
+        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, dxaConfig.enhancedLogsEnabled, (callbackResult: any) => {
           liveConfigDataInstance.fillfromNative(callbackResult);
           this.initialized = true;
           resolve(true);
