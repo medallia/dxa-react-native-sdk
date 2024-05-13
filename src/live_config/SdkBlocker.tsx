@@ -1,4 +1,3 @@
-import { dxaLog } from "src/util/DxaLog";
 import { core } from "../Core";
 
 class SdkBlocker {
@@ -10,7 +9,6 @@ class SdkBlocker {
     }
 
     public blockSdk(): void {
-        dxaLog.log('Sdk has been blocked');
         this.isSdkBlocked = true;
         this.blockableClasses.forEach(blockableClass => {
             blockableClass.executeBlock();

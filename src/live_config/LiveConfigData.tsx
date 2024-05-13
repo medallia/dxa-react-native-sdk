@@ -1,4 +1,4 @@
-import { dxaLog } from '../util/DxaLog';
+import { LoggerSdkLevel, dxaLog } from '../util/DxaLog';
 import { sdkBlockerIstance } from "./SdkBlocker";
 import { SdkMetaData } from "../util/MetaData";
 
@@ -30,29 +30,28 @@ class LiveConfigData {
         return this._appVersion;
     }
 
-    fillfromNative(data: any): void{
-        dxaLog.log("Live config data received from native: ", data);
+    fillfromNative(data: any): void {
         this._blockedRNSDKVersions = data.vcBlockedReactNativeSDKVersions ?? this._blockedRNSDKVersions;
         this._blockedRNAppVersions = data.vcBlockedReactNativeAppVersions ?? this._blockedRNAppVersions;
-        this._showLocalLogs = data.daShowLocalLogs ?? this._showLocalLogs; 
-        this._disableScreenTracking = data.dstDisableScreenTracking ?? this._disableScreenTracking; 
-        this._appVersion = data.appVersion ?? this._appVersion; 
+        this._showLocalLogs = data.daShowLocalLogs ?? this._showLocalLogs;
+        this._disableScreenTracking = data.dstDisableScreenTracking ?? this._disableScreenTracking;
+        this._appVersion = data.appVersion ?? this._appVersion;
         this.runTasksAfterUpdate();
 
     }
 
     private runTasksAfterUpdate(): void {
-        if(this._blockedRNAppVersions.includes(this._appVersion)){
-            dxaLog.log("App version is blocked");
+        if (this._blockedRNAppVersions.includes(this._appVersion)) {
+            dxaLog.log(LoggerSdkLevel.public, "This version of the app has been blocked");
             sdkBlockerIstance.blockSdk();
             return;
         }
-        if(this._blockedRNSDKVersions.includes(SdkMetaData.sdkVersion)){
-            dxaLog.log("SDK version is blocked");
+        if (this._blockedRNSDKVersions.includes(SdkMetaData.sdkVersion)) {
+            dxaLog.log(LoggerSdkLevel.public, "This version of the SDK has been blocked");
             sdkBlockerIstance.blockSdk();
             return;
         }
-        if(sdkBlockerIstance.isSdkBlocked){
+        if (sdkBlockerIstance.isSdkBlocked) {
             sdkBlockerIstance.unblockSdk();
         }
     }

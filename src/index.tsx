@@ -1,5 +1,5 @@
 import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
-import { dxaLog } from './util/DxaLog';
+import { LoggerSdkLevel, dxaLog } from './util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
@@ -73,19 +73,11 @@ class DXA {
     let sdkVersion = SdkMetaData.sdkVersion;
     if (this.initialized) {
       dxaLog.log(
-        'MedalliaDXA ->',
+        LoggerSdkLevel.public,
         'SDK has already been initialized',
       );
       return;
     }
-    dxaLog.log(
-      'MedalliaDXA ->',
-      'initializing SDK propertyId:',
-      this.accountId,
-      'accountId:',
-      this.propertyId
-    );
-
 
     this.setUpNativeListeners();
 
@@ -97,8 +89,9 @@ class DXA {
           resolve(true);
         })
       });
+      dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
     } catch (error) {
-      dxaLog.log('initialize error:', error);
+      dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA failed to initialize ${error}`);
       return;
     }
     this.initialized = true;
@@ -158,7 +151,6 @@ class DXA {
   }
 
   sendError(error: string): Promise<boolean> {
-    dxaLog.log('sendError -> ', error);
     return DxaReactNative.sendError(error);
   }
 
@@ -192,7 +184,6 @@ class DXA {
   }
 
   setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
-    dxaLog.log('publicMethods', this.publicMethods);
     return this.publicMethods.setAlternativeScreenNames(alternativeScreenNames);
   }
 
@@ -216,7 +207,6 @@ class DXA {
 
     const eventEmitter = new NativeEventEmitter(DxaReactNative);
     eventEmitter.addListener('dxa-event', event => {
-      dxaLog.log('event listener:', event);
       switch (event.eventType) {
         case liveConfigDataInstance.eventType:
           liveConfigDataInstance.fillfromNative(event);

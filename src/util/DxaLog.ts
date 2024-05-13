@@ -1,7 +1,114 @@
-class DxaLog {
-  log(...message: any[]) {
-    console.log('MedalliaDXA ->', message);
+import { DxaReactNative } from "dxa-react-native";
+import type { NativeModulesStatic } from "react-native";
+import { sdkBlockerIstance } from "src/live_config/SdkBlocker";
+import { SdkMetaData } from "./MetaData";
+
+enum LoggerSdkLevel {
+  public,
+  customer,
+  qa,
+  development,
+}
+
+
+interface LoggerSdkLevelLogic {
+  getLevel(): LoggerSdkLevel;
+  setShowLocalLogs(enable: boolean): void;
+  setEnhancedLogs(enable: boolean): void;
+}
+
+class LoggerSdkLevelDevelopment implements LoggerSdkLevelLogic {
+  getLevel(): LoggerSdkLevel {
+    return LoggerSdkLevel.development;
+  }
+
+  setEnhancedLogs(enable: boolean): void {
+    // In development mode, we don't need to set enhanced logs
+    return;
+  }
+
+  setShowLocalLogs(enable: boolean): void {
+    // In development mode, we don't need to set show local logs
+    return;
   }
 }
-const dxaLog = new DxaLog();
-export { dxaLog };
+
+class LoggerSdkLevelRelease implements LoggerSdkLevelLogic {
+  private _loggerSdkLevel: LoggerSdkLevel = LoggerSdkLevel.public;
+  private _enhancedLogs: boolean = false;
+  private _showLocalLogs: boolean = false;
+
+  getLevel(): LoggerSdkLevel {
+    return this._loggerSdkLevel;
+  }
+
+  setEnhancedLogs(enable: boolean): void {
+    this._enhancedLogs = enable;
+    if (this._showLocalLogs) return;
+    if (this._enhancedLogs) {
+      this._loggerSdkLevel = LoggerSdkLevel.customer;
+    } else {
+      this._loggerSdkLevel = LoggerSdkLevel.public;
+    }
+  }
+
+  setShowLocalLogs(enable: boolean): void {
+    this._showLocalLogs = enable;
+    if (this._showLocalLogs) {
+      this._loggerSdkLevel = LoggerSdkLevel.development;
+    } else {
+      this.setEnhancedLogs(this._enhancedLogs);
+    }
+  }
+}
+
+
+class DxaLogger {
+  private _plainLogger: PlainLogger;
+  private _enabled: boolean = true;
+  private _nativeModule: NativeModulesStatic;
+  private _loggerSdkLevelLogic: LoggerSdkLevelLogic;
+  constructor(
+    private isSdkRunning: () => boolean,
+    private nativeModule: NativeModulesStatic,
+  ) {
+    this._nativeModule = nativeModule;
+    this._plainLogger = new PlainLogger(() => this._enabled, isSdkRunning, (message: string) => null //send to native);
+    );
+    this._loggerSdkLevelLogic = SdkMetaData.releaseMode ? new LoggerSdkLevelRelease() : new LoggerSdkLevelDevelopment();
+  }
+  get _loggerSdkLevel(): LoggerSdkLevel {
+    return this._loggerSdkLevelLogic.getLevel();
+  }
+
+  log(messageLevel: LoggerSdkLevel, message: String, emoji?: String) {
+    let finalMessage: String = message;
+    if (emoji != undefined && this._loggerSdkLevel >= LoggerSdkLevel.qa) {
+      finalMessage = `${emoji} ${finalMessage}`;
+    }
+    if (messageLevel <= this._loggerSdkLevel) {
+      this._plainLogger.log(finalMessage);
+    }
+  }
+}
+
+class PlainLogger {
+  //create the constructor
+  constructor(enabled: () => boolean, isSdkRunning: () => boolean, loggedMessageCallback: (message: string) => void) {
+    this.enabled = enabled;
+    this.isSdkRunning = isSdkRunning;
+    this.loggedMessageCallback = loggedMessageCallback;
+  }
+  enabled: () => boolean;
+  isSdkRunning: () => boolean;
+  loggedMessageCallback: (message: string) => void;
+
+  log(...message: any[]) {
+    let isoString = new Date().toISOString();
+    let loggedMessage = `<MedalliaDXA - ${isoString}> ${message}`;
+    this.loggedMessageCallback(loggedMessage);
+    console.log(loggedMessage);
+  }
+}
+const dxaLog = new DxaLogger(() => !sdkBlockerIstance.isSdkBlocked, DxaReactNative);
+export { dxaLog, LoggerSdkLevel };
