@@ -81,7 +81,7 @@ class DXA {
       );
       return;
     }
-
+    dxaLog.setEnhancedLogs(dxaConfig.enhancedLogsEnabled);
     this.setUpNativeListeners();
 
     try {
