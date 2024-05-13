@@ -19,18 +19,19 @@ class DxaReactNative: RCTEventEmitter {
     }
 
     func sendDxaEvent(withData data: [String: Any]) {
-        if hasListeners { // Add this line
+        if hasListeners { 
             sendEvent(withName: "dxa-event", body: data)
         }
     }
 
-    @objc(initialize:withProperty:withConsents:withSdkVersion:withMobileDataEnabled:callback:)
+    @objc(initialize:withProperty:withConsents:withSdkVersion:withMobileDataEnabled:withEnhancedLogsEnabled:callback:)
     func initialize(
         account: Int,
         property: Int,
         consents: Float,
         sdkVersion: String,
         mobileDataEnabled: Bool,
+        enhancedLogsEnabled: Bool,
         callback:RCTResponseSenderBlock
     ) -> Void {
         let nativeConsents: Consent = translateConsentsToIos(flutterConsents: consents)
@@ -39,7 +40,8 @@ class DxaReactNative: RCTEventEmitter {
             property: String(property),
             consent: nativeConsents,
             mobileDataEnable: mobileDataEnabled,
-            manualScreenTracking: true
+            manualScreenTracking: true,
+            enhancedLogsEnabled: enhancedLogsEnabled,
         )
         
       let liveConfig = DXA.initialize(configuration: configuration, multiplatform: Platform(type: .reactNative, version: String(describing: sdkVersion), language: "TypeScript"), dxaDelegate: self)

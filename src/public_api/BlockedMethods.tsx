@@ -14,9 +14,13 @@ export class BlockedPublicMethods implements ActivePublicMethods {
         return Promise.resolve(false);
 
     }
+
     public sendHttpError(_errorCode: number): Promise<boolean> {
         return Promise.resolve(false);
+    }
 
+    public sendError(_error: string): Promise<boolean>  {
+        return Promise.resolve(false);
     }
     public sendGoal(_goalName: string, _value?: number | undefined): Promise<boolean> {
         return Promise.resolve(false);

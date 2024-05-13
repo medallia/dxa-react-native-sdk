@@ -1,5 +1,5 @@
 import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
-import { DxaLog } from '../src/util/DxaLog';
+import { LoggerSdkLevel, dxaLog } from './util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
@@ -35,19 +35,22 @@ export class DxaConfig {
   consents: MedalliaDxaCustomerConsentType = MedalliaDxaCustomerConsentType.analyticsAndTracking;
   manualTracking: boolean;
   mobileDataEnabled: boolean;
+  enhancedLogsEnabled: boolean;
 
   constructor(
     accountId: number,
     propertyId: number,
     consents: MedalliaDxaCustomerConsentType,
     manualTracking?: boolean,
-    mobileDataEnabled?: boolean
+    mobileDataEnabled?: boolean,
+    enhancedLogsEnabled?: boolean
   ) {
     this.accountId = accountId;
     this.propertyId = propertyId;
     this.consents = consents;
     this.manualTracking = manualTracking = false;
     this.mobileDataEnabled = mobileDataEnabled = true;
+    this.enhancedLogsEnabled = enhancedLogsEnabled = false;
   }
 }
 
@@ -73,32 +76,26 @@ class DXA {
     let sdkVersion = SdkMetaData.sdkVersion;
     if (this.initialized) {
       dxaLog.log(
-        'MedalliaDXA ->',
+        LoggerSdkLevel.public,
         'SDK has already been initialized',
       );
       return;
     }
-    dxaLog.log(
-      'MedalliaDXA ->',
-      'initializing SDK propertyId:',
-      this.accountId,
-      'accountId:',
-      this.propertyId
-    );
-
-
+    dxaLog.setEnhancedLogs(dxaConfig.enhancedLogsEnabled);
     this.setUpNativeListeners();
 
     try {
       await new Promise((resolve) => {
-        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, (callbackResult: any) => {
+        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, dxaConfig.enhancedLogsEnabled, (callbackResult: any) => {
           liveConfigDataInstance.fillfromNative(callbackResult);
           this.initialized = true;
           resolve(true);
         })
       });
+      dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
+      dxaLog.log(LoggerSdkLevel.customer, `MedalliaDXA initalized with account id: ${this.accountId} and property id: ${this.propertyId}. Consents: ${this.consents}. Mobile data enabled: ${dxaConfig.mobileDataEnabled}. ManualTracking: ${dxaConfig.manualTracking}.`);
     } catch (error) {
-      dxaLog.log('MedalliaDXA ->', 'initialize error:', error);
+      dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA failed to initialize ${error}`);
       return;
     }
     this.initialized = true;
@@ -158,8 +155,7 @@ class DXA {
   }
 
   sendError(error: string): Promise<boolean> {
-    dxaLog.log('MedalliaDXA ->', 'sendError -> ', error);
-    return DxaReactNative.sendError(error);
+    return this.publicMethods.sendError(error);
   }
 
   getSessionUrl(): Promise<string | null> {
@@ -192,7 +188,6 @@ class DXA {
   }
 
   setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
-    dxaLog.log('MedalliaDXA ->', 'publicMethods', this.publicMethods);
     return this.publicMethods.setAlternativeScreenNames(alternativeScreenNames);
   }
 
@@ -216,7 +211,6 @@ class DXA {
 
     const eventEmitter = new NativeEventEmitter(DxaReactNative);
     eventEmitter.addListener('dxa-event', event => {
-      dxaLog.log('MedalliaDXA ->', 'event listener:', event);
       switch (event.eventType) {
         case liveConfigDataInstance.eventType:
           liveConfigDataInstance.fillfromNative(event);
@@ -233,11 +227,9 @@ class DXA {
 }
 
 const MedalliaDXA = new DXA();
-const dxaLog = new DxaLog();
 
 /// DXA binder.
 export { MedalliaDXA };
-export { dxaLog };
 export { DxaMask, MedalliaDxaAutomaticMask } from './DxaMask';
 export { DxaUnmask } from './DxaUnmask';
 export { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';

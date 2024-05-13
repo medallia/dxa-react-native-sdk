@@ -32,6 +32,7 @@ export default function App() {
       consents: MedalliaDxaCustomerConsentType.analyticsAndTracking,
       manualTracking: false,
       mobileDataEnabled: true,
+      enhancedLogsEnabled: false,
     },
     navigationRef
   ).then(() => {

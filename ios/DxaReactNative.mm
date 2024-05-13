@@ -9,6 +9,7 @@ RCT_EXTERN_METHOD(
   withConsents:(float)consents
   withSdkVersion:(NSString)sdkVersion
   withMobileDataEnabled:(BOOL)mobileDataEnabled
+  withEnhancedLogsEnabled:(BOOL)enhancedLogsEnabled
   callback:(RCTResponseSenderBlock)callback
 )
 
