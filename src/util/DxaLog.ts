@@ -22,12 +22,12 @@ class LoggerSdkLevelDevelopment implements LoggerSdkLevelLogic {
     return LoggerSdkLevel.development;
   }
 
-  setEnhancedLogs(enable: boolean): void {
+  setEnhancedLogs(_enable: boolean): void {
     // In development mode, we don't need to set enhanced logs
     return;
   }
 
-  setShowLocalLogs(enable: boolean): void {
+  setShowLocalLogs(_enable: boolean): void {
     // In development mode, we don't need to set show local logs
     return;
   }
@@ -70,7 +70,7 @@ class DxaLogger {
   private loggerSdkLevelLogic: LoggerSdkLevelLogic;
   
   constructor(
-    private isSdkRunning: () => boolean,
+    isSdkRunning: () => boolean,
     private nativeModule: NativeModulesStatic,
   ) {
     this._nativeModule = nativeModule;
