@@ -90,6 +90,7 @@ class DxaReactNativeModule(
           vcBlockedReactNativeSDKVersions = config.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = config.vcBlockedReactNativeAppVersions,
           daShowLocalLogs = config.daShowLocalLogs,
+          daAllowLocalLogs = config.daAllowLogs,
           dstDisableScreenTracking = config.dstDisableScreenTracking,
           appVersion = AppVersionProvider.version
         ).toWritableNativeMap()
@@ -264,6 +265,7 @@ class DxaReactNativeModule(
           vcBlockedReactNativeSDKVersions = newConfig.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = newConfig.vcBlockedReactNativeAppVersions,
           daShowLocalLogs = newConfig.daShowLocalLogs,
+          daAllowLocalLogs = newConfig.daAllowLogs,
           dstDisableScreenTracking = newConfig.dstDisableScreenTracking,
           appVersion = AppVersionProvider.version
         ).toWritableNativeMap()
