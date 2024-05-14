@@ -41,7 +41,7 @@ class DxaReactNative: RCTEventEmitter {
             consent: nativeConsents,
             mobileDataEnable: mobileDataEnabled,
             manualScreenTracking: true,
-            enhancedLogsEnabled: enhancedLogsEnabled,
+            enhancedLogsEnabled: enhancedLogsEnabled
         )
         
       let liveConfig = DXA.initialize(configuration: configuration, multiplatform: Platform(type: .reactNative, version: String(describing: sdkVersion), language: "TypeScript"), dxaDelegate: self)
@@ -49,6 +49,7 @@ class DxaReactNative: RCTEventEmitter {
         
         dictData["dstDisableScreenTracking"] = liveConfig.disableScreenTracking
         dictData["daShowLocalLogs"] = liveConfig.showLocalLogs
+        dictData["daAllowLocalLogs"] = liveConfig.allowLogs
         dictData["vcBlockedReactNativeSDKVersions"] = liveConfig.blockedRNSDKVersions
         dictData["vcBlockedReactNativeAppVersions"] = liveConfig.blockedRNAppVersions
         dictData["appVersion"] = DXA.appVersion
@@ -353,6 +354,7 @@ extension DxaReactNative : DXADelegate {
             var dictData = [String: Any]()
             dictData["dstDisableScreenTracking"] = configuration.disableScreenTracking
             dictData["daShowLocalLogs"] = configuration.showLocalLogs
+            dictData["daAllowLocalLogs"] = configuration.allowLogs
             dictData["vcBlockedReactNativeSDKVersions"] = configuration.blockedRNSDKVersions
             dictData["vcBlockedReactNativeAppVersions"] = configuration.blockedRNAppVersions
             dictData["appVersion"] = DXA.appVersion
