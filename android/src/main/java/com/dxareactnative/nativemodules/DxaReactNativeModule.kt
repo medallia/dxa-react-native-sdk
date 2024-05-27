@@ -90,6 +90,7 @@ class DxaReactNativeModule(
           vcBlockedReactNativeSDKVersions = config.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = config.vcBlockedReactNativeAppVersions,
           daShowLocalLogs = config.daShowLocalLogs,
+          daAllowLocalLogs = config.daAllowLogs,
           dstDisableScreenTracking = config.dstDisableScreenTracking,
           appVersion = AppVersionProvider.version
         ).toWritableNativeMap()
@@ -241,6 +242,11 @@ class DxaReactNativeModule(
     dxa.sendDataOverWifiOnly(enabled = onlyWifi)
   }
 
+  @ReactMethod
+  fun saveLogs(log: String) {
+    dxa.saveLog(log)
+  }
+
   private fun bootstrapperInitialize() {
     startCollectSdkConfig()
 
@@ -259,6 +265,7 @@ class DxaReactNativeModule(
           vcBlockedReactNativeSDKVersions = newConfig.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = newConfig.vcBlockedReactNativeAppVersions,
           daShowLocalLogs = newConfig.daShowLocalLogs,
+          daAllowLocalLogs = newConfig.daAllowLogs,
           dstDisableScreenTracking = newConfig.dstDisableScreenTracking,
           appVersion = AppVersionProvider.version
         ).toWritableNativeMap()
