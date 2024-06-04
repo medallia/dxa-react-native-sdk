@@ -22,3 +22,20 @@ data class SdkConfigInfo(
     return map
   }
 }
+
+
+data class SamplingInfo(
+  val stopTrackingDueToSampling: Boolean,
+  val stopRecordingDueToSampling: Boolean,
+) {
+
+  fun toWritableNativeMap(): WritableMap {
+    val map = Arguments.createMap()
+
+    map.putBoolean("stopTrackingDueToSampling", stopTrackingDueToSampling)
+    map.putBoolean("stopRecordingDueToSampling", stopRecordingDueToSampling)
+
+    map.putString("eventType",  "sampling_data")
+    return map
+  }
+}
