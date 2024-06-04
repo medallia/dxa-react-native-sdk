@@ -90,6 +90,9 @@ repositories {
   google()
   ///Medallia DXA sdk nexus (Maven repo)
   maven {
+    url "https://nexus.decibel.com/repository/android-sdk/"
+  }
+  maven {
     url "https://nexus.decibel.com/repository/android-sdk-snapshot/"
   }
 }
@@ -104,7 +107,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   ///Medallia DXA dependency
-  implementation "com.medallia.dxa:dxa-android-sdk:rc-3.1.0-2-SNAPSHOT"
+  implementation "com.medallia.dxa:dxa-android-sdk:3.1.1"
 }
 
 if (isNewArchitectureEnabled()) {

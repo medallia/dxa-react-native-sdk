@@ -1,13 +1,13 @@
-import { dxaLog } from "./util/DxaLog";
+import { LoggerSdkLevel, dxaLog } from "./util/DxaLog";
 
 class SamplingData {
     eventType: string = "sampling_data";
-    private _stopTrackingDueToSampling: boolean = false;
+    stopTrackingDueToSampling: boolean = false;
     private _stopRecordingDueToSampling: boolean = false;
 
     fillfromNative(data: any): void {
-        dxaLog.log("Sampling data from native: ", data);
-        this._stopTrackingDueToSampling = data.stopTrackingDueToSampling;
+        dxaLog.log(LoggerSdkLevel.development,`Sampling data from native: ${data.stopTrackingDueToSampling}, ${data.stopRecordingDueToSampling}`);
+        this.stopTrackingDueToSampling = data.stopTrackingDueToSampling;
         this._stopRecordingDueToSampling = data.stopRecordingDueToSampling;
 
         // this.runTasksAfterUpdate();

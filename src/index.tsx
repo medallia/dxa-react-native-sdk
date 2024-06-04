@@ -32,7 +32,7 @@ export const DxaReactNative = NativeModules.DxaReactNative
 export class DxaConfig {
   accountId!: number;
   propertyId!: number;
-  consents: MedalliaDxaCustomerConsentType = MedalliaDxaCustomerConsentType.analyticsAndTracking;
+  consents: MedalliaDxaCustomerConsentType = MedalliaDxaCustomerConsentType.analyticsAndRecording;
   manualTracking: boolean;
   mobileDataEnabled: boolean;
   enhancedLogsEnabled: boolean;
@@ -87,13 +87,14 @@ class DXA {
     try {
       await new Promise((resolve) => {
         DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, dxaConfig.enhancedLogsEnabled, (callbackResult: any) => {
+          dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
+          dxaLog.log(LoggerSdkLevel.customer, `MedalliaDXA initalized with account id: ${this.accountId} and property id: ${this.propertyId}. Consents: ${this.consents}. Mobile data enabled: ${dxaConfig.mobileDataEnabled}. ManualTracking: ${dxaConfig.manualTracking}.`);
           liveConfigDataInstance.fillfromNative(callbackResult);
           this.initialized = true;
           resolve(true);
         })
       });
-      dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
-      dxaLog.log(LoggerSdkLevel.customer, `MedalliaDXA initalized with account id: ${this.accountId} and property id: ${this.propertyId}. Consents: ${this.consents}. Mobile data enabled: ${dxaConfig.mobileDataEnabled}. ManualTracking: ${dxaConfig.manualTracking}.`);
+
     } catch (error) {
       dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA failed to initialize ${error}`);
       return;
@@ -128,7 +129,7 @@ class DXA {
 
   // Starts to track a screen. If another screen is being tracked, it will be stopped.
   // @param - screenName - Name of current screen.
-  startScreen(screenName: string): Promise<boolean> {
+  startNewScreen(screenName: string): Promise<boolean> {
     return this.publicMethods.startScreen(screenName);
   }
 
@@ -211,6 +212,9 @@ class DXA {
 
     const eventEmitter = new NativeEventEmitter(DxaReactNative);
     eventEmitter.addListener('dxa-event', event => {
+      if (sdkBlockerIstance.isSdkBlocked && event.eventType != liveConfigDataInstance.eventType) {
+        return;
+      }
       switch (event.eventType) {
         case liveConfigDataInstance.eventType:
           liveConfigDataInstance.fillfromNative(event);

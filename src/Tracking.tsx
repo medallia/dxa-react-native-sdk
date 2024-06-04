@@ -3,6 +3,7 @@ import { AppState, Dimensions } from 'react-native';
 import type { NavigationLibrary } from "./NavigationLibraries";
 import { Blockable } from "./live_config/SdkBlocker";
 import { LoggerSdkLevel, dxaLog } from "./util/DxaLog";
+import { samplingDataInstance } from "./Sampling";
 
 type TrackingParams = {
     dxaNativeModule: NativeModulesStatic;
@@ -77,6 +78,10 @@ export class Tracking extends Blockable {
 
     startScreen(screenName: string): Promise<boolean> {
         var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
+        if(samplingDataInstance.stopTrackingDueToSampling){
+            dxaLog.log(LoggerSdkLevel.development, `Screen tracking is disabled due to sampling`);
+            return Promise.resolve(false);
+        }
         if (this.disabledScreenTracking.includes(finalScreenName)) {
             dxaLog.log(LoggerSdkLevel.development, `Screen tracking is disabled for screen: ${finalScreenName}`);
             return Promise.resolve(false);

@@ -1,5 +1,6 @@
 package com.dxareactnative.nativemodules
 
+import SamplingInfo
 import SdkConfigInfo
 import android.util.Log
 import com.facebook.react.bridge.Callback
@@ -20,6 +21,7 @@ import com.medallia.dxa.common.internal.logic.providers.AppVersionProvider
 import com.medallia.dxa.common.internal.models.DXAConfig
 import com.medallia.dxa.common.internal.models.ImageQualityLevel
 import com.medallia.dxa.common.internal.models.Multiplatform
+import com.medallia.dxa.common.internal.models.SamplingMultiplatform
 import com.medallia.dxa.common.internal.models.SdkConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -249,6 +251,7 @@ class DxaReactNativeModule(
 
   private fun bootstrapperInitialize() {
     startCollectSdkConfig()
+    startCollectingSamplingData()
 
   }
 
@@ -274,6 +277,20 @@ class DxaReactNativeModule(
         sendEvent(reactContext, "dxa-event", configMap)
 
 
+      }
+    }
+  }
+
+  private fun startCollectingSamplingData() {
+    binderScope.launch {
+      dxa.getSampling().collect { samplingData: SamplingMultiplatform ->
+
+        val samplingInfoMap = SamplingInfo(
+          stopTrackingDueToSampling = samplingData.stopTrackingDueToSampling,
+          stopRecordingDueToSampling = samplingData.stopRecordingDueToSampling
+        ).toWritableNativeMap()
+
+        sendEvent(reactContext, "dxa-event", samplingInfoMap)
       }
     }
   }

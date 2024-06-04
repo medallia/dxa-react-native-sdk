@@ -29,7 +29,7 @@ export default function App() {
     {
       accountId: 10010,
       propertyId: 250441,
-      consents: MedalliaDxaCustomerConsentType.analyticsAndTracking,
+      consents: MedalliaDxaCustomerConsentType.analyticsAndRecording,
       manualTracking: false,
       mobileDataEnabled: true,
       enhancedLogsEnabled: false,
