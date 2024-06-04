@@ -3,7 +3,7 @@
 buildscript {
   ext {
     buildToolsVersion = "34.0.0"
-    minSdkVersion = 23
+    minSdkVersion = 26
     compileSdkVersion = 34
     targetSdkVersion = 34
 
@@ -38,6 +38,9 @@ allprojects {
     google()
     mavenCentral()
     ///Medallia DXA sdk nexus (Maven repo)
+    maven {
+      url "https://nexus.decibel.com/repository/android-sdk/"
+    }
     maven {
       url "https://nexus.decibel.com/repository/android-sdk-snapshot/"
     }
