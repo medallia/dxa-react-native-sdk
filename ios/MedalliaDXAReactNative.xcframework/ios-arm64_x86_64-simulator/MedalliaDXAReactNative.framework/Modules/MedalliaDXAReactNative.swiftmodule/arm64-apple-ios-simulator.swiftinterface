@@ -1,0 +1,281 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
+// swift-module-flags: -target arm64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -Onone -module-name MedalliaDXAReactNative
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import AVFoundation
+import CommonCrypto
+import Foundation
+import MapKit
+import Swift
+import SwiftUI
+import SystemConfiguration
+import UIKit
+import WebKit
+import _Concurrency
+import _StringProcessing
+extension MedalliaDXAReactNative.DXA {
+  public static func initialize(configuration: MedalliaDXAReactNative.Configuration, multiplatform: MedalliaDXAReactNative.Platform, dxaDelegate: (any MedalliaDXAReactNative.DXADelegate)? = nil) -> MedalliaDXAReactNative.LiveConfigurationMultiplatform
+  public static func saveLog(message: Swift.String)
+  public static var appVersion: Swift.String? {
+    get
+  }
+}
+public protocol DXADelegate {
+  func performance(_ data: MedalliaDXAReactNative.PerformanceMultiplatform)
+  func liveConfig(_ configuration: MedalliaDXAReactNative.LiveConfigurationMultiplatform)
+  func sampling(_ sampling: MedalliaDXAReactNative.SamplingMultiplatform)
+}
+public struct PerformanceMultiplatform {
+  public let isStressed: [MedalliaDXAReactNative.DeviceStressedTypeFlutter]
+  public let cpu: Swift.Double
+  public let memory: Swift.Double
+  public let battery: Swift.Double
+  public let threads: Swift.Int
+  public let maxMemory: Swift.Double
+}
+public enum DeviceStressedTypeFlutter : Swift.Int {
+  case battery
+  case memory
+  case cpu
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@available(iOS 13, *)
+extension SwiftUI.View {
+  public func dxaMaskView() -> some SwiftUI.View
+  
+}
+@available(iOS 13, *)
+extension SwiftUI.View {
+  public func dxaTrackScreen(name: Swift.String, disableRecordingOnThisScreen: Swift.Bool = false) -> some SwiftUI.View
+  
+}
+public enum Consent {
+  case analyticsAndRecording
+  case analytics
+  case none
+  public static func == (a: MedalliaDXAReactNative.Consent, b: MedalliaDXAReactNative.Consent) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class DXA {
+  public static func initialize(_ configuration: MedalliaDXAReactNative.Configuration)
+  public static func startNewScreen(name: Swift.String, disableRecordingOnThisScreen: Swift.Bool = false)
+  public static func stopScreen()
+  public static func setMaskingForCurrentScreen(_ types: [MedalliaDXAReactNative.MaskAutomatic])
+  public static func send(goal: Swift.String, with value: Swift.Float? = nil)
+  public static func send(dimension: Swift.String, value: Swift.String)
+  public static func send(dimension: Swift.String, value: Swift.Bool)
+  public static func send(dimension: Swift.String, value: Swift.Double)
+  public static func enableAutoMasking(_ types: [MedalliaDXAReactNative.MaskAutomatic])
+  public static func disableAutoMasking(_ types: [MedalliaDXAReactNative.MaskAutomatic])
+  public static func setConsent(_ consent: MedalliaDXAReactNative.Consent)
+  public static func setImageQuality(_ quality: MedalliaDXAReactNative.ImageQualityType)
+  public static func setMaskingColor(_ color: UIKit.UIColor)
+  public static func sendHTTPError(statusCode: Swift.Int)
+  public static func sendError(_ error: Swift.String)
+  public static func formSuccess()
+  public static func formError(error: Swift.String, selector: UIKit.UIView?)
+  public static var webViewProperties: Swift.String? {
+    get
+  }
+  public static var sessionURL: ((Swift.String?) -> ())? {
+    get
+    set
+  }
+  public static var sessionId: Swift.String? {
+    get
+  }
+  public static var mobileDataEnable: Swift.Bool {
+    get
+    set
+  }
+  public static func captureURLParameters(_ capture: Swift.Bool)
+  @objc deinit
+}
+extension MedalliaDXAReactNative.DXA {
+  public static func setRetention(_ enabled: Swift.Bool)
+}
+public enum ImageQualityType : Swift.Int, Swift.Codable {
+  case poor
+  case low
+  case average
+  case high
+  case ultra
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension UIKit.UIViewController {
+  @_Concurrency.MainActor(unsafe) public var dxaScreenName: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var dxaDisableRecordingOnThisScreen: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var dxaDisableAnalyticsAndRecordingOnThisScreen: Swift.Bool {
+    get
+    set
+  }
+}
+public class Platform {
+  public init(type: MedalliaDXAReactNative.PlatformType, version: Swift.String, language: Swift.String)
+  public static var native: MedalliaDXAReactNative.Platform
+  @objc deinit
+}
+public enum PlatformType {
+  case native
+  case flutter
+  case xamarin
+  case reactNative
+  public static func == (a: MedalliaDXAReactNative.PlatformType, b: MedalliaDXAReactNative.PlatformType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum SessionReplayMode {
+  case hiFi
+  case loFi
+  case automatic
+  public static func == (a: MedalliaDXAReactNative.SessionReplayMode, b: MedalliaDXAReactNative.SessionReplayMode) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct SamplingMultiplatform {
+  public var stopTrackingDueToSampling: Swift.Bool
+  public var stopRecordingDueToSampling: Swift.Bool
+}
+public enum LogLevel : Swift.Int {
+  case `public`
+  case customer
+  case qa
+  case developer
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public enum MaskAutomatic {
+  case labels
+  case inputs
+  case images
+  case webViews
+  case all
+  public static func == (a: MedalliaDXAReactNative.MaskAutomatic, b: MedalliaDXAReactNative.MaskAutomatic) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum MaskView {
+  case automatic
+  case mask
+  case unmask
+  public static func == (a: MedalliaDXAReactNative.MaskView, b: MedalliaDXAReactNative.MaskView) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public class Configuration {
+  public var sessionReplayMode: MedalliaDXAReactNative.SessionReplayMode
+  public var endpoint: MedalliaDXAReactNative.Endpoint
+  public var logLevel: MedalliaDXAReactNative.LogLevel
+  public init(account: Swift.String, property: Swift.String, consent: MedalliaDXAReactNative.Consent = .analyticsAndRecording, crashReporterEnabled: Swift.Bool = true, mobileDataEnable: Swift.Bool = true, manualScreenTracking: Swift.Bool = false, enhancedLogsEnabled: Swift.Bool = false, networkAnalyticsEnable: Swift.Bool = true)
+  @objc deinit
+}
+public enum Endpoint {
+  case production
+  case staging
+  case sigma
+  case omega
+  public static func == (a: MedalliaDXAReactNative.Endpoint, b: MedalliaDXAReactNative.Endpoint) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct LiveConfigurationMultiplatform {
+  public var ipHandling: Swift.Int?
+  public var useLiveConfiguration: Swift.Bool
+  public var experienceDataSampleMethod: Swift.Int?
+  public var sessionCookieFlags: Swift.Int?
+  public var leadCookieFlags: Swift.Int?
+  public var analysisDataSampleMethod: Swift.Int?
+  public var analysisSessFlags: Swift.Int?
+  public var analysisLeadFlags: Swift.Int?
+  public var replayDataSampleMethod: Swift.Int?
+  public var replaySessFlags: Swift.Int?
+  public var replayLeadFlags: Swift.Int?
+  public var disableScreenTracking: [Swift.String]?
+  public var screensMasking: [Swift.String]?
+  public var forceHiFi: [Swift.String]?
+  public var forceLoFi: [Swift.String]?
+  public var imageQualityType: Swift.Int?
+  public var videoQualityType: Swift.Int?
+  public var maxScreenDuration: Swift.Int?
+  public var maxScreenshots: Swift.Int?
+  public var recordVideoInForeground: Swift.Bool?
+  public var sessionTimeout: Swift.Int?
+  public var maskingColor: Swift.String?
+  public var showLocalLogs: Swift.Bool?
+  public var allowLogs: Swift.Bool?
+  public var sdkVersionsBlocked: [Swift.String]?
+  public var appVersionsBlocked: [Swift.String]?
+  public var keepVideoData: Swift.Bool?
+  public var maxMemoryUsage: Swift.Int?
+  public var maxCPUUsage: Swift.Int?
+  public var enableAnalytics: Swift.Bool?
+  public var blockedFlutterSDKVersions: [Swift.String]?
+  public var blockedFlutterAppVersions: [Swift.String]?
+  public var blockedRNSDKVersions: [Swift.String]?
+  public var blockedRNAppVersions: [Swift.String]?
+}
+extension UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public var dxaMasking: MedalliaDXAReactNative.MaskView {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var dxaFormTrack: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var dxaStringTag: Swift.String? {
+    get
+    set
+  }
+}
+extension MedalliaDXAReactNative.DeviceStressedTypeFlutter : Swift.Equatable {}
+extension MedalliaDXAReactNative.DeviceStressedTypeFlutter : Swift.Hashable {}
+extension MedalliaDXAReactNative.DeviceStressedTypeFlutter : Swift.RawRepresentable {}
+extension MedalliaDXAReactNative.Consent : Swift.Equatable {}
+extension MedalliaDXAReactNative.Consent : Swift.Hashable {}
+extension MedalliaDXAReactNative.Endpoint : Swift.Equatable {}
+extension MedalliaDXAReactNative.Endpoint : Swift.Hashable {}
+extension MedalliaDXAReactNative.ImageQualityType : Swift.Equatable {}
+extension MedalliaDXAReactNative.ImageQualityType : Swift.Hashable {}
+extension MedalliaDXAReactNative.ImageQualityType : Swift.RawRepresentable {}
+extension MedalliaDXAReactNative.PlatformType : Swift.Equatable {}
+extension MedalliaDXAReactNative.PlatformType : Swift.Hashable {}
+extension MedalliaDXAReactNative.SessionReplayMode : Swift.Equatable {}
+extension MedalliaDXAReactNative.SessionReplayMode : Swift.Hashable {}
+extension MedalliaDXAReactNative.LogLevel : Swift.Equatable {}
+extension MedalliaDXAReactNative.LogLevel : Swift.Hashable {}
+extension MedalliaDXAReactNative.LogLevel : Swift.RawRepresentable {}
+extension MedalliaDXAReactNative.MaskAutomatic : Swift.Equatable {}
+extension MedalliaDXAReactNative.MaskAutomatic : Swift.Hashable {}
+extension MedalliaDXAReactNative.MaskView : Swift.Equatable {}
+extension MedalliaDXAReactNative.MaskView : Swift.Hashable {}
