@@ -1,5 +1,5 @@
 export enum MedalliaDxaCustomerConsentType {
-    analyticsAndTracking = 2,
+    analyticsAndRecording = 2,
     analytics = 1,
     none = 0,
 }
