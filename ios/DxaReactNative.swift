@@ -46,7 +46,8 @@ class DxaReactNative: RCTEventEmitter {
         
       let liveConfig = DXA.initialize(configuration: configuration, multiplatform: Platform(type: .reactNative, version: String(describing: sdkVersion), language: "TypeScript"), dxaDelegate: self)
         var dictData = [String: Any]()
-        
+        print("initalized vcBlockedReactNativeSDKVersions: \(liveConfig.blockedRNSDKVersions) vcBlockedReactNativeAppVersions: \(liveConfig.blockedRNAppVersions)")
+
         dictData["dstDisableScreenTracking"] = liveConfig.disableScreenTracking
         dictData["daShowLocalLogs"] = liveConfig.showLocalLogs
         dictData["daAllowLocalLogs"] = liveConfig.allowLogs
@@ -352,6 +353,7 @@ extension DxaReactNative : DXADelegate {
         
         do {
             var dictData = [String: Any]()
+            print("Live Config JSON serialization vcBlockedReactNativeSDKVersions: \(configuration.blockedRNSDKVersions) vcBlockedReactNativeAppVersions: \(configuration.blockedRNAppVersions)")
             dictData["dstDisableScreenTracking"] = configuration.disableScreenTracking
             dictData["daShowLocalLogs"] = configuration.showLocalLogs
             dictData["daAllowLocalLogs"] = configuration.allowLogs

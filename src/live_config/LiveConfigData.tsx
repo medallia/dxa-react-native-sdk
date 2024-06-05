@@ -37,6 +37,7 @@ class LiveConfigData {
     }
 
     fillfromNative(data: any): void {
+        console.log("LiveConfigData fillfromNative", "blockedRNSDKVersions", data.vcBlockedReactNativeSDKVersions, "blockedRNAppVersions", "appVersion", data.appVersion, "sdkVersion", SdkMetaData.sdkVersion)
         this._blockedRNSDKVersions = data.vcBlockedReactNativeSDKVersions ?? this._blockedRNSDKVersions;
         this._blockedRNAppVersions = data.vcBlockedReactNativeAppVersions ?? this._blockedRNAppVersions;
         this._showLocalLogs = data.daShowLocalLogs ?? this._showLocalLogs;
