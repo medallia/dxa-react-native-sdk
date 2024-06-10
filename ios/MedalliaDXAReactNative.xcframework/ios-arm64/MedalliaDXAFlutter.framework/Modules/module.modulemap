@@ -1,4 +1,0 @@
-framework module MedalliaDXAFlutter {
-  header "MedalliaDXAFlutter-Swift.h"
-  requires objc
-}
