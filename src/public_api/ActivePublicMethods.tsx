@@ -63,10 +63,10 @@ export class ActivePublicMethods {
         return DxaReactNative.getSessionId();
     }
 
-    public getWebViewProperties(): Promise<string | null> {
-        let webViewProperties: string | null = DxaReactNative.getWebViewProperties();
+    public async getWebViewProperties(): Promise<string | null> {
+        let webViewProperties: string | null = await  DxaReactNative.getWebViewProperties();
         dxaLog.log(LoggerSdkLevel.qa, `Get webview properties: ${webViewProperties}`);
-        return Promise.resolve(webViewProperties);
+        return webViewProperties;
     }
 
     public setConsents(consents: MedalliaDxaCustomerConsentType): Promise<boolean> {
