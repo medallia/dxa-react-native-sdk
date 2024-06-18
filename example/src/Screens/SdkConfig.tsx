@@ -37,7 +37,7 @@ const ConsentsButtons = () => {
         />
         <Button
           title="Set consents to recording and tracking"
-          onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.analyticsAndTracking)}
+          onPress={() => MedalliaDXA.setConsents(MedalliaDxaCustomerConsentType.analyticsAndRecording)}
         />
       </View>
     );
