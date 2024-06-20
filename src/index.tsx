@@ -1,14 +1,11 @@
 import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
-import { LoggerSdkLevel, dxaLog } from './util/DxaLog';
+import { LoggerSdkLevel } from './util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
-import { sdkBlockerIstance } from './live_config/SdkBlocker';
 import { BlockedPublicMethods } from './public_api/BlockedMethods';
-import { liveConfigDataInstance } from './live_config/LiveConfigData';
 import { SdkMetaData } from './util/MetaData';
 import { core } from './Core';
-import { samplingDataInstance } from './Sampling';
 
 
 const LINKING_ERROR =
@@ -75,35 +72,36 @@ class DXA {
     core.navigationRef = navigationRef;
     let sdkVersion = SdkMetaData.sdkVersion;
     if (this.initialized) {
-      dxaLog.log(
+      core.dxaLogInstance.log(
         LoggerSdkLevel.public,
         'SDK has already been initialized',
       );
       return;
     }
-    dxaLog.setEnhancedLogs(dxaConfig.enhancedLogsEnabled);
+    core.initializePreInitializeModules();
+    core.dxaLogInstance.setEnhancedLogs(dxaConfig.enhancedLogsEnabled);
     this.setUpNativeListeners();
 
     try {
       await new Promise((resolve) => {
         DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, dxaConfig.enhancedLogsEnabled, (callbackResult: any) => {
-          dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
-          dxaLog.log(LoggerSdkLevel.customer, `MedalliaDXA initalized with account id: ${this.accountId} and property id: ${this.propertyId}. Consents: ${this.consents}. Mobile data enabled: ${dxaConfig.mobileDataEnabled}. ManualTracking: ${dxaConfig.manualTracking}.`);
-          liveConfigDataInstance.fillfromNative(callbackResult);
+          core.dxaLogInstance.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
+          core.dxaLogInstance.log(LoggerSdkLevel.customer, `MedalliaDXA initalized with account id: ${this.accountId} and property id: ${this.propertyId}. Consents: ${this.consents}. Mobile data enabled: ${dxaConfig.mobileDataEnabled}. ManualTracking: ${dxaConfig.manualTracking}.`);
+          core.liveConfigDataInstance.fillfromNative(callbackResult);
           this.initialized = true;
           resolve(true);
         })
       });
 
     } catch (error) {
-      dxaLog.log(LoggerSdkLevel.public, `MedalliaDXA failed to initialize ${error}`);
+      core.dxaLogInstance.log(LoggerSdkLevel.public, `MedalliaDXA failed to initialize ${error}`);
       return;
     }
     this.initialized = true;
-    if (sdkBlockerIstance.isSdkBlocked) {
+    if (core.sdkBlockerIstance.isSdkBlocked) {
       return;
     }
-    core.instantiateModules();
+    core.initializePostInitializeModules();
 
   }
 
@@ -114,11 +112,11 @@ class DXA {
       throw new Error('MedalliaDXA -> SDK has not been initialized');
     }
 
-    if (sdkBlockerIstance.isSdkBlocked) {
+    if (core.sdkBlockerIstance.isSdkBlocked) {
       return this.blockedPublicMethods;
     }
 
-    if (core.areModulesInstantiated == false) {
+    if (core.areModulesInitialized == false) {
       throw new Error('MedalliaDXA -> SDK has not been initialized correctly');
     }
     if (this.activePublicMethpodInstance === undefined) {
@@ -212,15 +210,15 @@ class DXA {
 
     const eventEmitter = new NativeEventEmitter(DxaReactNative);
     eventEmitter.addListener('dxa-event', event => {
-      if (sdkBlockerIstance.isSdkBlocked && event.eventType != liveConfigDataInstance.eventType) {
+      if (core.sdkBlockerIstance.isSdkBlocked && event.eventType != core.liveConfigDataInstance.eventType) {
         return;
       }
       switch (event.eventType) {
-        case liveConfigDataInstance.eventType:
-          liveConfigDataInstance.fillfromNative(event);
+        case core.liveConfigDataInstance.eventType:
+          core.liveConfigDataInstance.fillfromNative(event);
           break;
-        case samplingDataInstance.eventType:
-          samplingDataInstance.fillfromNative(event);
+        case core.samplingInstance.eventType:
+          core.samplingInstance.fillfromNative(event);
           break;
         default:
           break;
