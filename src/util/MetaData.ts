@@ -1,5 +1,5 @@
 class SdkMetaData{
-    static sdkVersion: string = "10.10.10";
+    static sdkVersion: string = "0.3.0";
     static releaseMode: boolean = false;
 }
 
