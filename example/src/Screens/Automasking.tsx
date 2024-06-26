@@ -15,7 +15,7 @@ export function AutoMaskingScreen({ navigation }: { navigation: any }) {
 export const AutoMaskingButtons = () => {
   return (
     <View>
-      <Button
+      {/* <Button
         title="MedalliaDxaAutomaticMask.text"
         onPress={() => MedalliaDXA.enableAutoMasking([MedalliaDxaAutomaticMask.text])}
       />
@@ -30,7 +30,7 @@ export const AutoMaskingButtons = () => {
       <Button title="enable automasking .text && .images" onPress={() => MedalliaDXA.enableAutoMasking([MedalliaDxaAutomaticMask.text, MedalliaDxaAutomaticMask.images])}
       />
       <Button title="enable automasking .all" onPress={() => MedalliaDXA.enableAutoMasking([MedalliaDxaAutomaticMask.all])}
-      />
+      /> */}
       <Button
         title="disable autoMasking .all"
         onPress={() => MedalliaDXA.disableAutoMasking([MedalliaDxaAutomaticMask.all])}
