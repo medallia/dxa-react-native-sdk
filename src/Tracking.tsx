@@ -2,14 +2,15 @@ import type { EmitterSubscription, NativeEventSubscription, NativeModulesStatic 
 import { AppState, Dimensions } from 'react-native';
 import type { NavigationLibrary } from "./NavigationLibraries";
 import { Blockable } from "./live_config/SdkBlocker";
-import { LoggerSdkLevel, dxaLog } from "./util/DxaLog";
-import { samplingDataInstance } from "./Sampling";
+import { LoggerSdkLevel } from "./util/DxaLog";
+import { core } from "./Core";
 
 type TrackingParams = {
     dxaNativeModule: NativeModulesStatic;
     manualTracking: boolean;
     reactNavigationLibrary?: NavigationLibrary | undefined;
-    disabledScreenTracking: string[];
+    disabledScreenTracking: () => string[];
+    stopTrackingDueToSampling: () => boolean;
 };
 
 interface ScreenSize {
@@ -28,13 +29,15 @@ export class Tracking extends Blockable {
     private screenSize: ScreenSize | undefined;
     private currentlyTrackingAScreen: boolean = false;
     private alternativeScreenNames: Map<string, string> = new Map();
-    private disabledScreenTracking: string[] = [];
+    private disabledScreenTracking: () => string[];
+    private stopTrackingDueToSampling: () => boolean;
     private reactNavigationLibrary: NavigationLibrary | undefined;
 
     private constructor(params: TrackingParams) {
         super();
         this.dxaNativeModule = params.dxaNativeModule;
         this.disabledScreenTracking = params.disabledScreenTracking;
+        this.stopTrackingDueToSampling = params.stopTrackingDueToSampling;
         this.reactNavigationLibrary = params.reactNavigationLibrary;
         this.startAppStateListener();
         this.startDimensionsListener();
@@ -72,28 +75,25 @@ export class Tracking extends Blockable {
         }
     }
 
-    public updateDisabledScreenTracking(disabledScreenTracking: string[]): void {
-        this.disabledScreenTracking = disabledScreenTracking;
-    }
-
     startScreen(screenName: string): Promise<boolean> {
         var finalScreenName = this.alternativeScreenNames.get(screenName) ?? screenName;
-        if(samplingDataInstance.stopTrackingDueToSampling){
-            dxaLog.log(LoggerSdkLevel.development, `Screen tracking is disabled due to sampling`);
+
+        if(this.stopTrackingDueToSampling()){
+            core.dxaLogInstance.log(LoggerSdkLevel.development, `Screen tracking is disabled due to sampling`);
             return Promise.resolve(false);
         }
-        if (this.disabledScreenTracking.includes(finalScreenName)) {
-            dxaLog.log(LoggerSdkLevel.development, `Screen tracking is disabled for screen: ${finalScreenName}`);
+        if (this.disabledScreenTracking().includes(finalScreenName)) {
+            core.dxaLogInstance.log(LoggerSdkLevel.development, `Screen tracking is disabled for screen: ${finalScreenName}`);
             return Promise.resolve(false);
         }
-        dxaLog.log(LoggerSdkLevel.customer, `starting screen ->  ${finalScreenName}`);
+        core.dxaLogInstance.log(LoggerSdkLevel.customer, `starting screen ->  ${finalScreenName}`);
         this.currentlyTrackingAScreen = true;
         this.lastScreenName = finalScreenName;
         return this.dxaNativeModule.startScreen(finalScreenName);
     }
 
     stopScreen(): Promise<boolean> {
-        dxaLog.log(LoggerSdkLevel.customer, 'stopping screen.');
+        core.dxaLogInstance.log(LoggerSdkLevel.customer, 'stopping screen.');
         this.currentlyTrackingAScreen = false;
         return this.dxaNativeModule.endScreen();
     }
@@ -126,7 +126,7 @@ export class Tracking extends Blockable {
 
     private startDimensionsListener(): void {
         this.dimensionsSubscription = Dimensions.addEventListener('change', async ({ window: { width, height } }) => {
-            dxaLog.log(LoggerSdkLevel.development, `AppState event listener(change) width: ${width} height: ${height}`);
+            core.dxaLogInstance.log(LoggerSdkLevel.development, `AppState event listener(change) width: ${width} height: ${height}`);
             if (this.screenSize?.width === width && this.screenSize?.height === height) {
                 return;
             }
@@ -145,7 +145,7 @@ export class Tracking extends Blockable {
         if (typeof this.appStateSubscription !== 'undefined') {
             return;
         }
-        dxaLog.log(LoggerSdkLevel.development, `MedalliaDXA -> AppState event`);
+        core.dxaLogInstance.log(LoggerSdkLevel.development, `MedalliaDXA -> AppState event`);
         this.appStateSubscription = AppState.addEventListener(
             'change',
             this.handleAppStateChange
@@ -153,14 +153,14 @@ export class Tracking extends Blockable {
     }
 
     private removeAppStateListener(): void {
-        dxaLog.log(LoggerSdkLevel.development, `MedalliaDXA -> Unmounting DxaApp node`);
+        core.dxaLogInstance.log(LoggerSdkLevel.development, `MedalliaDXA -> Unmounting DxaApp node`);
         this.appStateSubscription?.remove();
         this.appStateSubscription = undefined;
     }
 
     private handleAppStateChange = (nextAppState: any) => {
         if (nextAppState == 'active') {
-            dxaLog.log(LoggerSdkLevel.qa,'App becomes active');
+            core.dxaLogInstance.log(LoggerSdkLevel.qa,'App becomes active');
             if (this.currentlyTrackingAScreen) {
                 return;
             }
@@ -168,7 +168,7 @@ export class Tracking extends Blockable {
                 this.navigationLibrary?.getScreenName() ?? this.lastScreenName ?? "undefined"
             );
         } else if (nextAppState == 'background') {
-            dxaLog.log(LoggerSdkLevel.qa,'App went to background');
+            core.dxaLogInstance.log(LoggerSdkLevel.qa,'App went to background');
             this.stopScreen();
         }
     };

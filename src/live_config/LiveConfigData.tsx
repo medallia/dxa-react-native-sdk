@@ -1,9 +1,8 @@
-import { LoggerSdkLevel, dxaLog } from '../util/DxaLog';
-import { sdkBlockerIstance } from "./SdkBlocker";
+import { LoggerSdkLevel } from '../util/DxaLog';
 import { SdkMetaData } from "../util/MetaData";
-import { core } from "../Core";
+import { core } from '../Core';
 
-class LiveConfigData {
+export class LiveConfigData {
     eventType: string = "live_configuration"
     private _blockedRNSDKVersions: string[] = [];
     private _blockedRNAppVersions: string[] = [];
@@ -28,7 +27,7 @@ class LiveConfigData {
         return this._allowLocalLogs;
     }
 
-    get disableScreenTracking(): string[] {
+    disableScreenTracking(): string[] {
         return this._disableScreenTracking;
     }
 
@@ -37,6 +36,7 @@ class LiveConfigData {
     }
 
     fillfromNative(data: any): void {
+
         this._blockedRNSDKVersions = data.vcBlockedReactNativeSDKVersions ?? this._blockedRNSDKVersions;
         this._blockedRNAppVersions = data.vcBlockedReactNativeAppVersions ?? this._blockedRNAppVersions;
         this._showLocalLogs = data.daShowLocalLogs ?? this._showLocalLogs;
@@ -48,31 +48,28 @@ class LiveConfigData {
     }
 
     private runTasksAfterUpdate(): void {
-        core.trackingInstance?.updateDisabledScreenTracking(this._disableScreenTracking);
 
         if(this._showLocalLogs != undefined){
-            dxaLog.setShowLocalLogs(this.showLocalLogs);
+            core.dxaLogInstance.setShowLocalLogs(this.showLocalLogs);
         }
 
         if(this._allowLocalLogs != undefined){
-            dxaLog.setAllowLocalLogs(this.allowLocalLogs);
+            core.dxaLogInstance.setAllowLocalLogs(this.allowLocalLogs);
         }
 
         if (this._blockedRNAppVersions.includes(this._appVersion)) {
-            dxaLog.log(LoggerSdkLevel.public, "This version of the app has been blocked");
-            sdkBlockerIstance.blockSdk();
+            core.dxaLogInstance.log(LoggerSdkLevel.public, "This version of the app has been blocked");
+            core.sdkBlockerIstance.blockSdk();
             return;
         }
         if (this._blockedRNSDKVersions.includes(SdkMetaData.sdkVersion)) {
-            dxaLog.log(LoggerSdkLevel.public, "This version of the SDK has been blocked");
-            sdkBlockerIstance.blockSdk();
+            core.dxaLogInstance.log(LoggerSdkLevel.public, "This version of the SDK has been blocked");
+            core.sdkBlockerIstance.blockSdk();
             return;
         }
-        if (sdkBlockerIstance.isSdkBlocked) {
-            sdkBlockerIstance.unblockSdk();
+        if (core.sdkBlockerIstance.isSdkBlocked) {
+            core.sdkBlockerIstance.unblockSdk();
         }
     }
 }
 
-const liveConfigDataInstance = new LiveConfigData();
-export { liveConfigDataInstance }

@@ -19,8 +19,8 @@ class SdkBlocker {
         this.blockableClasses.forEach(blockableClass => {
             blockableClass.removeBlock();
         });
-        if(core.areModulesInstantiated==false){
-            core.instantiateModules();
+        if(core.areModulesInitialized==false){
+            core.initializePostInitializeModules();
         }
     }
 }
@@ -32,12 +32,11 @@ abstract class Blockable {
     }
 
     protected subscribeToBlocker(): void {
-        sdkBlockerIstance.addClassToBlock(this);
+        core.sdkBlockerIstance.addClassToBlock(this);
     }
 
     abstract executeBlock(): void;
     abstract removeBlock(): void;
 }
 
-const sdkBlockerIstance = new SdkBlocker();
-export { sdkBlockerIstance, Blockable };
+export { SdkBlocker, Blockable };

@@ -1,6 +1,4 @@
-import { DxaReactNative } from "dxa-react-native";
 import type { NativeModulesStatic } from "react-native";
-import { sdkBlockerIstance } from "../live_config/SdkBlocker";
 import { SdkMetaData } from "./MetaData";
 
 enum LoggerSdkLevel {
@@ -125,5 +123,4 @@ class PlainLogger {
     console.log(loggedMessage);
   }
 }
-const dxaLog = new DxaLogger(() => !sdkBlockerIstance.isSdkBlocked, DxaReactNative);
-export { dxaLog, LoggerSdkLevel };
+export { DxaLogger, LoggerSdkLevel };
