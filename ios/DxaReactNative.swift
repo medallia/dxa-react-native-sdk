@@ -24,7 +24,7 @@ class DxaReactNative: RCTEventEmitter {
         }
     }
 
-    @objc(initialize:withProperty:withConsents:withSdkVersion:withMobileDataEnabled:withEnhancedLogsEnabled:callback:)
+    @objc(initialize:withProperty:withConsents:withSdkVersion:withMobileDataEnabled:withEnhancedLogsEnabled:withAutoMasking:callback:)
     func initialize(
         account: Int,
         property: Int,
@@ -32,6 +32,7 @@ class DxaReactNative: RCTEventEmitter {
         sdkVersion: String,
         mobileDataEnabled: Bool,
         enhancedLogsEnabled: Bool,
+        autoMasking: [Float],
         callback:RCTResponseSenderBlock
     ) -> Void {
         let nativeConsents: Consent = translateConsentsToIos(flutterConsents: consents)
@@ -44,7 +45,8 @@ class DxaReactNative: RCTEventEmitter {
             enhancedLogsEnabled: enhancedLogsEnabled
         )
         
-      let liveConfig = DXA.initialize(configuration: configuration, multiplatform: Platform(type: .reactNative, version: String(describing: sdkVersion), language: "TypeScript"), dxaDelegate: self)
+        let liveConfig = DXA.initialize(configuration: configuration, multiplatform: Platform(type: .reactNative, version: String(describing: sdkVersion), language: "TypeScript"), dxaDelegate: self)
+        enableAutoMasking(elementsToMask: autoMasking, resolve: { _ in }, reject: { _, _, _ in })
         var dictData = [String: Any]()
         
         dictData["dstDisableScreenTracking"] = liveConfig.disableScreenTracking
@@ -53,7 +55,7 @@ class DxaReactNative: RCTEventEmitter {
         dictData["vcBlockedReactNativeSDKVersions"] = liveConfig.blockedRNSDKVersions
         dictData["vcBlockedReactNativeAppVersions"] = liveConfig.blockedRNAppVersions
         dictData["appVersion"] = DXA.appVersion
-                callback([dictData])
+        callback([dictData])
     }
     
     @objc(startScreen:withResolver:withRejecter:)

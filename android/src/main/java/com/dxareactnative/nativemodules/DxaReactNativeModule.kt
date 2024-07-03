@@ -66,6 +66,7 @@ class DxaReactNativeModule(
     sdkVersion: String,
     mobileDataEnabled: Boolean,
     enhancedLogsEnabled: Boolean,
+    autoMasking: ReadableArray,
     callback: Callback
   ) {
 
@@ -88,6 +89,7 @@ class DxaReactNativeModule(
             version = sdkVersion
           )
         )
+        enableAutoMasking(autoMasking)
         val configMap = SdkConfigInfo(
           vcBlockedReactNativeSDKVersions = config.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = config.vcBlockedReactNativeAppVersions,

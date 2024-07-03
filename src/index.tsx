@@ -33,6 +33,7 @@ export class DxaConfig {
   manualTracking: boolean;
   mobileDataEnabled: boolean;
   enhancedLogsEnabled: boolean;
+  autoMasking: MedalliaDxaAutomaticMask[];
 
   constructor(
     accountId: number,
@@ -40,7 +41,8 @@ export class DxaConfig {
     consents: MedalliaDxaCustomerConsentType,
     manualTracking?: boolean,
     mobileDataEnabled?: boolean,
-    enhancedLogsEnabled?: boolean
+    enhancedLogsEnabled?: boolean,
+    autoMasking?: MedalliaDxaAutomaticMask[],
   ) {
     this.accountId = accountId;
     this.propertyId = propertyId;
@@ -48,6 +50,7 @@ export class DxaConfig {
     this.manualTracking = manualTracking = false;
     this.mobileDataEnabled = mobileDataEnabled = true;
     this.enhancedLogsEnabled = enhancedLogsEnabled = false;
+    this.autoMasking = autoMasking = [];
   }
 }
 
@@ -84,7 +87,7 @@ class DXA {
 
     try {
       await new Promise((resolve) => {
-        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, dxaConfig.enhancedLogsEnabled, (callbackResult: any) => {
+        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, dxaConfig.enhancedLogsEnabled, dxaConfig.autoMasking, (callbackResult: any) => {
           core.dxaLogInstance.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
           core.dxaLogInstance.log(LoggerSdkLevel.customer, `MedalliaDXA initalized with account id: ${this.accountId} and property id: ${this.propertyId}. Consents: ${this.consents}. Mobile data enabled: ${dxaConfig.mobileDataEnabled}. ManualTracking: ${dxaConfig.manualTracking}.`);
           core.liveConfigDataInstance.fillfromNative(callbackResult);
@@ -172,11 +175,6 @@ class DXA {
   setConsents(consents: MedalliaDxaCustomerConsentType): Promise<boolean> {
     return this.publicMethods.setConsents(consents);
   }
-
-  enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
-    return this.publicMethods.enableAutoMasking(elementsToMask);
-  }
-
 
   disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
     return this.publicMethods.disableAutoMasking(elementsToUnmask);

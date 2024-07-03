@@ -10,6 +10,7 @@ RCT_EXTERN_METHOD(
   withSdkVersion:(NSString)sdkVersion
   withMobileDataEnabled:(BOOL)mobileDataEnabled
   withEnhancedLogsEnabled:(BOOL)enhancedLogsEnabled
+  withAutoMasking:(NSArray<NSNumber *> *)autoMasking
   callback:(RCTResponseSenderBlock)callback
 )
 
