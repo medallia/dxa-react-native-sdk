@@ -109,11 +109,7 @@ public enum Endpoint {
   case omega
   case kappa
   case iota
-  public static func == (a: MedalliaDXAReactNative.Endpoint, b: MedalliaDXAReactNative.Endpoint) -> Swift.Bool
-  public func hash(into hasher: inout Swift.Hasher)
-  public var hashValue: Swift.Int {
-    get
-  }
+  case custom(baseURL: Swift.String, relayURL: Swift.String)
 }
 public enum ImageQualityType : Swift.Int, Swift.Codable {
   case poor
@@ -271,8 +267,6 @@ extension MedalliaDXAReactNative.DeviceStressedTypeFlutter : Swift.Hashable {}
 extension MedalliaDXAReactNative.DeviceStressedTypeFlutter : Swift.RawRepresentable {}
 extension MedalliaDXAReactNative.Consent : Swift.Equatable {}
 extension MedalliaDXAReactNative.Consent : Swift.Hashable {}
-extension MedalliaDXAReactNative.Endpoint : Swift.Equatable {}
-extension MedalliaDXAReactNative.Endpoint : Swift.Hashable {}
 extension MedalliaDXAReactNative.ImageQualityType : Swift.Equatable {}
 extension MedalliaDXAReactNative.ImageQualityType : Swift.Hashable {}
 extension MedalliaDXAReactNative.ImageQualityType : Swift.RawRepresentable {}
