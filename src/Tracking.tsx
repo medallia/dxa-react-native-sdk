@@ -1,7 +1,7 @@
 import type { EmitterSubscription, NativeEventSubscription } from "react-native";
 import { AppState, Dimensions } from 'react-native';
 import { DxaLog } from "./util/DxaLog";
-import { DxaReactNative } from "dxa-react-native";
+import { DxaReactNative } from "./index";
 import type { NavigationLibrary } from "./NavigationLibraries";
 
 
