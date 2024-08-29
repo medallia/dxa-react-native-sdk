@@ -1,13 +1,11 @@
 package com.dxareactnative.viewmanagers
 
-import android.util.Log
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
-import android.view.View.OnLayoutChangeListener
 import android.widget.FrameLayout
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
-import com.medallia.dxa.builder.prod.DXA
+import com.medallia.dxa.DXA
 
 class DxaUnmaskViewManager : ViewGroupManager<FrameLayout>() {
 
