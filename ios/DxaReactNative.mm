@@ -1,17 +1,22 @@
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(DxaReactNative, NSObject)
+@interface RCT_EXTERN_MODULE(DxaReactNative, RCTEventEmitter)
 
 RCT_EXTERN_METHOD(
   initialize:(NSInteger)account 
   withProperty:(NSInteger)property
   withConsents:(float)consents
-  withResolver:(RCTPromiseResolveBlock)resolve
-  withRejecter:(RCTPromiseRejectBlock)reject
+  withSdkVersion:(NSString)sdkVersion
+  withMobileDataEnabled:(BOOL)mobileDataEnabled
+  withEnhancedLogsEnabled:(BOOL)enhancedLogsEnabled
+  withAutoMasking:(NSArray<NSNumber *> *)autoMasking
+  callback:(RCTResponseSenderBlock)callback
 )
 
 RCT_EXTERN_METHOD(
   startScreen:(NSString)screenName
+  withStartTime:(NSInteger)startTime
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
@@ -36,6 +41,12 @@ RCT_EXTERN_METHOD(
 RCT_EXTERN_METHOD(
   sendGoalWithValue:(NSString)goalName
   withValue:(nonnull NSNumber *)value
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
+RCT_EXTERN_METHOD(
+  sendError:(NSString)error
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 ) 
@@ -83,24 +94,13 @@ RCT_EXTERN_METHOD(
 ) 
 
 RCT_EXTERN_METHOD(
-  setAutoMasking:(float)elementsToMask
+  enableAutoMasking:(NSArray<NSNumber *> *)elementsToMask
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
 
 RCT_EXTERN_METHOD(
-  disableAllAutoMasking:(RCTPromiseResolveBlock)resolve
-  withRejecter:(RCTPromiseRejectBlock)reject
-)
-
-RCT_EXTERN_METHOD(
-  enableSessionForAnalytics:(BOOL)enabled
-  withResolver:(RCTPromiseResolveBlock)resolve
-  withRejecter:(RCTPromiseRejectBlock)reject
-)
-
-RCT_EXTERN_METHOD(
-  enableSessionForRecording:(BOOL)enabled
+  disableAutoMasking:(NSArray<NSNumber *> *)elementsToUnmask
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
@@ -110,6 +110,30 @@ RCT_EXTERN_METHOD(
   withResolver:(RCTPromiseResolveBlock)resolve
   withRejecter:(RCTPromiseRejectBlock)reject
 )
+
+RCT_EXTERN_METHOD(
+  setMaskingColor:(NSString)hexadecimalColor
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
+RCT_EXTERN_METHOD(
+  setImageQuality:(NSInteger)imageQuality
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  sendDataOverWifiOnly:(BOOL)onlyWifi
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
+
+RCT_EXTERN_METHOD(
+  saveLogs:(NSString)log
+  withResolver:(RCTPromiseResolveBlock)resolve
+  withRejecter:(RCTPromiseRejectBlock)reject
+) 
 
 + (BOOL)requiresMainQueueSetup
 {
