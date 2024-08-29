@@ -1,10 +1,11 @@
 package com.dxareactnative.viewmanagers
 
+import android.graphics.Color
 import android.view.View
 import android.widget.FrameLayout
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewGroupManager
-import com.medallia.dxa.DXA
+import com.medallia.dxa.builder.prod.DXA
 
 class DxaMaskViewManager : ViewGroupManager<FrameLayout>() {
 
@@ -16,7 +17,6 @@ class DxaMaskViewManager : ViewGroupManager<FrameLayout>() {
     val containerView = FrameLayout(context).apply {
       id = View.generateViewId()
     }
-
     context.currentActivity?.let {
       DXA.getInstance(context).mask(it, listOf(containerView))
     }

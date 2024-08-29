@@ -1,23 +1,16 @@
-import EventEmitter, { type EmitterSubscription } from 'react-native/Libraries/vendor/emitter/EventEmitter';
+import EventEmitter from 'react-native/Libraries/vendor/emitter/EventEmitter';
 
-export abstract class NavigationLibrary extends EventEmitter {
+import { DxaLog } from "./util/DxaLog";
+
+
+const dxaLog = new DxaLog();
+
+export abstract class NavigationLibrary extends EventEmitter{
     abstract getScreenName(): string;
     abstract routeSeparator: String;
-    protected abstract removeNavigationListener(): void;
-    protected abstract createNavigationListener(): void;
-    protected startScreenEventEmitter() {
+    startScreenEventEmitter(){
         this.emit('startScreen', this.getScreenName());
     }
-
-    public startScreenListener(callback: (screenName: string) => void): EmitterSubscription {
-        this.createNavigationListener();
-        return this.addListener('startScreen', callback);
-    }
-    public removeListeners() {
-        this.removeNavigationListener();
-        this.removeAllListeners('startScreen');
-    }
-
 
 }
 
@@ -29,10 +22,12 @@ type ReactNavigationParams = {
 export class ReactNavigation extends NavigationLibrary {
     private navigationContainerRef: any | undefined;
     public routeSeparator: String = '.';
-    private unsubscribeStateListener: any | undefined;
     private constructor({ navigationContainerRef }: ReactNavigationParams) {
         super();
         this.navigationContainerRef = navigationContainerRef;
+        this.navigationContainerRef.addListener('state', () => {
+            this.startScreenEventEmitter();
+        });
     }
     private static instance: ReactNavigation | null = null;
 
@@ -50,22 +45,17 @@ export class ReactNavigation extends NavigationLibrary {
         })
     }
 
-    protected createNavigationListener(): void {
-        this.unsubscribeStateListener = this.navigationContainerRef.addListener('state', () => {
-            this.startScreenEventEmitter();
-        });
-    }
-
-    removeNavigationListener() {
-        this.unsubscribeStateListener();
-    }
-
 
     private resolveCurrentRouteName(param: any) {
         try {
             let currentOnPrint: any = param.data.state;
             let entireRoute = '';
             do {
+                dxaLog.log(
+                    'MedalliaDXA ->',
+                    ' > detected route level:',
+                    currentOnPrint
+                );
                 entireRoute =
                     entireRoute +
                     currentOnPrint.routes[currentOnPrint.index].name + this.routeSeparator;
