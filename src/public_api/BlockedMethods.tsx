@@ -1,7 +1,7 @@
-import type { ImageQualityType, MedalliaDxaCustomerConsentType } from "src/publicEnums";
+import type { ImageQualityType, MedalliaDxaCustomerConsentType } from "../publicEnums";
 import type { ActivePublicMethods } from "./ActivePublicMethods";
-import type { MedalliaDxaAutomaticMask } from "src/DxaMask";
-import type { Tracking } from "src/Tracking";
+import type { MedalliaDxaAutomaticMask } from "../DxaMask";
+import type { Tracking } from "../Tracking";
 
 export class BlockedPublicMethods implements ActivePublicMethods {
 
