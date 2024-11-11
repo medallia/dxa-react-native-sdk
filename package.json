@@ -1,6 +1,6 @@
 {
   "name": "dxa-react-native",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "DXA for React Native applications",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

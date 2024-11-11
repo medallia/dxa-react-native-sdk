@@ -130,7 +130,7 @@ class DxaReactNativeModule(
       return
     }
 
-    dxa.startNewScreen(name, startTime.toLong())
+    dxa.startNewScreen(name)
     promise.resolve(true)
   }
 
