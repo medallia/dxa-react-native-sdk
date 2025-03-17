@@ -1,10 +1,10 @@
-import { core } from "./Core";
-import { LoggerSdkLevel } from "./util/DxaLog";
+import { injector } from "./util/DependencyInjector";
+import { DxaLogger, LoggerSdkLevel } from "./util/DxaLog";
 
 export class SamplingData {
     eventType: string = "sampling_data";
     private _stopTrackingDueToSampling: boolean = false;
-    private _stopRecordingDueToSampling: boolean = false;
+    private get logger(): DxaLogger { return injector.resolve('DxaLogger')}
 
 
     stopTrackingDueToSampling(): boolean {
@@ -12,9 +12,8 @@ export class SamplingData {
     }
 
     fillfromNative(data: any): void {
-        core.dxaLogInstance.log(LoggerSdkLevel.development,`Sampling data from native: ${data.stopTrackingDueToSampling}, ${data.stopRecordingDueToSampling}`);
+        this.logger.log(LoggerSdkLevel.development,`Sampling data from native: ${data.stopTrackingDueToSampling}, ${data.stopRecordingDueToSampling}`);
         this._stopTrackingDueToSampling = data.stopTrackingDueToSampling;
-        this._stopRecordingDueToSampling = data.stopRecordingDueToSampling;
     }
 }
 

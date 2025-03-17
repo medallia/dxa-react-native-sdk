@@ -10,51 +10,51 @@
 		</data>
 		<key>Headers/MedalliaDXAReactNative-Swift.h</key>
 		<data>
-		XjSQ9mZnOaqsp0baRmpngqV9E9w=
+		c8BJ1+kb1tKyvkh6Y37Ik+aWz2o=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		O9IbGkPevFxvUHsVYIYW8IWgILo=
+		dMbKd3W76duL3VuNVpImUmx1yCg=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		z1GNjpFD1jzRFYUvt9mwjsg0Qro=
+		bfETKm0SE43FLZhObHHbD0tM8RY=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		ba8ijyA/I67O0u17bwBZOhgjqdk=
+		PMBkYZA4J7HI7Vh3tJrtcrLGylk=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		t8An0E9jOEfp0Yz+w9Coj4lQQiM=
+		eybEnkC+X92XutAdKqP/KbrlUYM=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		ba8ijyA/I67O0u17bwBZOhgjqdk=
+		PMBkYZA4J7HI7Vh3tJrtcrLGylk=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		gtLHTJMadH0+Qdh4GeDOsN8KIa0=
+		lG8Sm4+Tm9RM3Nu1ye3fvDins1U=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		z1GNjpFD1jzRFYUvt9mwjsg0Qro=
+		bfETKm0SE43FLZhObHHbD0tM8RY=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		7k8vEnzlGBwHGvtzZLyOYolKYvk=
+		hSOM1VuOGAN4knQwh9q8Uk9J35k=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		HBY9k0t9p/1PYjRgumeIF7tiLuI=
+		UzP8Y1HwPacDFXnwBGbc6RTAQqM=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		7k8vEnzlGBwHGvtzZLyOYolKYvk=
+		hSOM1VuOGAN4knQwh9q8Uk9J35k=
 		</data>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		pjJ30RpoJDwXRpz6EiKXT8TUQHM=
+		uhXL1yXYimEvvHyCTlAmmn+SnzQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -74,77 +74,77 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			jQYvYtDehOh0stBjj8apNteKWx57TFKBq6dHiLpfZlw=
+			MUgR1yWRwsmJROAdkyOC2i4Pz15bYbqFzoZeB7r6p/M=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			UZBu2WM3eGRTViWjyJFesBlTgYf5V71WtPqE9gLEvkQ=
+			F6Vze2IrwyC1tAKRq8YhHJGzzyWJ3OWxz81ELuMgjgY=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JPtLGqGeIcu+TesCcfpwcm7PlGNYGncO4W0EjtJSn7A=
+			2xAeQVwRhRrZ8Vli0BWyyF7SF8ZzNBzsbw1iszuPK5E=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			sC7ENYhlBZ6u/pSH6lNwXFPM934px+360m2WKM+APBk=
+			PFOnNT+iBC/dbL7Ta89d0WsQlAKoQg2NkER643NEmM0=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JPtLGqGeIcu+TesCcfpwcm7PlGNYGncO4W0EjtJSn7A=
+			2xAeQVwRhRrZ8Vli0BWyyF7SF8ZzNBzsbw1iszuPK5E=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			6vZT2yCSKMl2A/3YJEIRaS4W0dQbQelmp1FEfwJC140=
+			IQ1NTCjLRZqSfls/1/shzQIw9ZnJOibGZRIBFelkE5g=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			UZBu2WM3eGRTViWjyJFesBlTgYf5V71WtPqE9gLEvkQ=
+			F6Vze2IrwyC1tAKRq8YhHJGzzyWJ3OWxz81ELuMgjgY=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FUlOxXxlZh4dx6fwm0TXe2JFVNejJGsBQ0cWVwJOb4c=
+			hBZVkPMqju4pLhW3TqttCYSEfrtEQgiNpUCnjUqD+dM=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			GeeMYXBp/4MlE57TmzlJ6tt6uC3ftKRblro90Toli6o=
+			CyQ54mL8JslxVeU+9Xgbzd9G+hLzrpZbRsZow+s7rrM=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			FUlOxXxlZh4dx6fwm0TXe2JFVNejJGsBQ0cWVwJOb4c=
+			hBZVkPMqju4pLhW3TqttCYSEfrtEQgiNpUCnjUqD+dM=
 			</data>
 		</dict>
 		<key>Modules/MedalliaDXAReactNative.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			QoU5HqFwhPo9MVyID3G8NAHvHODhvhoK0mkDOTvMOfA=
+			wM/aB+sK3+KuRDQ1NGYgw7lb+1QLjHaSJKXr0FtB0Pg=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

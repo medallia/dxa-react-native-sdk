@@ -1,131 +1,49 @@
-import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
-import { LoggerSdkLevel } from './util/DxaLog';
 import { MedalliaDxaAutomaticMask } from './DxaMask';
 import { MedalliaDxaCustomerConsentType, ImageQualityType } from './publicEnums';
 import { ActivePublicMethods } from './public_api/ActivePublicMethods';
 import { BlockedPublicMethods } from './public_api/BlockedMethods';
-import { SdkMetaData } from './util/MetaData';
-import { core } from './Core';
-
-
-const LINKING_ERROR =
-  `The package 'dxa-react-native' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
-
-export const DxaReactNative = NativeModules.DxaReactNative
-  ? NativeModules.DxaReactNative
-  : new Proxy(
-    {},
-    {
-      get() {
-        throw new Error(LINKING_ERROR);
-      },
-    }
-  );
-
-
-export class DxaConfig {
-  accountId!: number;
-  propertyId!: number;
-  consents: MedalliaDxaCustomerConsentType = MedalliaDxaCustomerConsentType.analyticsAndRecording;
-  manualTracking: boolean;
-  mobileDataEnabled: boolean;
-  enhancedLogsEnabled: boolean;
-  autoMasking: MedalliaDxaAutomaticMask[];
-
-  constructor(
-    accountId: number,
-    propertyId: number,
-    consents: MedalliaDxaCustomerConsentType,
-    manualTracking?: boolean,
-    mobileDataEnabled?: boolean,
-    enhancedLogsEnabled?: boolean,
-    autoMasking?: MedalliaDxaAutomaticMask[],
-  ) {
-    this.accountId = accountId;
-    this.propertyId = propertyId;
-    this.consents = consents;
-    this.manualTracking = manualTracking = false;
-    this.mobileDataEnabled = mobileDataEnabled = true;
-    this.enhancedLogsEnabled = enhancedLogsEnabled = false;
-    this.autoMasking = autoMasking = [];
-  }
-}
+import { Initializer } from './initializer';
+import { injector } from './util/DependencyInjector';
+import type { SdkBlocker } from './live_config/SdkBlocker';
+import type { Tracking } from './Tracking';
+import type { PublicMethodsInterface } from './public_api/PublicMethodsInterface';
+import type { NativeModulesStatic } from 'react-native';
 
 class DXA {
-  initialized: boolean = false;
   accountId: number | undefined = undefined;
   propertyId: number | undefined = undefined;
   consents: MedalliaDxaCustomerConsentType | undefined = undefined;
 
-  private activePublicMethpodInstance: ActivePublicMethods | undefined;
+  private activePublicMethodInstance: ActivePublicMethods | undefined;
   private blockedPublicMethods: BlockedPublicMethods = new BlockedPublicMethods();
 
 
-  // Initialize SDK for autotracking.
-  // @param - propertyId - associated DXA client property id
-  // @param - accountId - associated DXA client account id
-  async initialize(dxaConfig: DxaConfig, navigationRef: any) {
-    this.accountId = dxaConfig.accountId;
-    this.propertyId = dxaConfig.propertyId;
-    this.consents = dxaConfig.consents;
-    core.manualTracking = dxaConfig.manualTracking;
-    core.navigationRef = navigationRef;
-    let sdkVersion = SdkMetaData.sdkVersion;
-    if (this.initialized) {
-      core.dxaLogInstance.log(
-        LoggerSdkLevel.public,
-        'SDK has already been initialized',
-      );
-      return;
+  private get publicMethods(): PublicMethodsInterface {
+    const initializer = Initializer.getInstance();
+    if (initializer.initialized === false) {
+      throw new Error('MedalliaDXA -> SDK has not been initialized');
     }
-    core.initializePreInitializeModules();
-    core.dxaLogInstance.setEnhancedLogs(dxaConfig.enhancedLogsEnabled);
-    this.setUpNativeListeners();
+    const sdkBlocker: SdkBlocker = injector.resolve('SdkBlocker');
+    if (sdkBlocker.isSdkBlocked) {
+      return this.blockedPublicMethods;
+    }
+    if (this.activePublicMethodInstance !== undefined) {
+      return this.activePublicMethodInstance;
+    }
+    if (initializer.dependenciesLoadded == false) {
+      throw new Error('MedalliaDXA -> SDK has not been initialized correctly');
+    }
 
-    try {
-      await new Promise((resolve) => {
-        DxaReactNative.initialize(this.accountId, this.propertyId, this.consents, sdkVersion, dxaConfig.mobileDataEnabled, dxaConfig.enhancedLogsEnabled, dxaConfig.autoMasking, (callbackResult: any) => {
-          core.dxaLogInstance.log(LoggerSdkLevel.public, `MedalliaDXA initalized`);
-          core.dxaLogInstance.log(LoggerSdkLevel.customer, `MedalliaDXA initalized with account id: ${this.accountId} and property id: ${this.propertyId}. Consents: ${this.consents}. Mobile data enabled: ${dxaConfig.mobileDataEnabled}. ManualTracking: ${dxaConfig.manualTracking}.`);
-          core.liveConfigDataInstance.fillfromNative(callbackResult);
-          this.initialized = true;
-          resolve(true);
-        })
-      });
+    const nativeModulesDxa: NativeModulesStatic = injector.resolve('NativeModulesDxa');
+    const tracking: Tracking = injector.resolve('Tracking');
 
-    } catch (error) {
-      core.dxaLogInstance.log(LoggerSdkLevel.public, `MedalliaDXA failed to initialize ${error}`);
-      return;
-    }
-    this.initialized = true;
-    if (core.sdkBlockerIstance.isSdkBlocked) {
-      return;
-    }
-    core.initializePostInitializeModules();
+    return new ActivePublicMethods(nativeModulesDxa, tracking);
 
   }
 
-
-
-  private get publicMethods(): ActivePublicMethods {
-    if (this.initialized === false) {
-      throw new Error('MedalliaDXA -> SDK has not been initialized');
-    }
-
-    if (core.sdkBlockerIstance.isSdkBlocked) {
-      return this.blockedPublicMethods;
-    }
-
-    if (core.areModulesInitialized == false) {
-      throw new Error('MedalliaDXA -> SDK has not been initialized correctly');
-    }
-    if (this.activePublicMethpodInstance === undefined) {
-      this.activePublicMethpodInstance = new ActivePublicMethods(core.trackingInstance!);
-    }
-    return this.activePublicMethpodInstance;
+  initialize(dxaConfig: DxaConfig, navigationRef: any): Promise<void> {
+    const initializer = Initializer.getInstance();
+    return initializer.initialize(dxaConfig, navigationRef);
   }
 
   // Starts to track a screen. If another screen is being tracked, it will be stopped.
@@ -180,7 +98,7 @@ class DXA {
     return this.publicMethods.disableAutoMasking(elementsToUnmask);
   }
 
-  setRetention(enabled: Boolean) {
+  setRetention(enabled: boolean) {
     return this.publicMethods.setRetention(enabled);
   }
 
@@ -188,7 +106,11 @@ class DXA {
     return this.publicMethods.setAlternativeScreenNames(alternativeScreenNames);
   }
 
-  setRouteSeparator(newSeparator: String) {
+  setTrackingDisabledScreens(trackingDisabledScreens: string[]) {
+    return this.publicMethods.setTrackingDisabledScreens(trackingDisabledScreens);
+  }
+
+  setRouteSeparator(newSeparator: string) {
     return this.publicMethods.setRouteSeparator(newSeparator);
   }
 
@@ -204,25 +126,33 @@ class DXA {
     return this.publicMethods.sendDataOverWifiOnly(onlyWifi);
   }
 
-  private setUpNativeListeners() {
+}
 
-    const eventEmitter = new NativeEventEmitter(DxaReactNative);
-    eventEmitter.addListener('dxa-event', event => {
-      if (core.sdkBlockerIstance.isSdkBlocked && event.eventType != core.liveConfigDataInstance.eventType) {
-        return;
-      }
-      switch (event.eventType) {
-        case core.liveConfigDataInstance.eventType:
-          core.liveConfigDataInstance.fillfromNative(event);
-          break;
-        case core.samplingInstance.eventType:
-          core.samplingInstance.fillfromNative(event);
-          break;
-        default:
-          break;
-      }
-    });
+export class DxaConfig {
+  accountId!: number;
+  propertyId!: number;
+  consents: MedalliaDxaCustomerConsentType = MedalliaDxaCustomerConsentType.analyticsAndRecording;
+  manualTracking: boolean;
+  mobileDataEnabled: boolean;
+  enhancedLogsEnabled: boolean;
+  autoMasking: MedalliaDxaAutomaticMask[];
 
+  constructor(
+    accountId: number,
+    propertyId: number,
+    consents: MedalliaDxaCustomerConsentType,
+    manualTracking?: boolean,
+    mobileDataEnabled?: boolean,
+    enhancedLogsEnabled?: boolean,
+    autoMasking?: MedalliaDxaAutomaticMask[],
+  ) {
+    this.accountId = accountId;
+    this.propertyId = propertyId;
+    this.consents = consents;
+    this.manualTracking = manualTracking ?? false;
+    this.mobileDataEnabled = mobileDataEnabled ?? true;
+    this.enhancedLogsEnabled = enhancedLogsEnabled ?? false;
+    this.autoMasking = autoMasking ?? [];
   }
 }
 

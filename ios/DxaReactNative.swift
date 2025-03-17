@@ -55,7 +55,9 @@ class DxaReactNative: RCTEventEmitter {
             dictData["daAllowLocalLogs"] = liveConfig.allowLogs
             dictData["vcBlockedReactNativeSDKVersions"] = liveConfig.blockedRNSDKVersions
             dictData["vcBlockedReactNativeAppVersions"] = liveConfig.blockedRNAppVersions
+            dictData["vcBlockedNativeSDKVersions"] = liveConfig.sdkVersionsBlocked
             dictData["appVersion"] = DXA.appVersion
+            dictData["nativeSDKVersion"] = DXA.sdkVersion
             callback([dictData])
         }
     }
@@ -158,9 +160,12 @@ class DxaReactNative: RCTEventEmitter {
         resolve:@escaping RCTPromiseResolveBlock,
         reject:RCTPromiseRejectBlock
     ) -> Void {
+        var hasBeenCalled = false
         DXA.sessionURL = {sessionUrl in
-            resolve(sessionUrl);
-            return
+          if hasBeenCalled { return }
+          hasBeenCalled = true
+          resolve(sessionUrl);
+          return
         }
     }
     
@@ -362,7 +367,9 @@ extension DxaReactNative : DXADelegate {
             dictData["daAllowLocalLogs"] = configuration.allowLogs
             dictData["vcBlockedReactNativeSDKVersions"] = configuration.blockedRNSDKVersions
             dictData["vcBlockedReactNativeAppVersions"] = configuration.blockedRNAppVersions
+            dictData["vcBlockedNativeSDKVersions"] = configuration.sdkVersionsBlocked
             dictData["appVersion"] = DXA.appVersion
+            dictData["nativeSDKVersion"] = DXA.sdkVersion
             dictData["eventType"] = "live_configuration"
             
             // let dictId: [String: Any] = ["live_configuration": dictData]

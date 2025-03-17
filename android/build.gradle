@@ -63,8 +63,6 @@ android {
   compileSdkVersion 34
 
   defaultConfig {
-    missingDimensionStrategy("dxa-platform", "react")
-    missingDimensionStrategy("dxa-environment", "prod")
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion 33
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
@@ -104,7 +102,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   ///Medallia DXA dependency
-  implementation "com.medallia.dxa:dxa-android-sdk:3.2.2"
+  implementation "com.medallia.dxa:dxa-android-sdk:3.3.0-react"
 }
 
 if (isNewArchitectureEnabled()) {

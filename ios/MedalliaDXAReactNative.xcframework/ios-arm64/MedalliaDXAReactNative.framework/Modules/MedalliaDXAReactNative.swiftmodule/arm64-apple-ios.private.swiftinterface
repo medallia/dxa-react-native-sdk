@@ -1,8 +1,6 @@
 // swift-interface-format-version: 1.0
-// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
-// swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name MedalliaDXAReactNative
-// swift-module-flags-ignorable: -enable-bare-slash-regex
-import AVFoundation
+// swift-compiler-version: Apple Swift version 5.10 (swiftlang-5.10.0.13 clang-1500.3.9.4)
+// swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature AccessLevelOnImport -enable-bare-slash-regex -module-name MedalliaDXAReactNative
 import CommonCrypto
 import Foundation
 import MapKit
@@ -13,17 +11,61 @@ import UIKit
 import WebKit
 import _Concurrency
 import _StringProcessing
-extension MedalliaDXAReactNative.DXA {
-  public static func initialize(configuration: MedalliaDXAReactNative.Configuration, multiplatform: MedalliaDXAReactNative.Platform, dxaDelegate: (any MedalliaDXAReactNative.DXADelegate)? = nil) -> MedalliaDXAReactNative.LiveConfigurationMultiplatform
-  public static func saveLog(message: Swift.String)
-  public static var appVersion: Swift.String? {
-    get
-  }
+import _SwiftConcurrencyShims
+public struct LiveConfigurationMultiplatform {
+  public var ipHandling: Swift.Int?
+  public var useLiveConfiguration: Swift.Bool
+  public var experienceDataSampleMethod: Swift.Int?
+  public var sessionCookieFlags: Swift.Int?
+  public var leadCookieFlags: Swift.Int?
+  public var analysisDataSampleMethod: Swift.Int?
+  public var analysisSessFlags: Swift.Int?
+  public var analysisLeadFlags: Swift.Int?
+  public var replayDataSampleMethod: Swift.Int?
+  public var replaySessFlags: Swift.Int?
+  public var replayLeadFlags: Swift.Int?
+  public var disableScreenTracking: [Swift.String]?
+  public var screensMasking: [Swift.String]?
+  public var forceHiFi: [Swift.String]?
+  public var forceLoFi: [Swift.String]?
+  public var imageQualityType: Swift.Int?
+  public var videoQualityType: Swift.Int?
+  public var maxScreenDuration: Swift.Int?
+  public var maxScreenshots: Swift.Int?
+  public var recordVideoInForeground: Swift.Bool?
+  public var sessionTimeout: Swift.Int?
+  public var maskingColor: Swift.String?
+  public var showLocalLogs: Swift.Bool?
+  public var allowLogs: Swift.Bool?
+  public var sdkVersionsBlocked: [Swift.String]?
+  public var appVersionsBlocked: [Swift.String]?
+  public var keepVideoData: Swift.Bool?
+  public var maxMemoryUsage: Swift.Int?
+  public var maxCPUUsage: Swift.Int?
+  public var enableAnalytics: Swift.Bool?
+  public var blockedFlutterSDKVersions: [Swift.String]?
+  public var blockedFlutterAppVersions: [Swift.String]?
+  public var blockedRNSDKVersions: [Swift.String]?
+  public var blockedRNAppVersions: [Swift.String]?
+  public var forceWireframe: Swift.Bool?
+  public var enableRecording: Swift.Bool?
+  public var overrideCollectionURL: Swift.String?
+  public var batchTime: Foundation.TimeInterval?
+  public var maxTimeFileSaved: Foundation.TimeInterval?
 }
-public protocol DXADelegate {
-  func performance(_ data: MedalliaDXAReactNative.PerformanceMultiplatform)
-  func liveConfig(_ configuration: MedalliaDXAReactNative.LiveConfigurationMultiplatform)
-  func sampling(_ sampling: MedalliaDXAReactNative.SamplingMultiplatform)
+@available(iOS 13, *)
+extension SwiftUI.View {
+  public func dxaMaskView() -> some SwiftUI.View
+  
+}
+@available(iOS 13, *)
+extension SwiftUI.View {
+  public func dxaTrackScreen(name: Swift.String, disableRecordingOnThisScreen: Swift.Bool = false) -> some SwiftUI.View
+  
+}
+public struct SamplingMultiplatform {
+  public var stopTrackingDueToSampling: Swift.Bool
+  public var stopRecordingDueToSampling: Swift.Bool
 }
 public struct PerformanceMultiplatform {
   public let isStressed: [MedalliaDXAReactNative.DeviceStressedTypeFlutter]
@@ -42,16 +84,6 @@ public enum DeviceStressedTypeFlutter : Swift.Int {
   public var rawValue: Swift.Int {
     get
   }
-}
-@available(iOS 13, *)
-extension SwiftUI.View {
-  public func dxaMaskView() -> some SwiftUI.View
-  
-}
-@available(iOS 13, *)
-extension SwiftUI.View {
-  public func dxaTrackScreen(name: Swift.String, disableRecordingOnThisScreen: Swift.Bool = false) -> some SwiftUI.View
-  
 }
 public enum Consent {
   case analyticsAndRecording
@@ -101,6 +133,16 @@ public enum Consent {
 extension MedalliaDXAReactNative.DXA {
   public static func setRetention(_ enabled: Swift.Bool)
 }
+extension MedalliaDXAReactNative.DXA {
+  public static func initialize(configuration: MedalliaDXAReactNative.Configuration, multiplatform: MedalliaDXAReactNative.Platform, dxaDelegate: (any MedalliaDXAReactNative.DXADelegate)? = nil) -> MedalliaDXAReactNative.LiveConfigurationMultiplatform
+  public static func saveLog(message: Swift.String)
+  public static var appVersion: Swift.String? {
+    get
+  }
+  public static var sdkVersion: Swift.String? {
+    get
+  }
+}
 public enum ImageQualityType : Swift.Int, Swift.Codable {
   case poor
   case low
@@ -143,9 +185,10 @@ public enum PlatformType {
     get
   }
 }
-public struct SamplingMultiplatform {
-  public var stopTrackingDueToSampling: Swift.Bool
-  public var stopRecordingDueToSampling: Swift.Bool
+public protocol DXADelegate {
+  func performance(_ data: MedalliaDXAReactNative.PerformanceMultiplatform)
+  func liveConfig(_ configuration: MedalliaDXAReactNative.LiveConfigurationMultiplatform)
+  func sampling(_ sampling: MedalliaDXAReactNative.SamplingMultiplatform)
 }
 public enum MaskAutomatic {
   case labels
@@ -172,47 +215,6 @@ public enum MaskView {
 public class Configuration {
   public init(account: Swift.String, property: Swift.String, consent: MedalliaDXAReactNative.Consent = .analyticsAndRecording, crashReporterEnabled: Swift.Bool = true, mobileDataEnable: Swift.Bool = true, manualScreenTracking: Swift.Bool = false, enhancedLogsEnabled: Swift.Bool = false, networkAnalyticsEnable: Swift.Bool = true)
   @objc deinit
-}
-public struct LiveConfigurationMultiplatform {
-  public var ipHandling: Swift.Int?
-  public var useLiveConfiguration: Swift.Bool
-  public var experienceDataSampleMethod: Swift.Int?
-  public var sessionCookieFlags: Swift.Int?
-  public var leadCookieFlags: Swift.Int?
-  public var analysisDataSampleMethod: Swift.Int?
-  public var analysisSessFlags: Swift.Int?
-  public var analysisLeadFlags: Swift.Int?
-  public var replayDataSampleMethod: Swift.Int?
-  public var replaySessFlags: Swift.Int?
-  public var replayLeadFlags: Swift.Int?
-  public var disableScreenTracking: [Swift.String]?
-  public var screensMasking: [Swift.String]?
-  public var forceHiFi: [Swift.String]?
-  public var forceLoFi: [Swift.String]?
-  public var imageQualityType: Swift.Int?
-  public var videoQualityType: Swift.Int?
-  public var maxScreenDuration: Swift.Int?
-  public var maxScreenshots: Swift.Int?
-  public var recordVideoInForeground: Swift.Bool?
-  public var sessionTimeout: Swift.Int?
-  public var maskingColor: Swift.String?
-  public var showLocalLogs: Swift.Bool?
-  public var allowLogs: Swift.Bool?
-  public var sdkVersionsBlocked: [Swift.String]?
-  public var appVersionsBlocked: [Swift.String]?
-  public var keepVideoData: Swift.Bool?
-  public var maxMemoryUsage: Swift.Int?
-  public var maxCPUUsage: Swift.Int?
-  public var enableAnalytics: Swift.Bool?
-  public var blockedFlutterSDKVersions: [Swift.String]?
-  public var blockedFlutterAppVersions: [Swift.String]?
-  public var blockedRNSDKVersions: [Swift.String]?
-  public var blockedRNAppVersions: [Swift.String]?
-  public var forceWireframe: Swift.Bool?
-  public var enableRecording: Swift.Bool?
-  public var overrideCollectionURL: Swift.String?
-  public var batchTime: Foundation.TimeInterval?
-  public var maxTimeFileSaved: Foundation.TimeInterval?
 }
 extension UIKit.UIView {
   @_Concurrency.MainActor(unsafe) public var dxaMasking: MedalliaDXAReactNative.MaskView {

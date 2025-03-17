@@ -1,15 +1,20 @@
-import { LoggerSdkLevel } from '../util/DxaLog';
+import { DxaLogger, LoggerSdkLevel } from '../util/DxaLog';
 import { SdkMetaData } from "../util/MetaData";
-import { core } from '../Core';
+import { injector } from '../util/DependencyInjector';
+import type { SdkBlocker } from './SdkBlocker';
 
 export class LiveConfigData {
     eventType: string = "live_configuration"
     private _blockedRNSDKVersions: string[] = [];
     private _blockedRNAppVersions: string[] = [];
+    private _blockedNativeSDKVersions: string[] = [];
     private _showLocalLogs: boolean = false;
     private _allowLocalLogs: boolean = false;
     private _disableScreenTracking: string[] = [];
     private _appVersion: string = "";
+    private _nativeSdkVersion: string = "";
+    private get sdkBlocker(): SdkBlocker { return injector.resolve('SdkBlocker') };
+    private get logger(): DxaLogger { return injector.resolve('DxaLogger') }
 
     get blockedRNSDKVersions(): string[] {
         return this._blockedRNSDKVersions;
@@ -17,6 +22,10 @@ export class LiveConfigData {
 
     get blockedRNAppVersions(): string[] {
         return this._blockedRNAppVersions;
+    }
+
+    get blockedNativeSDKVersions(): string[] {
+        return this._blockedNativeSDKVersions;
     }
 
     get showLocalLogs(): boolean {
@@ -35,40 +44,52 @@ export class LiveConfigData {
         return this._appVersion;
     }
 
-    fillfromNative(data: any): void {
+    get nativeSdkVersion(): string {
+        return this._nativeSdkVersion;
+    }
 
+    fillfromNative(data: any): void {
         this._blockedRNSDKVersions = data.vcBlockedReactNativeSDKVersions ?? this._blockedRNSDKVersions;
         this._blockedRNAppVersions = data.vcBlockedReactNativeAppVersions ?? this._blockedRNAppVersions;
+        this._blockedNativeSDKVersions = data.vcBlockedNativeSDKVersions ?? this._blockedNativeSDKVersions;
         this._showLocalLogs = data.daShowLocalLogs ?? this._showLocalLogs;
         this._allowLocalLogs = data.daAllowLocalLogs ?? this._allowLocalLogs;
         this._disableScreenTracking = data.dstDisableScreenTracking ?? this._disableScreenTracking;
         this._appVersion = data.appVersion ?? this._appVersion;
+        this._nativeSdkVersion = data.nativeSDKVersion ?? this._nativeSdkVersion;
         this.runTasksAfterUpdate();
 
     }
 
+    private isVersionBlocked(version: string, blockedVersions: string[], logMessage: string): boolean {
+        if (blockedVersions.includes(version)) {
+            this.logger.log(LoggerSdkLevel.public, logMessage);
+            return true;
+        }
+        return false;
+    }
+
     private runTasksAfterUpdate(): void {
 
-        if(this._showLocalLogs != undefined){
-            core.dxaLogInstance.setShowLocalLogs(this.showLocalLogs);
+        if (this._showLocalLogs != undefined) {
+            this.logger.setShowLocalLogs(this.showLocalLogs);
         }
 
-        if(this._allowLocalLogs != undefined){
-            core.dxaLogInstance.setAllowLocalLogs(this.allowLocalLogs);
+        if (this._allowLocalLogs != undefined) {
+            this.logger.setAllowLocalLogs(this.allowLocalLogs);
         }
 
-        if (this._blockedRNAppVersions.includes(this._appVersion)) {
-            core.dxaLogInstance.log(LoggerSdkLevel.public, "This version of the app has been blocked");
-            core.sdkBlockerIstance.blockSdk();
+        const isAppVersionBlocked = this.isVersionBlocked(this._appVersion, this._blockedRNAppVersions, "This version of the app has been blocked");
+        const isRNSdkVersionBlocked = this.isVersionBlocked(SdkMetaData.sdkVersion, this._blockedRNSDKVersions, "This version of the SDK has been blocked");
+        const isNativeSdkVersionBlocked = this.isVersionBlocked(this._nativeSdkVersion, this._blockedNativeSDKVersions, "This version of the native SDK has been blocked");
+
+        if (isAppVersionBlocked || isRNSdkVersionBlocked || isNativeSdkVersionBlocked) {
+            this.sdkBlocker.blockSdk();
             return;
         }
-        if (this._blockedRNSDKVersions.includes(SdkMetaData.sdkVersion)) {
-            core.dxaLogInstance.log(LoggerSdkLevel.public, "This version of the SDK has been blocked");
-            core.sdkBlockerIstance.blockSdk();
-            return;
-        }
-        if (core.sdkBlockerIstance.isSdkBlocked) {
-            core.sdkBlockerIstance.unblockSdk();
+
+        if (this.sdkBlocker.isSdkBlocked) {
+            this.sdkBlocker.unblockSdk();
         }
     }
 }
