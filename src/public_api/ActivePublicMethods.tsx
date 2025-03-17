@@ -1,13 +1,18 @@
-import { DxaReactNative, MedalliaDxaAutomaticMask } from "../index";
+import { MedalliaDxaAutomaticMask } from "../index";
 import type { Tracking } from "../Tracking";
 import type { ImageQualityType, MedalliaDxaCustomerConsentType } from "../publicEnums";
-import { LoggerSdkLevel } from "../util/DxaLog";
-import { core } from "../Core";
+import { DxaLogger, LoggerSdkLevel } from "../util/DxaLog";
+import { injector } from "../util/DependencyInjector";
+import type { PublicMethodsInterface } from "./PublicMethodsInterface";
+import type { NativeModulesStatic } from "react-native";
 
-export class ActivePublicMethods {
+export class ActivePublicMethods implements PublicMethodsInterface {
     trackingInstance: Tracking;
+    nativeModulesDxa: NativeModulesStatic;
+    private get logger(): DxaLogger { return injector.resolve('DxaLogger')}
 
-    constructor(trackingInstance: Tracking) {
+    constructor(nativeModulesStatic: NativeModulesStatic, trackingInstance: Tracking) {
+        this.nativeModulesDxa = nativeModulesStatic;
         this.trackingInstance = trackingInstance;
     }
     
@@ -20,79 +25,84 @@ export class ActivePublicMethods {
     }
 
     public sendHttpError(errorCode: number): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Save HTTP Error: ${errorCode}`);
-        return DxaReactNative.sendHttpError(errorCode);
+       this.logger.log(LoggerSdkLevel.customer, `Save HTTP Error: ${errorCode}`);
+        return this.nativeModulesDxa.sendHttpError(errorCode);
     }
 
     public sendError(error: string): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Save App Error: ${error}`);
-        return DxaReactNative.sendError(error);
+        this.logger.log(LoggerSdkLevel.customer, `Save App Error: ${error}`);
+        return this.nativeModulesDxa.sendError(error);
     }
 
     public sendGoal(goalName: string, value?: number): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Save goal -> ${goalName} value -> ${value}`);
+        this.logger.log(LoggerSdkLevel.customer, `Save goal -> ${goalName} value -> ${value}`);
         //React native doesn't allow nullable parameters or native modules, so 2
         //methods are needed.
         if (value) {
-            return DxaReactNative.sendGoalWithValue(goalName, value);
+            return this.nativeModulesDxa.sendGoalWithValue(goalName, value);
         }
-        return DxaReactNative.sendGoal(goalName);
+        return this.nativeModulesDxa.sendGoal(goalName);
     }
 
     public setDimensionWithString(dimensionName: string, stringValue: string): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Save Custom Dimension -> ${dimensionName} value -> ${stringValue}`);
-        return DxaReactNative.setDimensionWithString(dimensionName, stringValue);
+        this.logger.log(LoggerSdkLevel.customer, `Save Custom Dimension -> ${dimensionName} value -> ${stringValue}`);
+        return this.nativeModulesDxa.setDimensionWithString(dimensionName, stringValue);
     }
 
     public setDimensionWithNumber(dimensionName: string, numberValue: number): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Save Custom Dimension -> ${dimensionName} value -> ${numberValue}`);
-        return DxaReactNative.setDimensionWithNumber(dimensionName, numberValue);
+        this.logger.log(LoggerSdkLevel.customer, `Save Custom Dimension -> ${dimensionName} value -> ${numberValue}`);
+        return this.nativeModulesDxa.setDimensionWithNumber(dimensionName, numberValue);
     }
 
     public setDimensionWithBool(dimensionName: string, boolValue: boolean): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Save Custom Dimension -> ${dimensionName} value -> ${boolValue}`);
-        return DxaReactNative.setDimensionWithBool(dimensionName, boolValue);
+        this.logger.log(LoggerSdkLevel.customer, `Save Custom Dimension -> ${dimensionName} value -> ${boolValue}`);
+        return this.nativeModulesDxa.setDimensionWithBool(dimensionName, boolValue);
     }
 
     public getSessionUrl(): Promise<string | null> {
-        core.dxaLogInstance.log(LoggerSdkLevel.development, 'getSessionUrl');
-        return DxaReactNative.getSessionUrl();
+        this.logger.log(LoggerSdkLevel.development, 'getSessionUrl');
+        return this.nativeModulesDxa.getSessionUrl();
     }
 
     public getSessionId(): Promise<string | null> {
-        core.dxaLogInstance.log(LoggerSdkLevel.development, 'getSessionId');
-        return DxaReactNative.getSessionId();
+        this.logger.log(LoggerSdkLevel.development, 'getSessionId');
+        return this.nativeModulesDxa.getSessionId();
     }
 
     public async getWebViewProperties(): Promise<string | null> {
-        let webViewProperties: string | null = await DxaReactNative.getWebViewProperties();
-        core.dxaLogInstance.log(LoggerSdkLevel.qa, `Get webview properties: ${webViewProperties}`);
+        let webViewProperties: string | null = await this.nativeModulesDxa.getWebViewProperties();
+        this.logger.log(LoggerSdkLevel.qa, `Get webview properties: ${webViewProperties}`);
         return webViewProperties;
     }
 
     public setConsents(consents: MedalliaDxaCustomerConsentType): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Set consents to ${consents}`);
-        return DxaReactNative.setConsents(consents);
+        this.logger.log(LoggerSdkLevel.customer, `Set consents to ${consents}`);
+        return this.nativeModulesDxa.setConsents(consents);
     }
 
     public enableAutoMasking(elementsToMask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Automatic masking configuration enable: ${elementsToMask}`);
-        return DxaReactNative.enableAutoMasking(elementsToMask);
+        this.logger.log(LoggerSdkLevel.customer, `Automatic masking configuration enable: ${elementsToMask}`);
+        return this.nativeModulesDxa.enableAutoMasking(elementsToMask);
     }
 
     public disableAutoMasking(elementsToUnmask: MedalliaDxaAutomaticMask[]): Promise<boolean> {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Automatic masking configuration disable: ${elementsToUnmask}`);
-        return DxaReactNative.disableAutoMasking(elementsToUnmask);
+        this.logger.log(LoggerSdkLevel.customer, `Automatic masking configuration disable: ${elementsToUnmask}`);
+        return this.nativeModulesDxa.disableAutoMasking(elementsToUnmask);
     }
 
     public setRetention(enabled: Boolean) {
-        core.dxaLogInstance.log(LoggerSdkLevel.development, `setRetention: ${enabled}`);
-        return DxaReactNative.setRetention(enabled);
+        this.logger.log(LoggerSdkLevel.development, `setRetention: ${enabled}`);
+        return this.nativeModulesDxa.setRetention(enabled);
     }
 
     public setAlternativeScreenNames(alternativeScreenNames: Map<string, string>) {
-        core.dxaLogInstance.log(LoggerSdkLevel.development, `Alternatives screen names have been set`);
+        this.logger.log(LoggerSdkLevel.development, `Alternatives screen names have been set`);
         this.trackingInstance.setAlternativeScreenName(alternativeScreenNames);
+    }
+
+    public setTrackingDisabledScreens(trackingDisabledScreens: string[]){
+        this.logger.log(LoggerSdkLevel.development, `tracking disabled screens have been set`);
+        this.trackingInstance.setTrackingDisabledScreens(trackingDisabledScreens);
     }
 
     public setRouteSeparator(newSeparator: String) {
@@ -101,18 +111,18 @@ export class ActivePublicMethods {
 
     public setMaskingColor(hexadecimalColor: string) {
         if (!this.isHexColor(hexadecimalColor)) {
-            core.dxaLogInstance.log(LoggerSdkLevel.development, `invalid hex color: ${hexadecimalColor} hex color should be in the format #RRGGBB`);
+            this.logger.log(LoggerSdkLevel.development, `invalid hex color: ${hexadecimalColor} hex color should be in the format #RRGGBB`);
             return;
         }
 
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `setMaskColor: ${hexadecimalColor}`);
-        return DxaReactNative.setMaskingColor(hexadecimalColor);
+        this.logger.log(LoggerSdkLevel.customer, `setMaskColor: ${hexadecimalColor}`);
+        return this.nativeModulesDxa.setMaskingColor(hexadecimalColor);
     }
 
 
     public sendDataOverWifiOnly(onlyWifi: boolean) {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Send data over wifi only: ${onlyWifi}`);
-        return DxaReactNative.sendDataOverWifiOnly(onlyWifi);
+        this.logger.log(LoggerSdkLevel.customer, `Send data over wifi only: ${onlyWifi}`);
+        return this.nativeModulesDxa.sendDataOverWifiOnly(onlyWifi);
     }
 
 
@@ -122,8 +132,8 @@ export class ActivePublicMethods {
         return hexColorRegex.test(hex);
     }
     public setImageQuality(quality: ImageQualityType) {
-        core.dxaLogInstance.log(LoggerSdkLevel.customer, `Set image quality to: ${quality}`);
-        return DxaReactNative.setImageQuality(quality.valueOf());
+        this.logger.log(LoggerSdkLevel.customer, `Set image quality to: ${quality}`);
+        return this.nativeModulesDxa.setImageQuality(quality.valueOf());
     }
 
 }

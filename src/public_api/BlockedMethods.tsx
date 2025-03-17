@@ -1,11 +1,8 @@
 import type { ImageQualityType, MedalliaDxaCustomerConsentType } from "../publicEnums";
-import type { ActivePublicMethods } from "./ActivePublicMethods";
 import type { MedalliaDxaAutomaticMask } from "../DxaMask";
-import type { Tracking } from "../Tracking";
+import type { PublicMethodsInterface } from "./PublicMethodsInterface";
 
-export class BlockedPublicMethods implements ActivePublicMethods {
-
-    trackingInstance!: Tracking;
+export class BlockedPublicMethods implements PublicMethodsInterface {
 
     public startScreen(_screenName: string): Promise<boolean> {
         return Promise.resolve(false);
@@ -61,6 +58,9 @@ export class BlockedPublicMethods implements ActivePublicMethods {
         return;
     }
     public setAlternativeScreenNames(_alternativeScreenNames: Map<string, string>): void {
+        return;
+    }
+    public setTrackingDisabledScreens(_trackingDisabledScreens: string[]): void{
         return;
     }
     public setRouteSeparator(_newSeparator: String): void {

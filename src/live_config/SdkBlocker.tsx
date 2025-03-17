@@ -1,9 +1,14 @@
-import { core } from "../Core";
+import type { DependenciesManager } from "src/DependenciesManager";
 
 class SdkBlocker {
     public isSdkBlocked: boolean = false;
     private blockableClasses: Blockable[] = []; 
+    private dependenciesManager: DependenciesManager;
     
+    constructor(dependenciesManager: DependenciesManager) {
+        this.dependenciesManager = dependenciesManager;
+    }
+
     public addClassToBlock(blockableClass: Blockable): void {
         this.blockableClasses.push(blockableClass);
     }
@@ -19,20 +24,23 @@ class SdkBlocker {
         this.blockableClasses.forEach(blockableClass => {
             blockableClass.removeBlock();
         });
-        if(core.areModulesInitialized==false){
-            core.initializePostInitializeModules();
+        if(this.dependenciesManager.dependenciesLoadded ==false){
+            this.dependenciesManager.initializePostInitializeModules();
         }
     }
 }
 
 
 abstract class Blockable {
-    constructor() {
+    private sdkBlocker: SdkBlocker;
+    constructor(sdkBlocker: SdkBlocker) {
+        this.sdkBlocker = sdkBlocker;
         this.subscribeToBlocker();
     }
 
     protected subscribeToBlocker(): void {
-        core.sdkBlockerIstance.addClassToBlock(this);
+        
+        this.sdkBlocker.addClassToBlock(this);
     }
 
     abstract executeBlock(): void;

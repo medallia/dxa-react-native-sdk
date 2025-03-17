@@ -1,5 +1,6 @@
 import type { NativeModulesStatic } from "react-native";
 import { SdkMetaData } from "./MetaData";
+import type { SdkBlocker } from "src/live_config/SdkBlocker";
 
 enum LoggerSdkLevel {
   public,
@@ -68,12 +69,10 @@ class DxaLogger {
   private dxaNativeModule: NativeModulesStatic;
   private loggerSdkLevelLogic: LoggerSdkLevelLogic;
 
-  constructor(
-    isSdkRunning: () => boolean,
-    nativeModule: NativeModulesStatic,
+  constructor( dxaNativeModule: NativeModulesStatic,sdkBlockerInstance: SdkBlocker
   ) {
-    this.dxaNativeModule = nativeModule;
-    this.plainLogger = new PlainLogger(() => this.enabled, isSdkRunning, (message: string) => {
+    this.dxaNativeModule = dxaNativeModule; 
+    this.plainLogger = new PlainLogger(() => this.enabled, ()=> !sdkBlockerInstance.isSdkBlocked, (message: string) => {
       if (this.allowLocalLogs) this.dxaNativeModule.saveLogs(`react-native: ${message}`);
     } 
     );

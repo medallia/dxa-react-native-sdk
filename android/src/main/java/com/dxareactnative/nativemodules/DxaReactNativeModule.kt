@@ -2,7 +2,6 @@ package com.dxareactnative.nativemodules
 
 import SamplingInfo
 import SdkConfigInfo
-import android.util.Log
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -17,7 +16,6 @@ import com.medallia.dxa.buildercommon.MedalliaDXA
 import com.medallia.dxa.common.enums.CustomerConsentType
 import com.medallia.dxa.common.enums.DXAConfigurationMask
 import com.medallia.dxa.common.enums.PlatformType
-import com.medallia.dxa.common.internal.logic.providers.AppVersionProvider
 import com.medallia.dxa.common.internal.models.DXAConfig
 import com.medallia.dxa.common.internal.models.ImageQualityLevel
 import com.medallia.dxa.common.internal.models.Multiplatform
@@ -69,18 +67,6 @@ class DxaReactNativeModule(
     autoMasking: ReadableArray,
     callback: Callback
   ) {
-    if(android.os.Build.VERSION.SDK_INT>34){
-      val configMap = SdkConfigInfo(
-          vcBlockedReactNativeSDKVersions = listOf(sdkVersion),
-          vcBlockedReactNativeAppVersions = listOf(),
-          daShowLocalLogs = false,
-          daAllowLocalLogs = false,
-          dstDisableScreenTracking = listOf(),
-          appVersion = AppVersionProvider.version
-      ).toWritableNativeMap()
-      callback.invoke(configMap)
-      return
-  }
 
     DXA.getInstance(reactContext.applicationContext).run {
       dxa = this
@@ -105,10 +91,12 @@ class DxaReactNativeModule(
         val configMap = SdkConfigInfo(
           vcBlockedReactNativeSDKVersions = config.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = config.vcBlockedReactNativeAppVersions,
+          vcBlockedNativeSDKVersions = config.vcBlockedAndroidSDKVersions,
           daShowLocalLogs = config.daShowLocalLogs,
           daAllowLocalLogs = config.daAllowLogs,
           dstDisableScreenTracking = config.dstDisableScreenTracking,
-          appVersion = AppVersionProvider.version
+          appVersion = dxa.appVersion(),
+          nativeSDKVersion = dxa.sdkVersion()
         ).toWritableNativeMap()
         callback.invoke(configMap)
         bootstrapperInitialize()
@@ -118,14 +106,9 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun startScreen(name: String, startTime: Double, promise: Promise) {
-    Log.i("DXA-REACT-METHOD", "starting screen with name: $name")
     if (!::dxa.isInitialized) {
       promise.reject(
         DxaReactNativeException("starting screen with name: $name but DXA is not initialized")
-      )
-      Log.e(
-        "DXA-REACT-METHOD",
-        "starting screen with name: $name but DXA is not initialized"
       )
       return
     }
@@ -136,12 +119,10 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun endScreen(promise: Promise) {
-    Log.i("DXA-REACT-METHOD", "stopping screen.")
     if (!::dxa.isInitialized) {
       promise.reject(
         DxaReactNativeException("stopping screen but DXA is not initialized")
       )
-      Log.e("DXA-REACT-METHOD", "stopping screen but DXA is not initialized")
       return
     }
     dxa.stopScreen()
@@ -201,7 +182,14 @@ class DxaReactNativeModule(
 
   @ReactMethod
   fun getSessionUrl(promise: Promise) {
-    promise.resolve(dxa.getSessionUrl())
+
+    dxa.getSessionUrl {sessionUrl ->
+      if (sessionUrl != null) {
+        promise.resolve(sessionUrl)
+      } else{
+        promise.reject(DxaReactNativeException("Get session Url is null"))
+      }
+    }
   }
 
   @ReactMethod
@@ -282,12 +270,13 @@ class DxaReactNativeModule(
         val configMap = SdkConfigInfo(
           vcBlockedReactNativeSDKVersions = newConfig.vcBlockedReactNativeSDKVersions,
           vcBlockedReactNativeAppVersions = newConfig.vcBlockedReactNativeAppVersions,
+          vcBlockedNativeSDKVersions = newConfig.vcBlockedAndroidSDKVersions,
           daShowLocalLogs = newConfig.daShowLocalLogs,
           daAllowLocalLogs = newConfig.daAllowLogs,
           dstDisableScreenTracking = newConfig.dstDisableScreenTracking,
-          appVersion = AppVersionProvider.version
+          appVersion = dxa.appVersion(),
+          nativeSDKVersion = dxa.sdkVersion()
         ).toWritableNativeMap()
-
 
         sendEvent(reactContext, "dxa-event", configMap)
 
